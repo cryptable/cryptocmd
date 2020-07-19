@@ -1,0 +1,4 @@
+/*
+ * MIT
+ * Author: David Tillemans
+ */
