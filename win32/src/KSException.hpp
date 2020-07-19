@@ -4,13 +4,15 @@
  */
 #include <windows.h>
 #include <strsafe.h>
+#ifndef KSEXCEPTION_HPP
+#define KSEXCEPTION_HPP
 
 class KSException : public std::exception {
 
 public:
 	explicit KSException(DWORD cd) {
         LPSTR tmpMsgBuf = NULL;
-        FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,        
+        FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
             NULL,
             cd,
             MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
@@ -37,3 +39,5 @@ private:
     DWORD errorCode;
     std::string   msgBuf;
 };
+
+#endif // KSEXCEPTION_H

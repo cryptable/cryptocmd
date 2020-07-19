@@ -1,6 +1,6 @@
 #define CATCH_CONFIG_RUNNER
 #include <catch2/catch.hpp>
-
+²
 int main(int argc, char* argv[]) {
 	// global setup...
 

@@ -2,6 +2,9 @@
  * MIT License
  * Author: David Tillemans
  */
+#ifndef GENERALNAME_HPP
+#define GENERALNAME_HPP
+
 #include <windows.h>
 #include <wincrypt.h>
 #include <string>
@@ -61,3 +64,4 @@ private:
     std::string    generalName;
 
 };
+#endif // GENERALNAME_HPP
