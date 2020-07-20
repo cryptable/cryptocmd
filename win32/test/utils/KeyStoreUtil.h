@@ -1,7 +1,7 @@
-//
-// Created by david on 19/07/2020.
-//
-
+/*
+ * MIT License
+ * Author: David Tillemans
+ */
 #ifndef KSMGMNT_KEYSTOREUTIL_H
 #define KSMGMNT_KEYSTOREUTIL_H
 

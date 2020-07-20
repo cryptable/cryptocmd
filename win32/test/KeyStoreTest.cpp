@@ -26,24 +26,5 @@ TEST_CASE( "KeyStoreTests", "[success]" ) {
         // Cleanup
         keyStoreUtil.deleteKeyFromKeyStore(L"My Key");
     }
-
-    SECTION( "Generate a CSR in KeyStore" ) {
-        // Arrange
-        const unsigned long rsaLength = 2048;
-        KeyStoreUtil keyStoreUtil(MS_KEY_STORAGE_PROVIDER);
-        if (keyStoreUtil.isKeyInKeystore(L"My Key")) {
-            keyStoreUtil.deleteKeyFromKeyStore(L"My Key");
-        }
-
-        // Act
-        // TODO: keyStore.createCertificateSigningRequest(L"My Key", rsaLength);
-
-        // Assert
-        REQUIRE(keyStoreUtil.isKeyInKeystore(L"My Key"));
-        // TODO: OpenSSL validation of the CSR
-
-        // Cleanup
-        keyStoreUtil.deleteKeyFromKeyStore(L"My Key");
-    }
 }
 

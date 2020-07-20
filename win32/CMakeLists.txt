@@ -5,7 +5,9 @@ project(ksmgmnt VERSION 0.1)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-include_directories(include src)
+set(COMMON_DIR "${CMAKE_SOURCE_DIR}/../common")
+
+include_directories(include src ${COMMON_DIR}/include)
 
 add_subdirectory(src)
 add_subdirectory(test)

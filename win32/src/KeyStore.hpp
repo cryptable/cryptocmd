@@ -88,10 +88,16 @@ public:
         return std::make_unique<KeyPair>(cryptoProvider, rsaKeyHandle);
 	};
 
-    std::string createCertificateSigningRequest(std::wstring keyIdentifier, std::string subjectDN, u_long bitLength) {
-#if 0
-#endif
+    std::unique_ptr<KeyPair> getKeyPair(std::wstring keyIdentifier) {
+        DWORD status = STATUS_SUCCESS;
+        NCRYPT_KEY_HANDLE rsaKeyHandle;
 
+        status = NCryptOpenKey(cryptoProvider, &rsaKeyHandle, keyIdentifier.c_str(), 0, 0);
+        if (status != STATUS_SUCCESS {
+            throw KSException(status);
+        }
+
+        return std::make_unique<KeyPair>(cryptoProvider, rsaKeyHandle);
     }
 
     /**
@@ -102,5 +108,6 @@ public:
 	};
 
 private:
+
     NCRYPT_PROV_HANDLE cryptoProvider;
 };

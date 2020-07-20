@@ -87,6 +87,14 @@ public:
         return std::string((const char *)certSignReq, certSignReqLg);
     }
 
+    void importCertificate(const std::string binaryCertificate) {
+        if (!CertAddEncodedCertificateToSystemStore("MY",
+                (const BYTE *)binaryCertificate.data(),
+                binaryCertificate.size())) {
+            throw KSException(GetLastError());
+        }
+    }
+
     ~KeyPair() {
         NCryptFreeObject(keyHandle);
         delete publicKeyInfo;

@@ -1,7 +1,7 @@
-//
-// Created by david on 19/07/2020.
-//
-
+/*
+ * MIT License
+ * Author: David Tillemans
+ */
 #ifndef KSMGMNT_HEXUTILS_HPP
 #define KSMGMNT_HEXUTILS_HPP
 #include <iostream>
