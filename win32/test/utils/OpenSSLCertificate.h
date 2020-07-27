@@ -12,7 +12,7 @@
 #include <string>
 
 class OpenSSLCertificate {
-
+#if 0
     OpenSSLCertificate() {
 
     }
@@ -29,11 +29,12 @@ class OpenSSLCertificate {
 
 private:
 
-    std::unique_ptr<X509_NAME> parseName(const std::string &name);
+//    std::unique_ptr<X509_NAME> parseName(const std::string &name);
 
-    std::unique_ptr<X509> certificate;
+//    std::unique_ptr<X509> certificate;
 
     std::string serialNumber;
+#endif
 };
 
 

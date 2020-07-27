@@ -2,30 +2,38 @@
  * Copyright (c) 2020 Cryptable BV. All rights reserved.
  * (MIT License)
  * Author: "David Tillemans"
- * Date: 20/07/2020
+ * Date: 21/07/2020
  */
-#ifndef KSMGMNT_OPENSSLCA_H
-#define KSMGMNT_OPENSSLCA_H
+
+#ifndef KSMGMNT_OPENSSLX509NAME_H
+#define KSMGMNT_OPENSSLX509NAME_H
+#include <openssl/x509.h>
 #include <string>
-#include "OpenSSLCertificate.h"
 
-class OpenSSLCA {
-
+class OpenSSLX509Name {
 public:
-    OpenSSLCA(const std::string &rootName, int bitLength);
+    OpenSSLX509Name(const std::string &name);
 
-//    std::unique_ptr<OpenSSLCertificate> certifyKey(const std::string &subject, const OpenSSLKey &publicKey);
+    X509_NAME *getX509Name() {
+        return x509Name;
+    };
 
-    ~OpenSSLCA();
+    const std::string &getName() { return name; };
 
+    operator std::string() const { return name; };
+
+    ~OpenSSLX509Name();
+    
 private:
-    EVP_PKEY *keyPair;
+    X509_NAME *parseName(const std::string &name, int chtype);
 
-    X509 *x509Certificate;
+    X509_NAME *x509Name;
+
+    std::string name;
 };
 
 
-#endif //KSMGMNT_OPENSSLCA_H
+#endif //KSMGMNT_OPENSSLX509NAME_H
 /**********************************************************************************/
 /* MIT License                                                                    */
 /*                                                                                */

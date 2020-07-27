@@ -2,30 +2,32 @@
  * Copyright (c) 2020 Cryptable BV. All rights reserved.
  * (MIT License)
  * Author: "David Tillemans"
- * Date: 20/07/2020
+ * Date: 23/07/2020
  */
-#ifndef KSMGMNT_OPENSSLCA_H
-#define KSMGMNT_OPENSSLCA_H
-#include <string>
-#include "OpenSSLCertificate.h"
 
-class OpenSSLCA {
+#ifndef KSMGMNT_OPENSSL_H
+#define KSMGMNT_OPENSSL_H
 
+#include <openssl/conf.h>
+#include <openssl/evp.h>
+#include <openssl/err.h>
+
+class OpenSSL {
 public:
-    OpenSSLCA(const std::string &rootName, int bitLength);
+    OpenSSL() {
+        ERR_load_crypto_strings();
+        OpenSSL_add_all_algorithms();
+        OPENSSL_config(NULL);
+    }
 
-//    std::unique_ptr<OpenSSLCertificate> certifyKey(const std::string &subject, const OpenSSLKey &publicKey);
-
-    ~OpenSSLCA();
-
-private:
-    EVP_PKEY *keyPair;
-
-    X509 *x509Certificate;
+    ~OpenSSL() {
+        EVP_cleanup();
+        CRYPTO_cleanup_all_ex_data();
+        ERR_free_strings();
+    }
 };
 
-
-#endif //KSMGMNT_OPENSSLCA_H
+#endif //KSMGMNT_OPENSSL_H
 /**********************************************************************************/
 /* MIT License                                                                    */
 /*                                                                                */

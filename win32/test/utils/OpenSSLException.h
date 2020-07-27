@@ -2,30 +2,43 @@
  * Copyright (c) 2020 Cryptable BV. All rights reserved.
  * (MIT License)
  * Author: "David Tillemans"
- * Date: 20/07/2020
+ * Date: 21/07/2020
  */
-#ifndef KSMGMNT_OPENSSLCA_H
-#define KSMGMNT_OPENSSLCA_H
-#include <string>
-#include "OpenSSLCertificate.h"
 
-class OpenSSLCA {
+#ifndef KSMGMNT_OPENSSLEXCEPTION_H
+#define KSMGMNT_OPENSSLEXCEPTION_H
+#include <stdexcept>
+#include <openssl/err.h>
+
+class OpenSSLException : public std::exception {
 
 public:
-    OpenSSLCA(const std::string &rootName, int bitLength);
+    OpenSSLException(unsigned long error) : errorCode{error} {
+        errorMessage = ERR_error_string(error, NULL);
+    };
 
-//    std::unique_ptr<OpenSSLCertificate> certifyKey(const std::string &subject, const OpenSSLKey &publicKey);
+    OpenSSLException(const std::string &message) : errorCode{0x90010001}, errorMessage{message} {
+    };
 
-    ~OpenSSLCA();
+    unsigned long code() {
+        return errorCode;
+    };
+
+    virtual char const * what() const noexcept {
+        return errorMessage.c_str();
+    };
+
+    operator std::string() const { return errorMessage; };
 
 private:
-    EVP_PKEY *keyPair;
 
-    X509 *x509Certificate;
+    unsigned long errorCode;
+
+    std::string errorMessage;
 };
 
 
-#endif //KSMGMNT_OPENSSLCA_H
+#endif //KSMGMNT_OPENSSLEXCEPTION_H
 /**********************************************************************************/
 /* MIT License                                                                    */
 /*                                                                                */

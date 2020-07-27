@@ -93,7 +93,7 @@ public:
         NCRYPT_KEY_HANDLE rsaKeyHandle;
 
         status = NCryptOpenKey(cryptoProvider, &rsaKeyHandle, keyIdentifier.c_str(), 0, 0);
-        if (status != STATUS_SUCCESS {
+        if (status != STATUS_SUCCESS) {
             throw KSException(status);
         }
 

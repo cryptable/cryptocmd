@@ -6,6 +6,7 @@
 #include <KeyStore.hpp>
 #include <fstream>
 #include "utils/KeyStoreUtil.h"
+#include "utils/OpenSSLCertificateRequest.h"
 
 TEST_CASE( "KeyPairTests", "[success]" ) {
 
@@ -42,8 +43,8 @@ TEST_CASE( "KeyPairTests", "[success]" ) {
         // Assert
         REQUIRE( csr.data() != NULL );
         REQUIRE( csr.size() != NULL );
-
-        // TODO: use openssl to verify the CSR
+        OpenSSLCertificateRequest verifyCSR(csr.data(), csr.size());
+        REQUIRE( verifyCSR.verify() );
 
         // Cleanup
         keyStoreUtil.deleteKeyFromKeyStore(L"My Key");
