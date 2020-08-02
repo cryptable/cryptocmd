@@ -21,16 +21,16 @@ public:
      * @param      name  The name in string version in the format as for example 
      * "cn=John Doe, o=Company, c=US"
      */
-    GeneralName(std::string &name) {
+    explicit GeneralName(std::string &name) : blobEncodedName{0, nullptr} {
         DWORD encodedNameLg = 0;
 
         if (!CertStrToName(X509_ASN_ENCODING, 
             name.c_str(), 
             CERT_OID_NAME_STR,
-            NULL,
-            NULL,
+            nullptr,
+            nullptr,
             &encodedNameLg,
-            NULL)) {
+            nullptr)) {
             throw KSException(GetLastError());
         }
         blobEncodedName.pbData = new BYTE[encodedNameLg];
@@ -38,10 +38,10 @@ public:
         if (!CertStrToName(X509_ASN_ENCODING, 
             name.c_str(), 
             CERT_OID_NAME_STR,
-            NULL,
+            nullptr,
             blobEncodedName.pbData,
             &blobEncodedName.cbData,
-            NULL)) {
+            nullptr)) {
             throw KSException(GetLastError());
         }
 		generalName = name;
@@ -55,12 +55,12 @@ public:
         return generalName;
     }
 
-    CERT_BLOB &getEncodedBlob() {
+    CERT_NAME_BLOB &getEncodedBlob() {
         return blobEncodedName;
     }
 
 private:
-    CERT_BLOB blobEncodedName;
+    CERT_NAME_BLOB blobEncodedName;
     std::string    generalName;
 
 };

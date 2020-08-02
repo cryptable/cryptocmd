@@ -4,40 +4,49 @@
  */
 #include <windows.h>
 #include <strsafe.h>
+#include <string>
+#include <exception>
+
 #ifndef KSEXCEPTION_HPP
 #define KSEXCEPTION_HPP
 
 class KSException : public std::exception {
 
 public:
-	explicit KSException(DWORD cd) {
-        LPSTR tmpMsgBuf = NULL;
+	explicit KSException(DWORD cd) noexcept : tmpMsgBuf{nullptr}, errorNumber{cd} {
         FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-            NULL,
+            nullptr,
             cd,
             MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
             (LPSTR)&tmpMsgBuf,
-            0, NULL );
-        msgBuf = tmpMsgBuf;
-        LocalFree(tmpMsgBuf);
-		errorCode = cd;
+            0,
+            nullptr );
 	};
 
-    DWORD code() {
-        return errorCode;
+    KSException(const KSException& from) noexcept : std::exception(from), tmpMsgBuf{nullptr}, errorNumber{from.errorNumber} {
+        tmpMsgBuf = static_cast<LPSTR>(LocalAlloc(0, LocalSize(from.tmpMsgBuf)));
+        strncpy_s(tmpMsgBuf, LocalSize(tmpMsgBuf), from.tmpMsgBuf, LocalSize(from.tmpMsgBuf));
+        errorNumber = from.errorNumber;
     };
 
-    virtual ~KSException() override {};
+    DWORD code() const noexcept {
+        return errorNumber;
+    };
 
-    virtual char const * what() const noexcept {
-        return msgBuf.c_str();
+    ~KSException() noexcept override {
+        LocalFree(tmpMsgBuf);
+        tmpMsgBuf = nullptr;
+    }
+
+    char const * what() const noexcept override {
+        return tmpMsgBuf;
 	};
 
-    operator std::string() const { return msgBuf; };
+    explicit operator std::string() const { return tmpMsgBuf; };
 
 private:
-    DWORD errorCode;
-    std::string   msgBuf;
+    DWORD errorNumber;
+    LPSTR tmpMsgBuf;
 };
 
 #endif // KSEXCEPTION_H

@@ -23,7 +23,7 @@ public:
      *
      * @param      keystoreName  The name of the keystore to use.
      */
-    KeyStore(const wchar_t *keystoreName) {
+    explicit KeyStore(const wchar_t *keystoreName): cryptoProvider{NULL} {
         DWORD status = STATUS_SUCCESS;
         status = NCryptOpenStorageProvider(&cryptoProvider, keystoreName, 0);
         if (status != STATUS_SUCCESS) {
@@ -37,7 +37,7 @@ public:
      * @param keyIdentifier Name of the key
      * @param bitLength length for the RSA key
      */
-    std::unique_ptr<KeyPair> generateSigningKeyPair(std::wstring keyIdentifier, u_long bitLength) {
+    std::unique_ptr<KeyPair> generateSigningKeyPair(const std::wstring &keyIdentifier, u_long bitLength) {
         DWORD status = STATUS_SUCCESS;
         NCRYPT_KEY_HANDLE rsaKeyHandle;
         status = NCryptCreatePersistedKey(cryptoProvider,
@@ -85,10 +85,10 @@ public:
             throw KSException(status);
         }
 
-        return std::make_unique<KeyPair>(cryptoProvider, rsaKeyHandle);
+        return std::make_unique<KeyPair>(rsaKeyHandle);
 	};
 
-    std::unique_ptr<KeyPair> getKeyPair(std::wstring keyIdentifier) {
+    std::unique_ptr<KeyPair> getKeyPair(const std::wstring &keyIdentifier) {
         DWORD status = STATUS_SUCCESS;
         NCRYPT_KEY_HANDLE rsaKeyHandle;
 
@@ -97,7 +97,7 @@ public:
             throw KSException(status);
         }
 
-        return std::make_unique<KeyPair>(cryptoProvider, rsaKeyHandle);
+        return std::make_unique<KeyPair>(rsaKeyHandle);
     }
 
     /**

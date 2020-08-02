@@ -10,9 +10,11 @@
 #undef WIN32_NO_STATUS
 #include <ncrypt.h>
 #include <ntstatus.h>
+#include <fstream>
+#include <vector>
+#include <functional>
 #include "KSException.hpp"
 #include "GeneralName.hpp"
-#include <fstream>
 
 /**
  * @brief This class defines the asymmetric keypair
@@ -25,13 +27,13 @@ public:
      * @param cryptoProvider CryptoProvider
      * @param key handle to the keys in the Keystore
      */
-    KeyPair(const NCRYPT_PROV_HANDLE cryptoProvider, NCRYPT_KEY_HANDLE key) : keyHandle{key} {
+    explicit KeyPair(NCRYPT_KEY_HANDLE key) : keyHandle{key} {
         DWORD publicKeyLg = 0;
 
         if (!CryptExportPublicKeyInfo(keyHandle,
                 0,
                 X509_ASN_ENCODING | PKCS_7_ASN_ENCODING,
-                NULL,
+                nullptr,
                 &publicKeyLg)) {
             throw KSException(GetLastError());
         }
@@ -43,9 +45,14 @@ public:
                                 &publicKeyLg);
     }
 
-    CERT_PUBLIC_KEY_INFO *getPublicKeyInfo() { return publicKeyInfo; };
+    CERT_PUBLIC_KEY_INFO *getPublicKeyInfo() const { return publicKeyInfo; };
 
-    std::string getCertificateSigningRequest(std::string subjectDN) {
+    /**
+     * create a Certificate signing request as a PEM encoded request
+     * @param subjectDN
+     * @return
+     */
+    std::string getCertificateSigningRequest(std::string subjectDN) const {
         // TODO: https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-making-a-certificate-request
         GeneralName subject(subjectDN);
 
@@ -54,7 +61,7 @@ public:
         CertReqInfo.Subject = subject.getEncodedBlob();
         CertReqInfo.SubjectPublicKeyInfo = *publicKeyInfo;
         CertReqInfo.cAttribute = 0;
-        CertReqInfo.rgAttribute = NULL;
+        CertReqInfo.rgAttribute = nullptr;
 
         DWORD certSignReqLg = 0;
         CRYPT_OBJID_BLOB  Parameters;
@@ -68,31 +75,102 @@ public:
                 X509_CERT_REQUEST_TO_BE_SIGNED,
                 &CertReqInfo,
                 &SigAlgo,
-                NULL,
-                NULL,
+               nullptr,
+               nullptr,
                 &certSignReqLg)) {
             throw KSException(GetLastError());
         }
-        BYTE* certSignReq = new unsigned char[certSignReqLg];
+        auto certSignReq = std::unique_ptr<BYTE>(new unsigned char[certSignReqLg]);
         CryptSignAndEncodeCertificate(keyHandle,
                                       0,
                                       X509_ASN_ENCODING | PKCS_7_ASN_ENCODING,
                                       X509_CERT_REQUEST_TO_BE_SIGNED,
                                       &CertReqInfo,
                                       &SigAlgo,
-                                      NULL,
-                                      certSignReq,
+                                      nullptr,
+                                      certSignReq.get(),
                                       &certSignReqLg);
-
-        return std::string((const char *)certSignReq, certSignReqLg);
-    }
-
-    void importCertificate(const std::string binaryCertificate) {
-        if (!CertAddEncodedCertificateToSystemStore("MY",
-                (const BYTE *)binaryCertificate.data(),
-                binaryCertificate.size())) {
+        DWORD b64CertReqLg = 0;
+        if (!CryptBinaryToStringA(certSignReq.get(),
+                                  certSignReqLg,
+                                  CRYPT_STRING_BASE64REQUESTHEADER,
+                                  nullptr,
+                                  &b64CertReqLg)) {
             throw KSException(GetLastError());
         }
+        auto b64CertReq = std::unique_ptr<char>(new char[b64CertReqLg]);
+        CryptBinaryToStringA(certSignReq.get(),
+                             certSignReqLg,
+                             CRYPT_STRING_BASE64REQUESTHEADER,
+                             b64CertReq.get(),
+                             &b64CertReqLg);
+        return std::string(b64CertReq.get());
+    }
+
+    /**
+     * Import the certificate into the keystore
+     * @param pemCertificate
+     */
+    void importCertificate(const std::string &pemCertificate) {
+        DWORD certLg = 0;
+        if (!CryptStringToBinaryA(pemCertificate.c_str(),
+                                  pemCertificate.size(),
+                                  CRYPT_STRING_BASE64HEADER,
+                                  nullptr,
+                                  &certLg,
+                                  nullptr,
+                                  nullptr)) {
+            throw KSException(GetLastError());
+        }
+        std::vector<unsigned char> cert(certLg);
+        CryptStringToBinaryA(pemCertificate.c_str(),
+                             pemCertificate.size(),
+                             CRYPT_STRING_BASE64HEADER,
+                             cert.data(),
+                             &certLg,
+                             nullptr,
+                             nullptr);
+
+
+        HCERTSTORE storeHandle = CertOpenSystemStoreA(NULL, "MY");
+        if (storeHandle == nullptr) {
+            throw KSException(GetLastError());
+        }
+        PCCERT_CONTEXT certContext = nullptr;
+        if (!CertAddEncodedCertificateToStore(storeHandle,
+                                              X509_ASN_ENCODING,
+                                              cert.data(),
+                                              certLg,
+                                              CERT_STORE_ADD_ALWAYS,
+                                              &certContext)) {
+            CertCloseStore(storeHandle, 0);
+            throw KSException(GetLastError());
+        }
+        // TODO: Refactor to KeyStore or access the KeyStore
+        CRYPT_KEY_PROV_INFO cryptKeyProvInfo = {
+                MS_KEY_STORAGE_PROVIDER,
+                L"My Key",
+                0,
+                0,
+                0,
+                nullptr,
+                0
+        };
+        if (!CertSetCertificateContextProperty(certContext,
+                                               CERT_KEY_PROV_INFO_PROP_ID,
+                                               0,
+                                               &cryptKeyProvInfo)) {
+            CertCloseStore(storeHandle, 0);
+            throw KSException(GetLastError());
+        }
+        if (!CertSetCertificateContextProperty(certContext,
+                                               CERT_NCRYPT_KEY_HANDLE_PROP_ID,
+                                               0,
+                                               &keyHandle)) {
+            CertCloseStore(storeHandle, 0);
+            throw KSException(GetLastError());
+        }
+        CertCloseStore(storeHandle, 0);
     }
 
     ~KeyPair() {
