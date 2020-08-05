@@ -41,11 +41,11 @@ public:
         DWORD status = STATUS_SUCCESS;
         NCRYPT_KEY_HANDLE rsaKeyHandle;
         status = NCryptCreatePersistedKey(cryptoProvider,
-                &rsaKeyHandle,
-                BCRYPT_RSA_ALGORITHM,
-                keyIdentifier.c_str(),
-                0,
-                0);
+                                          &rsaKeyHandle,
+                                          BCRYPT_RSA_ALGORITHM,
+                                          keyIdentifier.c_str(),
+                                          AT_SIGNATURE,
+                                          0);
         if (status != STATUS_SUCCESS) {
             throw KSException(status);
         }
