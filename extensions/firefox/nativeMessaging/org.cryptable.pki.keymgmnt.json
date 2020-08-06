@@ -1,0 +1,7 @@
+{
+  "name": "keymgmnt",
+  "description": "Native messaging interface for key management",
+  "path": "<NativeNessagingExe>",
+  "type": "stdio",
+  "allowed_extensions": [ "keymgmnt@pki.cryptable.org" ]
+}

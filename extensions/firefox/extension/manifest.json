@@ -1,0 +1,41 @@
+{
+  "manifest_version": 2,
+  "name": "Windows Crypto Key Generation",
+  "version": "0.1",
+  "version_name":"0.1 beta",
+  "description": "Windows Crypto Key Generation extension to generate keys from the browser.",
+  "author": "David Tillemans",
+
+  "icons": {
+    "48": "icons/smartcard.svg",
+    "96": "icons/smartcard.svg"
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content-script.js"]
+    }
+  ],
+
+  "background": {
+    "scripts": ["background.js"]
+  },
+
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "keymgmnt@pki.cryptable.org",
+      "strict_min_version": "50.0"
+    }
+  },
+
+  "browser_action": {
+    "default_icon": "icon.png",
+    "default_title": "Eidonkey",
+    "default_popup": "eidonkey.html"
+  },
+
+  "permissions": [
+    "nativeMessaging"
+  ]
+}
