@@ -33,7 +33,7 @@ add_executable (tests main.cpp
         KeyStoreTest.cpp
         utils/KeyStoreUtil.cpp utils/KeyStoreUtil.h
         KeyPairTest.cpp
-        utils/CertStoreUtil.cpp utils/CertStoreUtil.h)
+        utils/CertStoreUtil.cpp utils/CertStoreUtil.h utils/CNGHash.cpp utils/CNGHash.h utils/CNGSign.cpp utils/CNGSign.h)
 target_link_libraries(tests Crypt32.lib Ncrypt.lib Ws2_32.lib ${OPENSSL_CRYPTO_LIBRARY} ${OPENSSL_SSL_LIBRARY} ${CRYPTABLEPKI})
 
 enable_testing()

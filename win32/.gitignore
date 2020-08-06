@@ -1,4 +1,5 @@
 # Ignore files to commit
-
+.vscode
 .idea
 cmake-build*
+build

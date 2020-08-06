@@ -148,13 +148,13 @@ public:
         }
         // TODO: Refactor to KeyStore or access the KeyStore
         CRYPT_KEY_PROV_INFO cryptKeyProvInfo = {
-                MS_KEY_STORAGE_PROVIDER,
-                L"My Key",
+                const_cast<LPWSTR>(L"My Key"),
+                const_cast<LPWSTR>(MS_KEY_STORAGE_PROVIDER),
                 0,
                 0,
                 0,
                 nullptr,
-                0
+                AT_SIGNATURE
         };
         if (!CertSetCertificateContextProperty(certContext,
                                                CERT_KEY_PROV_INFO_PROP_ID,

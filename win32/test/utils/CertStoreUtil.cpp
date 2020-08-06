@@ -11,6 +11,8 @@
 #include <iostream>
 #include "CertStoreUtil.h"
 #include "HexUtils.hpp"
+#include "CNGHash.h"
+#include "CNGSign.h"
 
 CertStoreUtil::CertStoreUtil() : hStoreHandle{nullptr}, name{"MY"} {
     if ((hStoreHandle = CertOpenSystemStoreA(
@@ -83,11 +85,6 @@ void CertStoreUtil::showCertificatesOfCertStore() {
     }
 }
 
-bool signHash(HCRYPTPROV_OR_NCRYPT_KEY_HANDLE keyHandle, std::string &testData) {
-    // TODO: perform a signature to test the key handle
-    return true;
-}
-
 bool CertStoreUtil::hasPrivateKey(const std::wstring &subject) {
     PCCERT_CONTEXT  pCertContext;
     HCRYPTPROV_OR_NCRYPT_KEY_HANDLE keyHandle;
@@ -104,12 +101,12 @@ bool CertStoreUtil::hasPrivateKey(const std::wstring &subject) {
         throw KSException(GetLastError());
     }
 
-    if (CryptAcquireCertificatePrivateKey(pCertContext,
-                                          0, //CRYPT_ACQUIRE_COMPARE_KEY_FLAG | CRYPT_ACQUIRE_ALLOW_NCRYPT_KEY_FLAG,
+    if (!CryptAcquireCertificatePrivateKey(pCertContext,
+                                          CRYPT_ACQUIRE_COMPARE_KEY_FLAG | CRYPT_ACQUIRE_ALLOW_NCRYPT_KEY_FLAG,
                                           nullptr,
-                                          &keyHandle,
-                                          &keySpecs,
-                                          &mustFreeKeyHandle)) {
+                                           &keyHandle,
+                                           &keySpecs,
+                                           &mustFreeKeyHandle)) {
         throw KSException(GetLastError());
     }
 
@@ -117,9 +114,13 @@ bool CertStoreUtil::hasPrivateKey(const std::wstring &subject) {
         std::cout << "CNG key handle";
     }
 
-    if (!signHash(keyHandle, "This is test data")) {
-
-    }
+    CNGHash hash;
+    std::string plainData("This is test data");
+    hash.update(plainData.data(), plainData.size());
+    auto hashedData = hash.finalize();
+    CNGSign sign(keyHandle);
+    auto signature = sign.sign(hashedData.data(), hashedData.size());
+    std::cout << "Signature :" <<HexUtils::binToHex(signature.data(), signature.size()) << std::endl;
 
     return true;
 }
