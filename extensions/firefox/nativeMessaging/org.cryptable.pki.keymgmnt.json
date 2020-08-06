@@ -1,7 +1,7 @@
 {
-  "name": "keymgmnt",
+  "name": "org.cryptable.pki.keymgmnt",
   "description": "Native messaging interface for key management",
-  "path": "<NativeNessagingExe>",
+  "path": "/Users/davidtillemans/workspace/rust-fun/cryptocmd/extensions/firefox/nativeMessaging/keymgmnt.py",
   "type": "stdio",
   "allowed_extensions": [ "keymgmnt@pki.cryptable.org" ]
 }

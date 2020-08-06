@@ -1,16 +1,18 @@
 
 browser.runtime.onMessage.addListener(
 	(request, sender, sendResponse) => {
-		console.log("DEBUG: Background message received " + request);
 		if (request) {
-			browser.runtime.sendNativeMessage("keymgmnt", request, function(resp) {
-				console.log("Background Native Message received:");
-				console.log(resp);
-				sendResponse(resp);
+			sendNative = browser.runtime.sendNativeMessage("org.cryptable.pki.keymgmnt", request)
+
+			sendNative.then(function(resp) {
+				sendResponse({response: resp})
+			},
+			function(error) {
+				sendResponse({error: err})
 			});
 		}
 		else {
-			sendResponse("{error}");
+			sendResponse("{error:'empty request'}");
 		}
 		return true;
 	}

@@ -1,6 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
   <title>Test</title>
   <script src="jquery-3.5.1.js"></script>
 
@@ -11,7 +13,39 @@
         <button id="create_signing_key" type="button">Create Signing Key</button>
     </p>
     <p>
+        <div id="csr_placeholder">
+        </div>
+    </p>
+    <p>
         <button id="import_certificate" type="button">Import Certificate</button>
     </p>
 </body>
+<script type="text/javascript">
+    function receiveMessage(key_id) {
+        return function(event) {
+            if (event.source == window &&
+                event.data &&
+                event.data.direction == "from-content-script") {
+                var response = event.data.message
+                if (key_id == response.key_id) {
+                    $( "#csr_placeholder").html("<pre>" + atob(response.response) + "</pre>")
+                }
+                else {
+                    console.log("Wrong key_id: " + response.key_id)
+                }
+            }
+        }
+    }
+    $( "#create_signing_key" ).click(function() {
+        window.postMessage({
+            direction: "from-page-script",
+            message: { 
+                request:"signature_csr", 
+                key_id: "john_doe_signature_01", 
+                subjectName: "cn=John Doe, o=Company, c=US" 
+            }
+        }, "*")
+        window.addEventListener("message", receiveMessage("john_doe_signature_01"), false);
+    });
+</script>
 </html>
