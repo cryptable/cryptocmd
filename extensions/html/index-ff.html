@@ -17,35 +17,73 @@
         </div>
     </p>
     <p>
+        <button id="sign_csr" type="button">Sign CSR</button>
+    </p>
+    <p>
+        <div id="cert_placeholder">
+        </div>
+    </p>
+    <p>
         <button id="import_certificate" type="button">Import Certificate</button>
     </p>
+    
 </body>
 <script type="text/javascript">
-    function receiveMessage(key_id) {
-        return function(event) {
-            if (event.source == window &&
-                event.data &&
-                event.data.direction == "from-content-script") {
-                var response = event.data.message
-                if (key_id == response.key_id) {
-                    $( "#csr_placeholder").html("<pre>" + atob(response.response) + "</pre>")
-                }
-                else {
-                    console.log("Wrong key_id: " + response.key_id)
-                }
-            }
-        }
-    }
-    $( "#create_signing_key" ).click(function() {
+    function create_csr( subjectName, bitLength, callback) {
         window.postMessage({
             direction: "from-page-script",
             message: { 
-                request:"signature_csr", 
-                key_id: "john_doe_signature_01", 
-                subjectName: "cn=John Doe, o=Company, c=US" 
+                request:"create_csr",
+                subjectName: subjectName,
+                rsaKeyLength: bitLength
             }
         }, "*")
-        window.addEventListener("message", receiveMessage("john_doe_signature_01"), false);
+        window.addEventListener("message", callback, false);
+    }
+    function import_certificate( base64_pem_certificate, callback) {
+        window.postMessage({
+            direction: "from-page-script",
+            message: { 
+                request:"import_certificate",
+                certificate: base64_pem_certificate
+            }
+        }, "*")
+        window.addEventListener("message", callback, false);
+    }
+    function import_pfx_key( base64_pkcs12, passwd, callback) {
+        window.postMessage({
+            direction: "from-page-script",
+            message: { 
+                request:"import_pfx_key",
+                pkcs12: base64_pkcs12,
+                password: passwd
+            }
+        }, "*")
+        window.addEventListener("message", callback, false);
+    }
+    function export_pfx_key( issuer_dname, serial_nr, passwd, callback) {
+        window.postMessage({
+            direction: "from-page-script",
+            message: { 
+                request:"export_pfx_key",
+                issuer: issuer_dname,
+                serial_number: serial_nr,
+                password: passwd
+            }
+        }, "*")
+        window.addEventListener("message", callback, false);
+    }
+
+    function receiveMessage(event) {
+        if (event.source == window &&
+            event.data &&
+            event.data.direction == "from-content-script") {
+            var response = event.data.message
+            $( "#csr_placeholder").html("<pre>" + atob(response.response) + "</pre>")
+        }
+    }
+    $( "#create_signing_key" ).click(function() {
+        create_csr("cn=John Doe,o=Company,c=US", 2048, receiveMessage);
     });
 </script>
 </html>
