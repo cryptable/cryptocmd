@@ -11,7 +11,11 @@ endif(NOT DEFINED COMMON_DIR)
 
 include_directories(include src ${COMMON_DIR}/include)
 
-set(CMAKE_DEBUG_POSTFIX 'd')
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(LIBRARY_NAME  "${CMAKE_PROJECT_NAME}d")
+else(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(LIBRARY_NAME  "${CMAKE_PROJECT_NAME}")
+endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
 
 add_subdirectory(src)
 add_subdirectory(test)

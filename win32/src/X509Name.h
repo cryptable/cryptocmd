@@ -1,48 +1,49 @@
 /*
- * Copyright (c) 2020 Cryptable BV. All rights reserved.
- * (MIT License)
- * Author: "David Tillemans"
- * Date: 02/08/2020
+ * MIT License
+ * Author: David Tillemans
  */
-
-#ifndef KSMGMNT_CERTSTOREUTIL_H
-#define KSMGMNT_CERTSTOREUTIL_H
+#ifndef X509NAME_HPP
+#define X509NAME_HPP
+#include "common.h"
 #include <string>
-#include "KeyStoreUtil.h"
 
-class CertStoreUtil {
+/**
+ * @brief      This class encapsulates the general name functions for subject and issuer names
+ */
+class X509Name {
 public:
-    CertStoreUtil();
+    /**
+     * @brief      Constructs a new instance of X509Name.
+     *
+     * @param      name  The name in string version in the format as for example 
+     * "cn=John Doe, o=Company, c=US"
+     * @param  Optional param to support UTF8 for RDNs
+     */
+    explicit X509Name(const std::string &name,  bool utf8 = true);
 
-    CertStoreUtil(const std::string &certStoreName, const std::wstring &keyStoreProviderName);
+    /**
+     * Destructor
+     */
+    ~X509Name();
 
-    void showCertificatesOfCertStore();
+    /**
+     * Get the general as a X500 name
+     * @return
+     */
+    std::string &getName();
 
-    void showPropertiesOfCertificate(const std::wstring &subject);
-
-    void close();
-
-    void reopen();
-
-    bool hasCertificates(const std::wstring &subject);
-
-    void deleteCertificates(const std::wstring &subject);
-
-    bool hasPrivateKey(const std::wstring &subject);
-
-    virtual ~CertStoreUtil();
+    /**
+     * Get the general as en ASN1 encoded blob
+     * @return
+     */
+    CERT_NAME_BLOB &getEncodedBlob();
 
 private:
-    std::vector<unsigned char> getData(PCCERT_CONTEXT pCertContext, DWORD propertyId);
-    void deleteCNGKeyIfAvailable(PCCERT_CONTEXT pCertContext);
-    HANDLE hStoreHandle;
-    std::string name;
-    KeyStoreUtil keyStoreUtil;
-    bool storeOpen;
+    CERT_NAME_BLOB blobEncodedName;
+    std::string    generalName;
+
 };
-
-
-#endif //KSMGMNT_CERTSTOREUTIL_H
+#endif // X509NAME_HPP
 /**********************************************************************************/
 /* MIT License                                                                    */
 /*                                                                                */

@@ -153,16 +153,38 @@ def install_cryptablepki():
     if not os.path.isdir("cryptablepki/pki/build"):
         os.mkdir("cryptablepki/pki/build")
     os.chdir("cryptablepki/pki/build")
-    subprocess.run('cmake .. -DCMAKE_BUILD_TYPE=RELEASE -DCOMMON_DIR="' + get_common_dir() + '" -A x64', shell=True)
+    subprocess.run('cmake .. -DCMAKE_BUILD_TYPE=Release -DCOMMON_DIR="' + get_common_dir() + '" -A x64', shell=True)
     subprocess.run('cmake --build . --config Release', shell=True)
     subprocess.run('cmake --install . --prefix "' + get_common_dir() + '" --config Release', shell=True)
     # debug
-    subprocess.run('cmake .. -DCOMMON_DIR="' + get_common_dir() + '" -A x64', shell=True)
+    subprocess.run('cmake .. -DCMAKE_BUILD_TYPE=Debug -DCOMMON_DIR="' + get_common_dir() + '" -A x64', shell=True)
     subprocess.run('cmake --build . --config Debug', shell=True)
     subprocess.run('cmake --install . --prefix "' + get_common_dir() + '" --config Debug', shell=True)
     os.chdir("..")
     return
 
+# TODO: check conan instead of the amateurish stuff ;-)
+def install_nlohmann_json():
+    if not os.path.isdir('json'):
+        subprocess.run('git clone https://github.com/nlohmann/json.git', shell=True)
+        append_gitignore('json')
+    else:
+        os.chdir('json')
+        subprocess.run('git pull', shell=True)
+        os.chdir("..")
+
+
+    if not os.path.isdir("json/build"):
+        os.mkdir("json/build")
+    os.chdir("json")
+    subprocess.run('git fetch --all --tags', shell=True)
+    subprocess.run('git checkout v3.9.1', shell=True)
+    os.chdir("build")
+    subprocess.run('cmake .. -DCMAKE_BUILD_TYPE=RELEASE -A x64', shell=True)
+    subprocess.run('cmake --build . --config Release', shell=True)
+    subprocess.run('cmake --install . --prefix "' + get_common_dir() + '" --config Release', shell=True)
+    os.chdir("..")
+    return
 
 def run_scripts():
     if not os.path.isdir("3rd-party"):
@@ -170,7 +192,9 @@ def run_scripts():
     os.chdir("3rd-party")
 #    install_catch2()
 #    install_openssl_win32()
+#    install_nlohmann_json()
     install_cryptablepki()
+   
     os.chdir("..")
     return
 

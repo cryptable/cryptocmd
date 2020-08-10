@@ -1,48 +1,54 @@
 /*
- * Copyright (c) 2020 Cryptable BV. All rights reserved.
- * (MIT License)
- * Author: "David Tillemans"
- * Date: 02/08/2020
+ * MIT License
+ * Author: David Tillemans
  */
-
-#ifndef KSMGMNT_CERTSTOREUTIL_H
-#define KSMGMNT_CERTSTOREUTIL_H
+#ifndef KEYPAIR_HPP
+#define KEYPAIR_HPP
+#include "common.h"
+#include <ncrypt.h>
 #include <string>
-#include "KeyStoreUtil.h"
 
-class CertStoreUtil {
+/**
+ * @brief This class defines the asymmetric keypair
+ */
+class KeyPair {
 public:
-    CertStoreUtil();
 
-    CertStoreUtil(const std::string &certStoreName, const std::wstring &keyStoreProviderName);
+    /**
+     * @brief Constructor to create a key pair, mainly used by KeyStore
+     * @param cryptoProvider CryptoProvider
+     * @param key handle to the keys in the Keystore
+     */
+    explicit KeyPair(NCRYPT_KEY_HANDLE key, const std::wstring &name);
 
-    void showCertificatesOfCertStore();
+    /**
+     * Return the public key information of the CNG key
+     * @return
+     */
+    const CERT_PUBLIC_KEY_INFO *getPublicKeyInfo();
 
-    void showPropertiesOfCertificate(const std::wstring &subject);
+    /**
+     * Get the KeyHandle
+     */
+    NCRYPT_KEY_HANDLE getHandle();
 
-    void close();
+    /**
+     * Get name of key
+     */
+    const std::wstring &getName();
 
-    void reopen();
+    /**
+     * Destructor
+     */
+    ~KeyPair();
 
-    bool hasCertificates(const std::wstring &subject);
-
-    void deleteCertificates(const std::wstring &subject);
-
-    bool hasPrivateKey(const std::wstring &subject);
-
-    virtual ~CertStoreUtil();
-
-private:
-    std::vector<unsigned char> getData(PCCERT_CONTEXT pCertContext, DWORD propertyId);
-    void deleteCNGKeyIfAvailable(PCCERT_CONTEXT pCertContext);
-    HANDLE hStoreHandle;
-    std::string name;
-    KeyStoreUtil keyStoreUtil;
-    bool storeOpen;
+public:
+    NCRYPT_KEY_HANDLE keyHandle;
+    CERT_PUBLIC_KEY_INFO *publicKeyInfo;
+    std::wstring keyName;
 };
 
-
-#endif //KSMGMNT_CERTSTOREUTIL_H
+#endif // KEYPAIR
 /**********************************************************************************/
 /* MIT License                                                                    */
 /*                                                                                */

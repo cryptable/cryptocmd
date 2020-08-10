@@ -2,47 +2,19 @@
  * Copyright (c) 2020 Cryptable BV. All rights reserved.
  * (MIT License)
  * Author: "David Tillemans"
- * Date: 02/08/2020
+ * Date: 09/08/2020
  */
 
-#ifndef KSMGMNT_CERTSTOREUTIL_H
-#define KSMGMNT_CERTSTOREUTIL_H
-#include <string>
-#include "KeyStoreUtil.h"
+#ifndef KSMGMNT_COMMON_H
+#define KSMGMNT_COMMON_H
+#pragma warning(disable:4005)
+#define WIN32_NO_STATUS
+#include <windows.h>
+#undef WIN32_NO_STATUS
+#include <ntstatus.h>
+#pragma warning(default:4005)
 
-class CertStoreUtil {
-public:
-    CertStoreUtil();
-
-    CertStoreUtil(const std::string &certStoreName, const std::wstring &keyStoreProviderName);
-
-    void showCertificatesOfCertStore();
-
-    void showPropertiesOfCertificate(const std::wstring &subject);
-
-    void close();
-
-    void reopen();
-
-    bool hasCertificates(const std::wstring &subject);
-
-    void deleteCertificates(const std::wstring &subject);
-
-    bool hasPrivateKey(const std::wstring &subject);
-
-    virtual ~CertStoreUtil();
-
-private:
-    std::vector<unsigned char> getData(PCCERT_CONTEXT pCertContext, DWORD propertyId);
-    void deleteCNGKeyIfAvailable(PCCERT_CONTEXT pCertContext);
-    HANDLE hStoreHandle;
-    std::string name;
-    KeyStoreUtil keyStoreUtil;
-    bool storeOpen;
-};
-
-
-#endif //KSMGMNT_CERTSTOREUTIL_H
+#endif //KSMGMNT_COMMON_H
 /**********************************************************************************/
 /* MIT License                                                                    */
 /*                                                                                */

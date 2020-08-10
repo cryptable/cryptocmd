@@ -2,47 +2,82 @@
  * Copyright (c) 2020 Cryptable BV. All rights reserved.
  * (MIT License)
  * Author: "David Tillemans"
- * Date: 02/08/2020
+ * Date: 08/08/2020
  */
 
-#ifndef KSMGMNT_CERTSTOREUTIL_H
-#define KSMGMNT_CERTSTOREUTIL_H
+#ifndef KSMGMNT_CERTIFICATESTORE_H
+#define KSMGMNT_CERTIFICATESTORE_H
+#include "common.h"
 #include <string>
-#include "KeyStoreUtil.h"
+#include <wincrypt.h>
+#include "KeyStore.h"
 
-class CertStoreUtil {
+class CertificateStore {
+
 public:
-    CertStoreUtil();
+    /**
+     * Using default Microsoft key store
+     */
+    CertificateStore();
 
-    CertStoreUtil(const std::string &certStoreName, const std::wstring &keyStoreProviderName);
+    /**
+     * Using default a possible other Microsoft key store
+     */
+    CertificateStore(const std::wstring &keyStoreProvider);
 
-    void showCertificatesOfCertStore();
+    /**
+     * Destructor
+     */
+     ~CertificateStore();
 
-    void showPropertiesOfCertificate(const std::wstring &subject);
+    /**
+     * Create a certificate request with the subject name as dname
+     * @param subjectName
+     * @param bitLength RSA key length
+     * @return
+     */
+    std::string createCertificateRequest(const std::string &subjectName, size_t bitLength);
 
-    void close();
+    /**
+     * Import the certificate into the KeyStore and link it to the CNG key
+     * @param pemCert
+     */
+    void importCertificate(const std::string &pemCert);
 
-    void reopen();
+    /**
+     * Export the Micrsoft PFX file (PKCS12)
+     * @param issuer This is the CA of the certificate
+     * @param serial This is the hex string of the certificate to export
+     * @param Password to use to export the certificate
+     */
+    std::string pfxExport(const std::string &issuer, const std::string &serial, const std::wstring &password);
 
-    bool hasCertificates(const std::wstring &subject);
+    /**
+     * Import the Micrsoft PFX file (PKCS12)
+     * @param pfxInBase64 is the PFX(PKCS12) data in base64 format
+     * @param Password to use to import the certificate
+     */
+    void pfxImport(const std::string &pfxInBase64, const std::wstring &password);
 
-    void deleteCertificates(const std::wstring &subject);
-
-    bool hasPrivateKey(const std::wstring &subject);
-
-    virtual ~CertStoreUtil();
+    /**
+     * return the last CNG key created so it can be deleted during tests if necessary
+     */
+    const std::wstring &getLastKeyId();
 
 private:
-    std::vector<unsigned char> getData(PCCERT_CONTEXT pCertContext, DWORD propertyId);
-    void deleteCNGKeyIfAvailable(PCCERT_CONTEXT pCertContext);
-    HANDLE hStoreHandle;
-    std::string name;
-    KeyStoreUtil keyStoreUtil;
-    bool storeOpen;
+    std::string createCertificateRequestFromCNG(const std::string &subjectName, KeyPair *keyPair);
+
+    KeyStore keyStore;
+
+    std::wstring lastKeyId;
+
+    HCERTSTORE storeHandle;
+
+    bool isCACertificate(PCCERT_CONTEXT certificateCtx);
 };
 
 
-#endif //KSMGMNT_CERTSTOREUTIL_H
+#endif //KSMGMNT_CERTIFICATESTORE_H
 /**********************************************************************************/
 /* MIT License                                                                    */
 /*                                                                                */

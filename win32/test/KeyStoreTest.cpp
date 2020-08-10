@@ -3,7 +3,7 @@
  * Author: David Tillemans
  */
 #include <catch2/catch.hpp>
-#include "KeyStore.hpp"
+#include "KeyStore.h"
 #include "utils/KeyStoreUtil.h"
 
 TEST_CASE( "KeyStoreTests", "[success]" ) {
@@ -18,7 +18,7 @@ TEST_CASE( "KeyStoreTests", "[success]" ) {
 
         // Act
         KeyStore keyStore(MS_KEY_STORAGE_PROVIDER);
-        keyStore.generateSigningKeyPair(L"My Key", rsaLength);
+        keyStore.generateKeyPair(L"My Key", rsaLength);
 
         // Assert
         REQUIRE(keyStoreUtil.isKeyInKeystore(L"My Key"));

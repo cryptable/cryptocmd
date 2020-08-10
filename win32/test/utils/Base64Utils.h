@@ -2,47 +2,60 @@
  * Copyright (c) 2020 Cryptable BV. All rights reserved.
  * (MIT License)
  * Author: "David Tillemans"
- * Date: 02/08/2020
+ * Date: 10/08/2020
  */
 
-#ifndef KSMGMNT_CERTSTOREUTIL_H
-#define KSMGMNT_CERTSTOREUTIL_H
+#ifndef KSMGMNT_BASE64UTILS_H
+#define KSMGMNT_BASE64UTILS_H
 #include <string>
-#include "KeyStoreUtil.h"
+#include <vector>
+#include <rpc.h>
+#include <KSException.h>
 
-class CertStoreUtil {
+class Base64Utils {
 public:
-    CertStoreUtil();
+    static std::string toBase64(const std::vector<unsigned char> &data) {
+        DWORD b64DataLg = 0;
+        if (!CryptBinaryToString(reinterpret_cast<const BYTE *>(data.data()),
+                                 data.size(),
+                                 CRYPT_STRING_BASE64,
+                                 NULL,
+                                 &b64DataLg)) {
+            throw KSException(GetLastError());
+        }
+        std::unique_ptr<char[]> b64Data(new char[b64DataLg]);
+        CryptBinaryToString(reinterpret_cast<const BYTE *>(data.data()),
+                            data.size(),
+                            CRYPT_STRING_BASE64,
+                            b64Data.get(),
+                            &b64DataLg);
+        return std::string(b64Data.get(), b64DataLg);
+    }
 
-    CertStoreUtil(const std::string &certStoreName, const std::wstring &keyStoreProviderName);
-
-    void showCertificatesOfCertStore();
-
-    void showPropertiesOfCertificate(const std::wstring &subject);
-
-    void close();
-
-    void reopen();
-
-    bool hasCertificates(const std::wstring &subject);
-
-    void deleteCertificates(const std::wstring &subject);
-
-    bool hasPrivateKey(const std::wstring &subject);
-
-    virtual ~CertStoreUtil();
-
-private:
-    std::vector<unsigned char> getData(PCCERT_CONTEXT pCertContext, DWORD propertyId);
-    void deleteCNGKeyIfAvailable(PCCERT_CONTEXT pCertContext);
-    HANDLE hStoreHandle;
-    std::string name;
-    KeyStoreUtil keyStoreUtil;
-    bool storeOpen;
+    static std::vector<char> fromBase64(const std::string &b64Data) {
+        DWORD dataLg=0;
+        if (!CryptStringToBinary(b64Data.c_str(),
+                                 b64Data.size(),
+                                 CRYPT_STRING_BASE64,
+                                 NULL,
+                                 &dataLg,
+                                 0,
+                                 0)) {
+            throw KSException(GetLastError());
+        }
+        std::unique_ptr<BYTE[]> data(new BYTE[dataLg]);
+        CryptStringToBinary(b64Data.c_str(),
+                            b64Data.size(),
+                            CRYPT_STRING_BASE64,
+                            data.get(),
+                            &dataLg,
+                            0,
+                            0);
+        return std::vector<char>(data.get(), data.get()+dataLg); // That's ugly :-(
+    }
 };
 
-
-#endif //KSMGMNT_CERTSTOREUTIL_H
+#endif //KSMGMNT_BASE64UTILS_H
 /**********************************************************************************/
 /* MIT License                                                                    */
 /*                                                                                */

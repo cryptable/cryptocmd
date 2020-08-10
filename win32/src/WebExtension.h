@@ -2,47 +2,30 @@
  * Copyright (c) 2020 Cryptable BV. All rights reserved.
  * (MIT License)
  * Author: "David Tillemans"
- * Date: 02/08/2020
+ * Date: 09/08/2020
  */
 
-#ifndef KSMGMNT_CERTSTOREUTIL_H
-#define KSMGMNT_CERTSTOREUTIL_H
+#ifndef KSMGMNT_WEBEXTENSION_H
+#define KSMGMNT_WEBEXTENSION_H
+#include <stdint.h>
 #include <string>
-#include "KeyStoreUtil.h"
+#include <nlohmann/json.hpp>
 
-class CertStoreUtil {
-public:
-    CertStoreUtil();
+class WebExtension {
 
-    CertStoreUtil(const std::string &certStoreName, const std::wstring &keyStoreProviderName);
+    WebExtension();
 
-    void showCertificatesOfCertStore();
+    WebExtension(std::istream in);
 
-    void showPropertiesOfCertificate(const std::wstring &subject);
-
-    void close();
-
-    void reopen();
-
-    bool hasCertificates(const std::wstring &subject);
-
-    void deleteCertificates(const std::wstring &subject);
-
-    bool hasPrivateKey(const std::wstring &subject);
-
-    virtual ~CertStoreUtil();
+    void runFunction(std::ostream out);
 
 private:
-    std::vector<unsigned char> getData(PCCERT_CONTEXT pCertContext, DWORD propertyId);
-    void deleteCNGKeyIfAvailable(PCCERT_CONTEXT pCertContext);
-    HANDLE hStoreHandle;
-    std::string name;
-    KeyStoreUtil keyStoreUtil;
-    bool storeOpen;
+    uint32_t inDataLg;
+    nlohmann::json inData;
 };
 
 
-#endif //KSMGMNT_CERTSTOREUTIL_H
+#endif //KSMGMNT_WEBEXTENSION_H
 /**********************************************************************************/
 /* MIT License                                                                    */
 /*                                                                                */

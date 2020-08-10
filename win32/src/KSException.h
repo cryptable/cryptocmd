@@ -1,48 +1,34 @@
 /*
- * Copyright (c) 2020 Cryptable BV. All rights reserved.
- * (MIT License)
- * Author: "David Tillemans"
- * Date: 02/08/2020
+ * MIT License
+ * Author: David Tillemans
  */
-
-#ifndef KSMGMNT_CERTSTOREUTIL_H
-#define KSMGMNT_CERTSTOREUTIL_H
+#ifndef KSEXCEPTION_HPP
+#define KSEXCEPTION_HPP
+#include "common.h"
+#include <exception>
 #include <string>
-#include "KeyStoreUtil.h"
 
-class CertStoreUtil {
+class KSException : public std::exception {
+
 public:
-    CertStoreUtil();
+	explicit KSException(DWORD cd) noexcept;
 
-    CertStoreUtil(const std::string &certStoreName, const std::wstring &keyStoreProviderName);
+    KSException(const KSException& from) noexcept;
 
-    void showCertificatesOfCertStore();
+    DWORD code() const noexcept;
 
-    void showPropertiesOfCertificate(const std::wstring &subject);
+    ~KSException() noexcept override;
 
-    void close();
+    char const * what() const noexcept override;
 
-    void reopen();
-
-    bool hasCertificates(const std::wstring &subject);
-
-    void deleteCertificates(const std::wstring &subject);
-
-    bool hasPrivateKey(const std::wstring &subject);
-
-    virtual ~CertStoreUtil();
+    explicit operator std::string() const;
 
 private:
-    std::vector<unsigned char> getData(PCCERT_CONTEXT pCertContext, DWORD propertyId);
-    void deleteCNGKeyIfAvailable(PCCERT_CONTEXT pCertContext);
-    HANDLE hStoreHandle;
-    std::string name;
-    KeyStoreUtil keyStoreUtil;
-    bool storeOpen;
+    DWORD errorNumber;
+    LPSTR tmpMsgBuf;
 };
 
-
-#endif //KSMGMNT_CERTSTOREUTIL_H
+#endif // KSEXCEPTION_H
 /**********************************************************************************/
 /* MIT License                                                                    */
 /*                                                                                */

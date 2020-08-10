@@ -6,7 +6,7 @@
  */
 #include "CNGHash.h"
 #include <ntstatus.h>
-#include <KSException.hpp>
+#include <KSException.h>
 
 CNGHash::CNGHash() : hashAlgo{0}, hash{0} {
     DWORD status=0;
@@ -59,9 +59,13 @@ CNGHash::CNGHash() : hashAlgo{0}, hash{0} {
 
 void CNGHash::update(const char *data, const size_t dataLg) {
     DWORD status=0;
+
+    if (dataLg > MAXDWORD) {
+        throw std::overflow_error("DWORD overflow");
+    }
     status = BCryptHashData(hash,
                             (PBYTE)data,
-                            dataLg,
+                            (DWORD)dataLg,
                             0);
     if (status != STATUS_SUCCESS) {
         throw KSException(status);
@@ -70,9 +74,10 @@ void CNGHash::update(const char *data, const size_t dataLg) {
 
 const std::vector<unsigned char> &CNGHash::finalize() {
     DWORD status=0;
+
     status = BCryptFinishHash(hash,
                               hashValue.data(),
-                              hashValue.size(),
+                              (DWORD)hashValue.size(),
                               0);
     if (status != STATUS_SUCCESS) {
         throw KSException(status);

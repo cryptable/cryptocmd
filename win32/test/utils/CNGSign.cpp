@@ -7,7 +7,7 @@
 
 #include "CNGSign.h"
 #include <ntstatus.h>
-#include <KSException.hpp>
+#include <KSException.h>
 
 CNGSign::CNGSign(NCRYPT_KEY_HANDLE k) : key{k} {
     DWORD status = 0;
@@ -25,10 +25,13 @@ const std::vector<unsigned char> & CNGSign::sign(unsigned char *data, size_t dat
     DWORD status = 0;
     DWORD signatureLg = 0;
 
+    if (dataLg > MAXDWORD) {
+        throw std::overflow_error("DWORD overflow");
+    }
     status = NCryptSignHash(key,
                             nullptr,
                             data,
-                            dataLg,
+                            (DWORD)dataLg,
                             nullptr,
                             0,
                             &signatureLg,
@@ -44,7 +47,7 @@ const std::vector<unsigned char> & CNGSign::sign(unsigned char *data, size_t dat
     status = NCryptSignHash(key,
                             &bcryptPssPaddingInfo,
                             data,
-                            dataLg,
+                            (DWORD)dataLg,
                             signatureValue.data(),
                             signatureLg,
                             &signatureLg,

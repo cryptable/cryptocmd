@@ -8,7 +8,7 @@
 #include <ntstatus.h>
 #include <stdexcept>
 #include <iostream>
-#include "KSException.hpp"
+#include "KSException.h"
 #include "KeyStoreUtil.h"
 
 KeyStoreUtil::KeyStoreUtil(const wchar_t *keystoreName) {

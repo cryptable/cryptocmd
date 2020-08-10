@@ -28,13 +28,21 @@ else(CMAKE_BUILD_TYPE STREQUAL "Debug")
 endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
 
 add_executable (tests main.cpp
-        GeneralNameTest.cpp
+        X509NameTest.cpp
         utils/HexUtils.hpp HexUtilsTest.cpp
         KeyStoreTest.cpp
         utils/KeyStoreUtil.cpp utils/KeyStoreUtil.h
         KeyPairTest.cpp
-        utils/CertStoreUtil.cpp utils/CertStoreUtil.h utils/CNGHash.cpp utils/CNGHash.h utils/CNGSign.cpp utils/CNGSign.h)
-target_link_libraries(tests Crypt32.lib Ncrypt.lib Ws2_32.lib ${OPENSSL_CRYPTO_LIBRARY} ${OPENSSL_SSL_LIBRARY} ${CRYPTABLEPKI})
+        utils/CertStoreUtil.cpp utils/CertStoreUtil.h utils/CNGHash.cpp utils/CNGHash.h utils/CNGSign.cpp utils/CNGSign.h CertificateStoreTest.cpp utils/Base64Utils.h)
+
+target_link_libraries(tests ${LIBRARY_NAME} 
+    Rpcrt4.lib 
+    Crypt32.lib 
+    Ncrypt.lib 
+    Ws2_32.lib 
+    ${OPENSSL_CRYPTO_LIBRARY} 
+    ${OPENSSL_SSL_LIBRARY} 
+    ${CRYPTABLEPKI})
 
 enable_testing()
 add_test(testing tests) 

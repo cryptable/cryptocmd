@@ -1,48 +1,60 @@
 /*
- * Copyright (c) 2020 Cryptable BV. All rights reserved.
- * (MIT License)
- * Author: "David Tillemans"
- * Date: 02/08/2020
+ * MIT License
+ * Author: David Tillemans
  */
-
-#ifndef KSMGMNT_CERTSTOREUTIL_H
-#define KSMGMNT_CERTSTOREUTIL_H
+#ifndef KEYSTORE_HPP
+#define KEYSTORE_HPP
+#include "common.h"
 #include <string>
-#include "KeyStoreUtil.h"
+#include "KeyPair.h"
 
-class CertStoreUtil {
+/**
+ * @brief      This class gives access to the keystore(s) where 
+ * the cryptographic keys are located.
+ */ 
+class KeyStore {
+
 public:
-    CertStoreUtil();
+    /**
+     * @brief      Constructs a new instance of the Keystore.
+     *
+     * @param      keystoreName  The name of the keystore to use.
+     */
+    explicit KeyStore(const wchar_t *keystoreName);
 
-    CertStoreUtil(const std::string &certStoreName, const std::wstring &keyStoreProviderName);
+    /**
+     * @brief Generate a RSA Signing Key in the Windows Key Store
+     *
+     * @param keyIdentifier Name of the key
+     * @param bitLength length for the RSA key
+     */
+    std::unique_ptr<KeyPair> generateKeyPair(const std::wstring &keyIdentifier, u_long bitLength) const;
 
-    void showCertificatesOfCertStore();
+    /**
+     * Get the Key Pair with the corresponding name
+     * @param keyIdentifier
+     * @return unique pointer of the asymmetric key pair
+     */
+    std::unique_ptr<KeyPair> getKeyPair(const std::wstring &keyIdentifier) const;
 
-    void showPropertiesOfCertificate(const std::wstring &subject);
+    /**
+     * Get the CNG key pair using the public key
+     * @param publicKeyInfo
+     * @return
+     */
+    std::unique_ptr<KeyPair> getKeyPair(const CERT_PUBLIC_KEY_INFO &publicKeyInfo) const;
 
-    void close();
-
-    void reopen();
-
-    bool hasCertificates(const std::wstring &subject);
-
-    void deleteCertificates(const std::wstring &subject);
-
-    bool hasPrivateKey(const std::wstring &subject);
-
-    virtual ~CertStoreUtil();
+    /**
+     * @brief      Destroys the Keystore object and all it references.
+     */
+    ~KeyStore();
 
 private:
-    std::vector<unsigned char> getData(PCCERT_CONTEXT pCertContext, DWORD propertyId);
-    void deleteCNGKeyIfAvailable(PCCERT_CONTEXT pCertContext);
-    HANDLE hStoreHandle;
-    std::string name;
-    KeyStoreUtil keyStoreUtil;
-    bool storeOpen;
+    bool compareCNGKeyWithPublicKey(NCRYPT_KEY_HANDLE rsaKeyHandle, const CERT_PUBLIC_KEY_INFO &toTestPublicKeyInfo) const;
+
+    NCRYPT_PROV_HANDLE cryptoProvider;
 };
-
-
-#endif //KSMGMNT_CERTSTOREUTIL_H
+#endif // KEYSTORE_HPP
 /**********************************************************************************/
 /* MIT License                                                                    */
 /*                                                                                */
