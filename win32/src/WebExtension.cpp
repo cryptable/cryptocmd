@@ -6,6 +6,8 @@
  */
 
 #include <iomanip>
+#include <locale>
+#include <codecvt>
 #include "WebExtension.h"
 #include "sstream"
 #include "CertificateStore.h"
@@ -26,7 +28,7 @@ void WebExtension::runFunction(std::ostream &out) {
         if (function == "create_csr") {
             auto data = certificateStore.createCertificateRequest(
                     inData["subject_name"],
-                    std::stoi(std::string(inData["rsa_key_length"])));
+                    inData["rsa_key_length"]);
             std::vector<unsigned char> vecData(data.begin(), data.end());
             outData["response"] = Base64Utils::toBase64(vecData);
             outData["result"] = "OK";
@@ -35,16 +37,19 @@ void WebExtension::runFunction(std::ostream &out) {
             auto cert = Base64Utils::fromBase64(inData["certificate"]);
             certificateStore.importCertificate(std::string(cert.data(), cert.size()));
             outData["result"] = "OK";
+            outData["response"] = "import certificate successful";
         }
         else if (function == "import_pfx_key") {
-            auto cert = Base64Utils::fromBase64(inData["pkcs12"]);
-            certificateStore.pfxImport(std::string(cert.data(), cert.size()), inData["password"]);
+            std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+            certificateStore.pfxImport( inData["pkcs12"], converter.from_bytes(inData["password"]));
             outData["result"] = "OK";
+            outData["response"] = "import pfx successful";
         }
         else if (function == "export_pfx_key") {
+            std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
             outData["response"] = certificateStore.pfxExport(inData["issuer"],
                                                              inData["serial_number"],
-                                                             inData["password"]);
+                                                             converter.from_bytes(inData["password"]));
             outData["result"] = "OK";
         }
         else {
@@ -52,17 +57,17 @@ void WebExtension::runFunction(std::ostream &out) {
             outData["response"] = "Unknown request (must be create_csr, import_certificate, import_pfx_key, export_pfx_key)";
         }
     }
-    catch (KSException e) {
+    catch (exception e) {
         outData["result"] = "NOK";
         outData["response"] = e.what();
     }
     std::string tmpOut = outData.dump();
-    out << setw(4) << tmpOut.size();
+    uint32_t tmpOutLg = tmpOut.size();
+    out.write((char *)&tmpOutLg, 4);
     out << tmpOut;
 }
 
-WebExtension::WebExtension(std::istream &in) {
+WebExtension::WebExtension(std::istream &in) : inDataLg{0} {
     in.read((char *)&inDataLg, 4);
-    in >> setw(4) >> inDataLg;
     in >> inData;
 }

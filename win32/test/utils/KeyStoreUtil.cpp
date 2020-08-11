@@ -82,6 +82,34 @@ void KeyStoreUtil::showKeysOfKeystore() {
     NCryptFreeBuffer(ptr);
 }
 
+void KeyStoreUtil::deleteTestKeysOfKeystore() {
+    DWORD status = STATUS_SUCCESS;
+    NCryptKeyName *nCryptKeyName = NULL;
+    void *ptr = NULL;
+
+    while (true) {
+        status = NCryptEnumKeys(cryptoProvider, NULL, &nCryptKeyName, &ptr, 0);
+        if (status == NTE_NO_MORE_ITEMS) {
+            break;
+        }
+        if (status != STATUS_SUCCESS) {
+            throw KSException(status);
+        }
+        // Initial keys of my keystore
+        if ((wcscmp(nCryptKeyName->pszName, L"te-3b573721-84ed-434e-8bd3-a9eb6857d0ec") == 0)
+            || (wcscmp(nCryptKeyName->pszName, L"Microsoft Connected Devices Platform device certificate") == 0)
+            || (wcscmp(nCryptKeyName->pszName, L"d53acff0-35ac-4942-b6c1-f3b75ecfc960") == 0)) {
+            std::wcout << "Skipping Key: " << nCryptKeyName->pszName << " (" << nCryptKeyName->pszAlgid << ")\n";
+            continue;
+        }
+        std::wcout << "Deleting Key: " << nCryptKeyName->pszName << " (" << nCryptKeyName->pszAlgid << ")\n";
+        deleteKeyFromKeyStore(nCryptKeyName->pszName);
+    }
+
+    NCryptFreeBuffer(nCryptKeyName);
+    NCryptFreeBuffer(ptr);
+}
+
 KeyStoreUtil::~KeyStoreUtil() {
     NCryptFreeObject(cryptoProvider);
 }

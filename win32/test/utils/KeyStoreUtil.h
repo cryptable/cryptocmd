@@ -16,6 +16,8 @@ public:
 
     boolean isKeyInKeystore(const wchar_t *keyName);
 
+    void deleteTestKeysOfKeystore();
+
     ~KeyStoreUtil();
 
 private:

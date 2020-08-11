@@ -250,6 +250,7 @@ std::string CertificateStore::pfxExport(const std::string &issuer,
         CertCloseStore(pfxStore, 0);
         throw KSException(GetLastError());
     }
+    // TODO: replace with Base64Utils
     DWORD base64PfxDataLg = 0;
     if (!CryptBinaryToStringA(pfxData.pbData,
                               pfxData.cbData,

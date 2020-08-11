@@ -16,7 +16,7 @@
 #include "utils/CertStoreUtil.h"
 #include "Base64Utils.h"
 
-#define KEY_MGMGNT 0
+#define KEY_MGMGNT 1
 
 #if KEY_MGMGNT
 TEST_CASE( "CertificateStoreUtilTests", "[mgmnt]" ) {
@@ -42,9 +42,7 @@ TEST_CASE( "Delete CNG Keys KeyStoreUtilTests", "[mgmnt]" ) {
      */
     SECTION( "Delete CNG Keys" ) {
         KeyStoreUtil keyStoreUtil(MS_KEY_STORAGE_PROVIDER);
-        keyStoreUtil.deleteKeyFromKeyStore(std::wstring(L"John Doe").c_str());
-        keyStoreUtil.deleteKeyFromKeyStore(std::wstring(L"6051e4d3-c056-4555-aca8-32eab9e10e37").c_str());
-        keyStoreUtil.deleteKeyFromKeyStore(std::wstring(L"5725fe47-6545-405f-a222-c6c60e6a8d87").c_str());
+        keyStoreUtil.deleteTestKeysOfKeystore();
     }
 }
 #endif
