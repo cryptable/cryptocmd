@@ -33,7 +33,7 @@ add_executable (tests main.cpp
         KeyStoreTest.cpp
         utils/KeyStoreUtil.cpp utils/KeyStoreUtil.h
         KeyPairTest.cpp
-        utils/CertStoreUtil.cpp utils/CertStoreUtil.h utils/CNGHash.cpp utils/CNGHash.h utils/CNGSign.cpp utils/CNGSign.h CertificateStoreTest.cpp utils/Base64Utils.h)
+        utils/CertStoreUtil.cpp utils/CertStoreUtil.h utils/CNGHash.cpp utils/CNGHash.h utils/CNGSign.cpp utils/CNGSign.h CertificateStoreTest.cpp ../src/Base64Utils.h)
 
 target_link_libraries(tests ${LIBRARY_NAME} 
     Rpcrt4.lib 

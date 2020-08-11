@@ -14,9 +14,9 @@
 #include "CertificateStore.h"
 #include "utils/KeyStoreUtil.h"
 #include "utils/CertStoreUtil.h"
-#include "utils/Base64Utils.h"
+#include "Base64Utils.h"
 
-#define KEY_MGMGNT 1
+#define KEY_MGMGNT 0
 
 #if KEY_MGMGNT
 TEST_CASE( "CertificateStoreUtilTests", "[mgmnt]" ) {

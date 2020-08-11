@@ -13,11 +13,12 @@
 
 class WebExtension {
 
+public:
     WebExtension();
 
-    WebExtension(std::istream in);
+    WebExtension(std::istream &in);
 
-    void runFunction(std::ostream out);
+    void runFunction(std::ostream &out);
 
 private:
     uint32_t inDataLg;

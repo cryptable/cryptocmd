@@ -31,8 +31,8 @@ function createCSRRequest(keyId, dName, rsaBitLength) {
 	var sendMessage = browser.runtime.sendMessage({
         key_id: keyId,
 		request:'create_csr',
-		subjectName: dName,
-        bitLength: rsaBitLength
+		subject_name: dName,
+        rsa_key_length: rsaBitLength
 	});
 	sendMessage.then(handleResp, handleError);
 }
@@ -117,7 +117,7 @@ window.addEventListener("message", function(event) {
     keyid = generateId(10);
   	switch (request.request) {
   		case 'create_csr': {
-            createCSRRequest(keyid, request.subjectName, request.rsaKeyLength);
+            createCSRRequest(keyid, request.subject_name, request.rsa_key_length);
             break;            
         }
   		case 'import_certificate': {

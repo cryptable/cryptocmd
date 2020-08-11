@@ -13,8 +13,10 @@ include_directories(include src ${COMMON_DIR}/include)
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(LIBRARY_NAME  "${CMAKE_PROJECT_NAME}d")
+    set(EXECUTABLE_NAME "lib${CMAKE_PROJECT_NAME}d")
 else(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    set(LIBRARY_NAME  "${CMAKE_PROJECT_NAME}")
+    set(LIBRARY_NAME  "lib${CMAKE_PROJECT_NAME}")
+    set(EXECUTABLE_NAME "${CMAKE_PROJECT_NAME}")
 endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
 
 add_subdirectory(src)

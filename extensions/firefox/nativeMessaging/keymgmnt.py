@@ -86,7 +86,7 @@ import_pfx_key
 if __name__ == "__main__":
     request = get_message()
     if (request['request'] == 'create_csr'):
-        response = {'result':'OK', 'key_id':request['key_id'], 'response':base64.b64encode(generate_csr(request['subjectName'], request['rsaKeyLength'])) }
+        response = {'result':'OK', 'key_id':request['key_id'], 'response':base64.b64encode(generate_csr(request['subject_name'], request['rsa_key_length'])) }
         send_message(encode_message(response))
     elif (request['request'] == 'import_certificate'):
         import_certificate(base64.b64decode(request['certificate']))
