@@ -11,3 +11,13 @@ MacOS X
 
 
 Content scripts should use runtime.sendMessage to communicate with the background script.  Web context scripts can use custom events to communicate with content scripts (with randomly generated event names, if needed, to prevent snooping from the guest page).
+
+```
+HKEY_CURRENT_USER\Software\Mozilla\NativeMessagingHosts\ping_pong
+```
+The default value for this key should be the path to the application manifest: ex. C:\Users\<myusername>\webextensions-examples\native-messaging\app\ping_pong.json
+
+```
+HKEY_LOCAL_MACHINE\Software\Mozilla\NativeMessagingHosts\ping_pong
+```
+Idem, the default value for this key should be the path to the application manifest.
