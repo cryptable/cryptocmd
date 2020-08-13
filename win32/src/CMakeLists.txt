@@ -16,4 +16,5 @@ target_link_libraries(${EXECUTABLE_NAME} ${LIBRARY_NAME}
         Rpcrt4.lib
         Crypt32.lib
         Ncrypt.lib
-        Ws2_32.lib)
+        Ws2_32.lib
+        shlwapi.lib)

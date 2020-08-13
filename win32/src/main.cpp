@@ -4,10 +4,60 @@
  * Author: "David Tillemans"
  * Date: 11/08/2020
  */
+#include "common.h"
+#include <shlwapi.h>
 #include <iostream>
+#include <sstream>
 #include "WebExtension.h"
+#include "KSException.h"
+
+void write_config() {
+    CHAR path[MAX_PATH];
+    if (!GetModuleFileName(nullptr, path, MAX_PATH)) {
+        throw KSException(GetLastError());
+    }
+    std::string exeFilename(path);
+    if (!PathRemoveFileSpec(path)) {
+        throw KSException(GetLastError());
+    };
+    std::string configFilename(path);
+    configFilename += "\\org.cryptable.pki.keymgmnt.json";
+    nlohmann::json config;
+    std::vector<std::string> extArray;
+    extArray.push_back("keymgmnt@pki.cryptable.org");
+    config["name"] = "org.cryptable.pki.keymgmnt";
+    config["description"] = "Native messaging interface for key management";
+    config["path"] = exeFilename;
+    config["type"] = "stdio";
+    config["allowed_extensions"] = extArray;
+
+    std::string jsonConfig(config.dump());
+    DWORD dataWritten;
+    HANDLE fileHandle =CreateFile(configFilename.c_str(),
+                                  GENERIC_WRITE,
+                                  0,
+                                  nullptr,
+                                  CREATE_ALWAYS,
+                                  FILE_ATTRIBUTE_NORMAL,
+                                  nullptr);
+    if (fileHandle == INVALID_HANDLE_VALUE) {
+        throw KSException(GetLastError());
+    };
+    if (!WriteFile(fileHandle, jsonConfig.c_str(), jsonConfig.size(), &dataWritten, NULL)) {
+        CloseHandle(fileHandle);
+        throw KSException(GetLastError());
+    }
+    CloseHandle(fileHandle);
+}
 
 int main(int argc, char* argv[]) {
+
+    if (argc > 1) {
+        if (strncmp(argv[1], "--config", strlen("--config")) == 0) {
+            write_config();
+            return 0;
+        }
+    }
 
     WebExtension webExtension(std::cin);
 

@@ -34,8 +34,8 @@
             direction: "from-page-script",
             message: { 
                 request:"create_csr",
-                subjectName: subjectName,
-                rsaKeyLength: bitLength
+                subject_name: subjectName,
+                rsa_key_length: bitLength
             }
         }, "*")
         window.addEventListener("message", callback, false);
