@@ -2,3 +2,5 @@
 
 !.gitignore
 !ksmgmnt.wsx
+!org.cryptable.pki.keymgmnt.json
+!cryptableLicense.rtf

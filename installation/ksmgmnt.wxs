@@ -50,30 +50,7 @@
                                Key="Software\Mozilla\NativeMessagingHosts\org.cryptable.pki.keymgmnt" 
                                Value="[#FILE_MyProgramDir_org_cryptable_pki_keymgmntJSON]" 
                                Type="string" />
-            </Component>
-            
-            <!--Registry entries
-            <Component Id="CMP_WriteToHKCURegistry" Guid="922e6d26-11ec-4091-b70a-746b437b0b1c" Win64="yes">
-                <RegistryValue Id="myRegistryValueForHKCU" 
-                               KeyPath="yes"
-                               Action="write" 
-                               Root="HKCU" 
-                               Key="Software\Mozilla\NativeMessagingHosts" 
-                               Name="org.cryptable.pki.keymgmnt"
-                               Value="[#FILE_MyProgramDir_org_cryptable_pki_keymgmntJSON]" 
-                               Type="string" />
-            </Component>
-            <Component Id="CMP_WriteToHKLMRegistry" Guid="582c2bd6-e782-4b06-a647-031d48fd0f58" Win64="yes">
-                <RegistryValue Id="myRegistryValueForHKLM" 
-                               KeyPath="yes"
-                               Action="write" 
-                               Root="HKLM" 
-                               Key="Software\Mozilla\NativeMessagingHosts" 
-                               Name="org.cryptable.pki.keymgmnt"
-                               Value="[#FILE_MyProgramDir_org_cryptable_pki_keymgmntJSON]" 
-                               Type="string" />
-            </Component>
-            -->
+            </Component>            
         </DirectoryRef>
 
         <!--Start Menu Shortcuts-->
@@ -98,6 +75,7 @@
                                KeyPath="yes" />
             </Component>
         </DirectoryRef>
+
         <!--Features-->
         <Feature Id="ProductFeature"
                  Title="Main Product"
@@ -106,5 +84,17 @@
           <ComponentRef Id="CMP_org_cryptable_pki_keymgmnt_json" />
           <ComponentRef Id="CMP_UninstallShortcut" />
         </Feature>        
+
+        <WixVariable Id="WixUILicenseRtf" Value="cryptableLicense.rtf" />
+        <UI>
+            <UIRef Id="WixUI_Minimal" />
+        </UI>
+
+        <CustomAction Id="configEXE_CA" FileKey="FILE_MyProgramDir_ksmgmntEXE" ExeCommand='--config' Return="asyncNoWait"/>
+
+        <InstallExecuteSequence>
+            <Custom Action="configEXE_CA" After="InstallFinalize" />
+        </InstallExecuteSequence>
+
     </Product>
 </Wix>
