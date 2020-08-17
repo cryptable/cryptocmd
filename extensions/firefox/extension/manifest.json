@@ -1,10 +1,9 @@
 {
   "manifest_version": 2,
   "name": "Windows Crypto Key Generation",
-  "version": "0.1",
+  "version": "0.2.1",
   "description": "Windows Crypto Key Generation extension to generate keys from the browser.",
-  "author": "David Tillemans",
-
+  
   "icons": {
     "48": "icons/smartcard.svg",
     "96": "icons/smartcard.svg"
@@ -12,7 +11,7 @@
 
   "content_scripts": [
     {
-      "matches": ["http://cryptable-local.org/*"],
+      "matches": ["*"],
       "js": ["content-script.js"]
     }
   ],
