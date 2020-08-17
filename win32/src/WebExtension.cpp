@@ -16,7 +16,6 @@
 using namespace std;
 
 WebExtension::WebExtension() : inDataLg{0} {
-
 }
 
 void WebExtension::runFunction(std::ostream &out) {
@@ -57,9 +56,17 @@ void WebExtension::runFunction(std::ostream &out) {
             outData["response"] = "Unknown request (must be create_csr, import_certificate, import_pfx_key, export_pfx_key)";
         }
     }
-    catch (exception e) {
+    catch (KSException e) {
+        std::string error(e.what());
         outData["result"] = "NOK";
-        outData["response"] = e.what();
+        outData["response"] = error;
+        LogEvent::GetInstance().error(0, error);
+    }
+    catch (exception e) {
+        std::string error(e.what());
+        outData["result"] = "NOK";
+        outData["response"] = error;
+        LogEvent::GetInstance().error(0, error);
     }
     std::string tmpOut = outData.dump();
     uint32_t tmpOutLg = tmpOut.size();

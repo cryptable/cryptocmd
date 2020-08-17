@@ -21,7 +21,7 @@ public:
                                  CRYPT_STRING_BASE64,
                                  NULL,
                                  &b64DataLg)) {
-            throw KSException(GetLastError());
+            throw KSException(__func__, __LINE__, GetLastError());
         }
         std::unique_ptr<char[]> b64Data(new char[b64DataLg]);
         CryptBinaryToString(reinterpret_cast<const BYTE *>(data.data()),
@@ -41,7 +41,7 @@ public:
                                  &dataLg,
                                  0,
                                  0)) {
-            throw KSException(GetLastError());
+            throw KSException(__func__, __LINE__, GetLastError());
         }
         std::unique_ptr<BYTE[]> data(new BYTE[dataLg]);
         CryptStringToBinary(b64Data.c_str(),

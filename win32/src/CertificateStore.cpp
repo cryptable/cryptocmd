@@ -14,14 +14,14 @@
 CertificateStore::CertificateStore() : keyStore(MS_KEY_STORAGE_PROVIDER) {
     storeHandle = CertOpenSystemStoreA(NULL, "MY");
     if (storeHandle == nullptr) {
-        throw KSException(GetLastError());
+        throw KSException(__func__, __LINE__, GetLastError());
     }
 }
 
 CertificateStore::CertificateStore(const std::wstring &keyStoreProvider) : keyStore(keyStoreProvider.c_str()) {
     storeHandle = CertOpenSystemStoreA(NULL, "MY");
     if (storeHandle == nullptr) {
-        throw KSException(GetLastError());
+        throw KSException(__func__, __LINE__, GetLastError());
     }
 }
 
@@ -32,12 +32,12 @@ std::string CertificateStore::createCertificateRequest(const std::string &subjec
     RPC_WSTR   strUuid;
     status = UuidCreate(&uuid);
     if ((status != RPC_S_OK) && (status != RPC_S_UUID_LOCAL_ONLY)) {
-        KSException((DWORD)status);
+        KSException(__func__, __LINE__, (DWORD)status);
     }
     status = UuidToStringW(&uuid, &strUuid);
     auto safeUuid = std::unique_ptr<RPC_WSTR,std::function<void(RPC_WSTR *ptr)>>(&strUuid, RpcStringFreeW );
     if (status != RPC_S_OK) {
-        KSException((DWORD)status);
+        KSException(__func__, __LINE__, (DWORD)status);
     }
     std::wstring stringUuid(reinterpret_cast<const wchar_t *const>(strUuid));
     auto keyPair = keyStore.generateKeyPair(stringUuid, bitLength);
@@ -64,7 +64,7 @@ void CertificateStore::importCertificate(const std::string &pemCertificate) {
                               &certLg,
                               nullptr,
                               nullptr)) {
-        throw KSException(GetLastError());
+        throw KSException(__func__, __LINE__, GetLastError());
     }
     std::vector<unsigned char> cert(certLg);
     CryptStringToBinaryA(pemCertificate.c_str(),
@@ -84,7 +84,7 @@ void CertificateStore::importCertificate(const std::string &pemCertificate) {
                                           CERT_STORE_ADD_ALWAYS,
                                           &certContext)) {
         CertCloseStore(storeHandle, 0);
-        throw KSException(GetLastError());
+        throw KSException(__func__, __LINE__, GetLastError());
     }
     auto keyPair = keyStore.getKeyPair(certContext->pCertInfo->SubjectPublicKeyInfo);
     if (keyPair != nullptr) {
@@ -102,14 +102,14 @@ void CertificateStore::importCertificate(const std::string &pemCertificate) {
                                                0,
                                                &cryptKeyProvInfo)) {
             CertCloseStore(storeHandle, 0);
-            throw KSException(GetLastError());
+            throw KSException(__func__, __LINE__, GetLastError());
         }
         DWORD keyHandle = (DWORD)keyPair->getHandle();
         if (!CertSetCertificateContextProperty(certContext,
                                                CERT_NCRYPT_KEY_HANDLE_PROP_ID,
                                                0,
                                                &keyHandle)) {
-            throw KSException(GetLastError());
+            throw KSException(__func__, __LINE__, GetLastError());
         }
     }
 }
@@ -140,7 +140,7 @@ std::string CertificateStore::createCertificateRequestFromCNG(const std::string 
                                        nullptr,
                                        nullptr,
                                        &certSignReqLg)) {
-        throw KSException(GetLastError());
+        throw KSException(__func__, __LINE__, GetLastError());
     }
     auto certSignReq = std::unique_ptr<BYTE>(new BYTE[certSignReqLg]);
     CryptSignAndEncodeCertificate(keyPair->getHandle(),
@@ -158,7 +158,7 @@ std::string CertificateStore::createCertificateRequestFromCNG(const std::string 
                               CRYPT_STRING_BASE64REQUESTHEADER,
                               nullptr,
                               &b64CertReqLg)) {
-        throw KSException(GetLastError());
+        throw KSException(__func__, __LINE__, GetLastError());
     }
     auto b64CertReq = std::unique_ptr<char[]>(new char[b64CertReqLg]);
     CryptBinaryToStringA(certSignReq.get(),
@@ -176,25 +176,37 @@ std::string CertificateStore::pfxExport(const std::string &issuer,
 
     CERT_INFO certificateInfo{0x00};
     DWORD serialNumberLg;
-    if (!CryptStringToBinaryA(serial.c_str(),
-                              serial.size(),
+    std::string tmpSerial(serial);
+    if ((tmpSerial.rfind("0x", 0) == 0) ||
+        (tmpSerial.rfind("0X", 0) == 0)) {
+        tmpSerial.erase(0,2);
+        if (tmpSerial.size() % 2) {
+            tmpSerial.insert(0,1,'0');
+        }
+    }
+    if (!CryptStringToBinaryA(tmpSerial.c_str(),
+                              tmpSerial.size(),
                               CRYPT_STRING_HEX,
                               nullptr,
                               &serialNumberLg,
                               nullptr,
                               nullptr)) {
-        throw KSException(GetLastError());
+        throw KSException(__func__, __LINE__, GetLastError());
     }
     auto serialNumber = std::unique_ptr<BYTE[]>(new BYTE[serialNumberLg]);
-    CryptStringToBinaryA(serial.c_str(),
-                         serial.size(),
+    CryptStringToBinaryA(tmpSerial.c_str(),
+                         tmpSerial.size(),
                          CRYPT_STRING_HEX,
                          serialNumber.get(),
                          &serialNumberLg,
                          nullptr,
                          nullptr);
+    std::vector<BYTE> reversedSerNum(serialNumberLg);
+    for (int i=0; i<serialNumberLg; i++) {
+        reversedSerNum[serialNumberLg - 1 - i] = serialNumber[i];
+    }
     certificateInfo.SerialNumber.cbData = serialNumberLg;
-    certificateInfo.SerialNumber.pbData = serialNumber.get();
+    certificateInfo.SerialNumber.pbData = reversedSerNum.data();
     // UTF8 Version test
     X509Name issuerName(issuer);
     certificateInfo.Issuer.cbData = issuerName.getEncodedBlob().cbData;
@@ -214,7 +226,7 @@ std::string CertificateStore::pfxExport(const std::string &issuer,
                 X509_ASN_ENCODING | PKCS_7_ASN_ENCODING,
                 &certificateInfo);
         if (certificateCtx == nullptr) {
-            throw KSException(GetLastError());
+            throw KSException(__func__, __LINE__, GetLastError());
         }
     }
 
@@ -224,14 +236,14 @@ std::string CertificateStore::pfxExport(const std::string &issuer,
                                          0,
                                          nullptr);
     if (pfxStore == nullptr) {
-        throw KSException(GetLastError());
+        throw KSException(__func__, __LINE__, GetLastError());
     }
     if (!CertAddCertificateContextToStore(pfxStore,
                                           certificateCtx,
                                           CERT_STORE_ADD_USE_EXISTING,
                                           nullptr)) {
         CertCloseStore(pfxStore, 0);
-        throw KSException(GetLastError());
+        throw KSException(__func__, __LINE__, GetLastError());
     }
     CRYPT_DATA_BLOB pfxData = {0, nullptr };
     if (!PFXExportCertStore(pfxStore,
@@ -239,7 +251,7 @@ std::string CertificateStore::pfxExport(const std::string &issuer,
                             password.c_str(),
                             EXPORT_PRIVATE_KEYS)) {
         CertCloseStore(pfxStore, 0);
-        throw KSException(GetLastError());
+        throw KSException(__func__, __LINE__, GetLastError());
     }
     auto pfxDataBuf = std::unique_ptr<BYTE[]>(new BYTE[pfxData.cbData]);
     pfxData.pbData = pfxDataBuf.get();
@@ -248,7 +260,7 @@ std::string CertificateStore::pfxExport(const std::string &issuer,
                             password.c_str(),
                             EXPORT_PRIVATE_KEYS)) {
         CertCloseStore(pfxStore, 0);
-        throw KSException(GetLastError());
+        throw KSException(__func__, __LINE__, GetLastError());
     }
     // TODO: replace with Base64Utils
     DWORD base64PfxDataLg = 0;
@@ -258,7 +270,7 @@ std::string CertificateStore::pfxExport(const std::string &issuer,
                               nullptr,
                               &base64PfxDataLg)) {
         CertCloseStore(pfxStore, 0);
-        throw KSException(GetLastError());
+        throw KSException(__func__, __LINE__, GetLastError());
     }
     auto base64PfxData = std::unique_ptr<char[]>(new char[base64PfxDataLg]);
     CryptBinaryToStringA(pfxData.pbData,
@@ -299,7 +311,7 @@ void CertificateStore::pfxImport(const std::string &pfxInBase64, const std::wstr
                               &pfxLg,
                               nullptr,
                               nullptr)) {
-        throw KSException(GetLastError());
+        throw KSException(__func__, __LINE__, GetLastError());
     }
     auto b64CertReq = std::unique_ptr<unsigned char[]>(new unsigned char[pfxLg]);
     CryptStringToBinaryA(pfxInBase64.c_str(),
@@ -317,7 +329,7 @@ void CertificateStore::pfxImport(const std::string &pfxInBase64, const std::wstr
                                              password.c_str(),
                                              CRYPT_EXPORTABLE | CRYPT_USER_KEYSET | PKCS12_PREFER_CNG_KSP);
     if (pfxStore == 0) {
-        throw KSException(GetLastError());
+        throw KSException(__func__, __LINE__, GetLastError());
     }
     PCCERT_CONTEXT certificateCtx = nullptr;
     while ( (certificateCtx = CertEnumCertificatesInStore(pfxStore, certificateCtx)) != nullptr )
@@ -329,7 +341,7 @@ void CertificateStore::pfxImport(const std::string &pfxInBase64, const std::wstr
                                               CERT_STORE_ADD_REPLACE_EXISTING,
                                               0)) {
             CertCloseStore(pfxStore, 0);
-            throw KSException(GetLastError());
+            throw KSException(__func__, __LINE__, GetLastError());
         }
     }
     CertCloseStore(pfxStore, 0);

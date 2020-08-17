@@ -11,7 +11,7 @@
 class KSException : public std::exception {
 
 public:
-	explicit KSException(DWORD cd) noexcept;
+	explicit KSException(const char *funcName, int lineNumber, DWORD cd) noexcept;
 
     KSException(const KSException& from) noexcept;
 
@@ -19,13 +19,13 @@ public:
 
     ~KSException() noexcept override;
 
-    char const * what() const noexcept override;
+    virtual char const * what() const;
 
     explicit operator std::string() const;
 
 private:
     DWORD errorNumber;
-    LPSTR tmpMsgBuf;
+    std::string result;
 };
 
 #endif // KSEXCEPTION_H

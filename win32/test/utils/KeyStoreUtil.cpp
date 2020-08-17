@@ -15,7 +15,7 @@ KeyStoreUtil::KeyStoreUtil(const wchar_t *keystoreName) {
     DWORD status = STATUS_SUCCESS;
     status = NCryptOpenStorageProvider(&cryptoProvider, keystoreName, 0);
     if (status != STATUS_SUCCESS) {
-        throw KSException(status);
+        throw KSException(__func__, __LINE__, status);
     }
 }
 
@@ -25,12 +25,12 @@ void KeyStoreUtil::deleteKeyFromKeyStore(const wchar_t *keyId) {
 
     status = NCryptOpenKey(cryptoProvider, &keyHandle, keyId, 0, 0);
     if (status != STATUS_SUCCESS) {
-        throw KSException(status);
+        throw KSException(__func__, __LINE__, status);
     }
 
     status = NCryptDeleteKey(keyHandle, 0);
     if (status != STATUS_SUCCESS) {
-        throw KSException(status);
+        throw KSException(__func__, __LINE__, status);
     }
 
     NCryptFreeObject(keyHandle);
@@ -48,7 +48,7 @@ boolean KeyStoreUtil::isKeyInKeystore(const wchar_t *keyName) {
             break;
         }
         if (status != STATUS_SUCCESS) {
-            throw KSException(status);
+            throw KSException(__func__, __LINE__, status);
         }
         if (wcsncmp(nCryptKeyName->pszName, keyName, wcsnlen(keyName, NCRYPT_MAX_KEY_NAME_LENGTH)) == 0) {
             found = true;
@@ -73,7 +73,7 @@ void KeyStoreUtil::showKeysOfKeystore() {
             break;
         }
         if (status != STATUS_SUCCESS) {
-            throw KSException(status);
+            throw KSException(__func__, __LINE__, status);
         }
         std::wcout << "Key: " << nCryptKeyName->pszName << " (" << nCryptKeyName->pszAlgid << ")\n";
     }
@@ -93,7 +93,7 @@ void KeyStoreUtil::deleteTestKeysOfKeystore() {
             break;
         }
         if (status != STATUS_SUCCESS) {
-            throw KSException(status);
+            throw KSException(__func__, __LINE__, status);
         }
         // Initial keys of my keystore
         if ((wcscmp(nCryptKeyName->pszName, L"te-3b573721-84ed-434e-8bd3-a9eb6857d0ec") == 0)

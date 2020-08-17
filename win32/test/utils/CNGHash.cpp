@@ -16,7 +16,7 @@ CNGHash::CNGHash() : hashAlgo{0}, hash{0} {
                                          nullptr,
                                          0);
     if (status != STATUS_SUCCESS) {
-        throw KSException(status);
+        throw KSException(__func__, __LINE__, status);
     }
 
     DWORD outputLg = 0;
@@ -28,7 +28,7 @@ CNGHash::CNGHash() : hashAlgo{0}, hash{0} {
                                &outputLg,
                                0);
     if (status != STATUS_SUCCESS) {
-        throw KSException(status);
+        throw KSException(__func__, __LINE__, status);
     }
     hashObject = std::make_unique<BYTE[]>(hashObjectLg);
 
@@ -40,7 +40,7 @@ CNGHash::CNGHash() : hashAlgo{0}, hash{0} {
                               0,
                               0);
     if (status != STATUS_SUCCESS) {
-        throw KSException(status);
+        throw KSException(__func__, __LINE__, status);
     }
 
     DWORD hashLg = 0;
@@ -51,7 +51,7 @@ CNGHash::CNGHash() : hashAlgo{0}, hash{0} {
                                &outputLg,
                                0);
     if (status != STATUS_SUCCESS) {
-        throw KSException(status);
+        throw KSException(__func__, __LINE__, status);
     }
 
     hashValue.resize(hashLg);
@@ -68,7 +68,7 @@ void CNGHash::update(const char *data, const size_t dataLg) {
                             (DWORD)dataLg,
                             0);
     if (status != STATUS_SUCCESS) {
-        throw KSException(status);
+        throw KSException(__func__, __LINE__, status);
     }
 }
 
@@ -80,7 +80,7 @@ const std::vector<unsigned char> &CNGHash::finalize() {
                               (DWORD)hashValue.size(),
                               0);
     if (status != STATUS_SUCCESS) {
-        throw KSException(status);
+        throw KSException(__func__, __LINE__, status);
     }
     return hashValue;
 }

@@ -2,6 +2,7 @@
 browser.runtime.onMessage.addListener(
 	(request, sender, sendResponse) => {
 		if (request) {
+			console.log(request)
 			sendNative = browser.runtime.sendNativeMessage("org.cryptable.pki.keymgmnt", request)
 
 			sendNative.then(function(resp) {

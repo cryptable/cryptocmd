@@ -16,7 +16,7 @@ KeyPair::KeyPair(NCRYPT_KEY_HANDLE key, const std::wstring &name) : keyHandle{ke
                                   X509_ASN_ENCODING | PKCS_7_ASN_ENCODING,
                                   nullptr,
                                   &publicKeyLg)) {
-        throw KSException(GetLastError());
+        throw KSException(__func__, __LINE__, GetLastError());
     }
     publicKeyInfo = reinterpret_cast<CERT_PUBLIC_KEY_INFO *>(new unsigned char[publicKeyLg]);
     CryptExportPublicKeyInfo(keyHandle,

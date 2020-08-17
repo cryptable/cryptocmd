@@ -17,7 +17,8 @@
 
 using namespace std;
 
-KSException::KSException(DWORD cd) noexcept : tmpMsgBuf{nullptr}, errorNumber{cd} {
+KSException::KSException(const char *fName, int lineNumber, DWORD cd) noexcept : errorNumber{cd} {
+    LPTSTR tmpMsgBuf = NULL;
     FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
                   nullptr,
                   cd,
@@ -25,27 +26,29 @@ KSException::KSException(DWORD cd) noexcept : tmpMsgBuf{nullptr}, errorNumber{cd
                   (LPSTR)&tmpMsgBuf,
                   0,
                   nullptr );
+    result = std::string(fName) + "(" + std::to_string(lineNumber) + ") : error(" + std::to_string(errorNumber) + ") : " + tmpMsgBuf;
+    if (tmpMsgBuf) {
+        LocalFree(tmpMsgBuf);
+    }
 }
 
-KSException::KSException(const KSException& from) noexcept : std::exception(from), tmpMsgBuf{nullptr}, errorNumber{from.errorNumber} {
-    tmpMsgBuf = static_cast<LPSTR>(LocalAlloc(0, LocalSize(from.tmpMsgBuf)));
-    strncpy_s(tmpMsgBuf, LocalSize(tmpMsgBuf), from.tmpMsgBuf, LocalSize(from.tmpMsgBuf));
+KSException::KSException(const KSException& from) noexcept : std::exception(from), errorNumber{from.errorNumber} {
+    result = from.result;
     errorNumber = from.errorNumber;
 }
+
 
 DWORD KSException::code() const noexcept {
     return errorNumber;
 }
 
 KSException::~KSException() noexcept {
-    LocalFree(tmpMsgBuf);
-    tmpMsgBuf = nullptr;
 }
 
-char const * KSException::what() const noexcept {
-    return tmpMsgBuf;
+char const * KSException::what() const {
+    return result.c_str();
 }
 
 KSException::operator std::string() const {
-    return tmpMsgBuf;
+    return result;
 }

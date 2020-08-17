@@ -17,7 +17,7 @@ CNGSign::CNGSign(NCRYPT_KEY_HANDLE k) : key{k} {
                                          nullptr,
                                          0);
     if (status != STATUS_SUCCESS) {
-        throw KSException(status);
+        throw KSException(__func__, __LINE__, status);
     }
 }
 
@@ -37,7 +37,7 @@ const std::vector<unsigned char> & CNGSign::sign(unsigned char *data, size_t dat
                             &signatureLg,
                             0);
     if (status != STATUS_SUCCESS) {
-        throw KSException(status);
+        throw KSException(__func__, __LINE__, status);
     }
     BCRYPT_PSS_PADDING_INFO bcryptPssPaddingInfo {
         BCRYPT_SHA1_ALGORITHM,
@@ -53,7 +53,7 @@ const std::vector<unsigned char> & CNGSign::sign(unsigned char *data, size_t dat
                             &signatureLg,
                             BCRYPT_PAD_PSS);
     if (status != STATUS_SUCCESS) {
-        throw KSException(status);
+        throw KSException(__func__, __LINE__, status);
     }
 
     return signatureValue;

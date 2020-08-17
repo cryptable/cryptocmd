@@ -14,11 +14,11 @@
 void write_config() {
     CHAR path[MAX_PATH];
     if (!GetModuleFileName(nullptr, path, MAX_PATH)) {
-        throw KSException(GetLastError());
+        throw KSException(__func__, __LINE__, GetLastError());
     }
     std::string exeFilename(path);
     if (!PathRemoveFileSpec(path)) {
-        throw KSException(GetLastError());
+        throw KSException(__func__, __LINE__, GetLastError());
     };
     std::string configFilename(path);
     configFilename += "\\org.cryptable.pki.keymgmnt.json";
@@ -41,11 +41,11 @@ void write_config() {
                                   FILE_ATTRIBUTE_NORMAL,
                                   nullptr);
     if (fileHandle == INVALID_HANDLE_VALUE) {
-        throw KSException(GetLastError());
+        throw KSException(__func__, __LINE__, GetLastError());
     };
     if (!WriteFile(fileHandle, jsonConfig.c_str(), jsonConfig.size(), &dataWritten, NULL)) {
         CloseHandle(fileHandle);
-        throw KSException(GetLastError());
+        throw KSException(__func__, __LINE__, GetLastError());
     }
     CloseHandle(fileHandle);
 }

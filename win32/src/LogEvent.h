@@ -2,21 +2,62 @@
  * Copyright (c) 2020 Cryptable BV. All rights reserved.
  * (MIT License)
  * Author: "David Tillemans"
- * Date: 09/08/2020
+ * Date: 17/08/2020
  */
 
-#ifndef KSMGMNT_COMMON_H
-#define KSMGMNT_COMMON_H
-#pragma warning(disable:4005)
-#define WIN32_NO_STATUS
+#ifndef KSMGMNT_LOGEVENT_H
+#define KSMGMNT_LOGEVENT_H
 #include <windows.h>
-#undef WIN32_NO_STATUS
-#include <ntstatus.h>
-#pragma warning(default:4005)
+#include <string>
 
-const char APP_NAME[] = "keymgmnt extension";
+class LogEvent {
+public:
+    static LogEvent &GetInstance();
 
-#endif //KSMGMNT_COMMON_H
+    LogEvent(LogEvent const&)        = delete;
+
+    void operator=(LogEvent const&)  = delete;
+
+    void setLevel(int eventCode, std::string &level);
+
+    void trace(int eventCode, std::string &log);
+
+    void debug(int eventCode, std::string &log);
+
+    void info(int eventCode, std::string &log);
+
+    void warning(int eventCode, std::string &log);
+
+    void error(int eventCode, std::string &log);
+
+    void fatal(int eventCode, std::string &log);
+
+    void setAudit(bool enable);
+
+    void auditFailure(int eventCode, std::string &log);
+
+    void auditSuccess(int eventCode, std::string &log);
+
+    ~LogEvent();
+
+private:
+    LogEvent();
+
+    HANDLE eventSource;
+
+    int logLevel;
+
+    bool auditEnabled;
+
+    void log(int level, std::string &log, int eventCode);
+
+    void audit(int eventType, int eventCode, std::string &log);
+
+    static LogEvent logEvent;
+};
+
+
+#endif //KSMGMNT_LOGEVENT_H
 /**********************************************************************************/
 /* MIT License                                                                    */
 /*                                                                                */

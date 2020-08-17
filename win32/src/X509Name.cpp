@@ -23,7 +23,7 @@ X509Name::X509Name(const std::string &name, bool utf8) : blobEncodedName{0, null
                        nullptr,
                        &encodedNameLg,
                        nullptr)) {
-        throw KSException(GetLastError());
+        throw KSException(__func__, __LINE__, GetLastError());
     }
     blobEncodedName.pbData = new BYTE[encodedNameLg];
     blobEncodedName.cbData = encodedNameLg;
@@ -34,7 +34,7 @@ X509Name::X509Name(const std::string &name, bool utf8) : blobEncodedName{0, null
                        blobEncodedName.pbData,
                        &blobEncodedName.cbData,
                        nullptr)) {
-        throw KSException(GetLastError());
+        throw KSException(__func__, __LINE__, GetLastError());
     }
     generalName = name;
 }

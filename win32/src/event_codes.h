@@ -2,21 +2,15 @@
  * Copyright (c) 2020 Cryptable BV. All rights reserved.
  * (MIT License)
  * Author: "David Tillemans"
- * Date: 09/08/2020
+ * Date: 17/08/2020
  */
 
-#ifndef KSMGMNT_COMMON_H
-#define KSMGMNT_COMMON_H
-#pragma warning(disable:4005)
-#define WIN32_NO_STATUS
-#include <windows.h>
-#undef WIN32_NO_STATUS
-#include <ntstatus.h>
-#pragma warning(default:4005)
+#ifndef KSMGMNT_EVENT_CODES_H
+#define KSMGMNT_EVENT_CODES_H
 
-const char APP_NAME[] = "keymgmnt extension";
+#define KEYMANAGMENT_FACILITY 0x0001
 
-#endif //KSMGMNT_COMMON_H
+#endif //KSMGMNT_EVENT_CODES_H
 /**********************************************************************************/
 /* MIT License                                                                    */
 /*                                                                                */

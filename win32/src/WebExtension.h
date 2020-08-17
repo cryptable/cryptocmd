@@ -10,6 +10,7 @@
 #include <stdint.h>
 #include <string>
 #include <nlohmann/json.hpp>
+#include "LogEvent.h"
 
 class WebExtension {
 

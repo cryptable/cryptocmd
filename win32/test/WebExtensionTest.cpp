@@ -256,3 +256,69 @@ TEST_CASE( "WebExtensionTests", "[success]" ) {
         certStoreUtil.close();
     }
 }
+
+#if 0
+TEST_CASE( "WebExtensionTests from the field 1", "[firefox]" ) {
+    SECTION( "Import pfx file 1" ) {
+        // TODO intergrate to real test: add the user to it (export it)
+
+        // Arrange
+        CertStoreUtil certStoreUtil;
+        if (certStoreUtil.hasCertificates(L"John Doe Encryption")) {
+            certStoreUtil.deleteCertificates(L"John Doe Encryption");
+        }
+        std::string input("{ \"request\": \"import_pfx_key\", \"key_id\": \"HdIsVJqpbU\", \"pkcs12\": \"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUVmRENDQW1TZ0F3SUJBZ0lVVnBBR3BJdUlMRkhOK2JKSDFoZi9tKzF5cTRZd0RRWUpLb1pJaHZjTkFRRUwKQlFBd2JERUxNQWtHQTFVRUJoTUNabWt4RXpBUkJnTlZCQW9NQ2xaaGRXeDBhWFFnUVVJeEVUQVBCZ05WQkFzTQpDRk5sWTNWeWFYUjVNUXd3Q2dZRFZRUUxEQU5RUzBreEVEQU9CZ05WQkFzTUIxUmxjM1JwYm1jeEZUQVRCZ05WCkJBTU1ERkp2YjNRZ1ZHVnpkQ0JEUVRBZUZ3MHlNREE0TVRZeU1qQTVNekJhRncweU1UQTRNVGN5TWpBNU16QmEKTUhBeEhEQWFCZ05WQkFNTUUwcHZhRzRnUkc5bElFVnVZM0o1Y0hScGIyNHhFREFPQmdOVkJBb01CME52YlhCaApibmt4RURBT0JnTlZCQXNNQjFSbGMzUnBibWN4RVRBUEJnTlZCQXNNQ0ZObFkzVnlhWFI1TVF3d0NnWURWUVFMCkRBTlFTMmt4Q3pBSkJnTlZCQVlUQWxWVE1JSUJJakFOQmdrcWhraUc5dzBCQVFFRkFBT0NBUThBTUlJQkNnS0MKQVFFQXVkVy9wY2lYRjl5ZWZTVjNjYlRzaXR1ZWRlT2VlKzZPYzdIbE5FQmh2bmJ3SnFYYy9odE5ENklMVWtabgprNzk5cDNIUE9rd1UzTVJnZEllRXZGVGRmdzd0aU04SzNPdmZUaTNuM1E2SE5ReUxSY0RuRGZlakNFMU1kenVVCm1CSzFSKzdWNVBJeVRmUlR1TWhpYm5wYmVsWTJOUWx5aGJDVVl1ZkxiL3VQVmZ4OWxoNnJyOXJvSWMrQkE3eTgKUlhsclk5bStRUCt5YnVZdWdMSzRyTW1XamJZbHpQeE5RNkxFTnl3OC9sVkZYcE5aYzN0RHgrRGIxQ1NNa3daRQpGMSszd09CN3hZSnlZWFRPNFhGR0dYY25jYjNJTDZ1Qy9lM2d0MzhySmc0NmloRkRvakRhdWFUU2xEb2pwWk9iCml2dVhNcUgyOHdVNWprK2tpYzVBb2c5UWxRSURBUUFCb3hJd0VEQU9CZ05WSFE4QkFmOEVCQU1DQkRBd0RRWUoKS29aSWh2Y05BUUVMQlFBRGdnSUJBSEJuREprSktWYTNwUDQxMmk1Y3p4cHQ1dExWaWZZeWY4VzBrdnJJaUVLYQpYSWFPUUl4aUpHWHREd3dqQUlncndRbHFFaTZtTFBoUWtKeVpVQ29jZlJvWG1qSWcvN0RycHo0blU5eVRGV0lDCmE1MTNNUm5TTlBLZTRGVTdaZThEK3psUTF0L1FKR0VPMFg3SlpuTDFucFUvVGMwZ3VkRnd1QU9HUXdIbzhUSmIKT3BXQ0V4TXk2eW12eXRkNDJaVHZNNm8zVkdxK1M0dTVvRytWQ3hIcisvZDZlQ1AxUlF5SWhRcnJyY1NqSnIraQp0MkJqZDBkc2FIRXRrSjFjMnk4WUxIV2lXN1k5UUFaZzJkbVJpRGxMTkhZdkNjYXc1WTNxM2VBVDBHbEJQUjIxCjg0RDdwdnBvalpneG1PMkYzcWJUZVQzZm03aWZCOHJPcDJHQTEya2lKcWlYU05tMGNHY1pMM1RyM0VrQzB4N2YKN3ZTY1JCQTltSGFNcnFaR05lS2d2SmlyemdsSG9QV0RDbUowU3R1bDlIWmlnQitvYnkzRFhOK1dUS1pKSWxDQwppR2czNzczTWZYeU40K0t6SnI2ZElmbjZ4K29TWUdGQjRkcGF3YW5OYXVUU1pBQkdWditBR1R6dERGajYwUkJkCm5MbStJVnpvUWVMRE5tOFZzYW9YQ2ZscG0zb0UwTktFWlZWVjRvc2k4RHl5aUJwNVhnQTJreEZpUnNPbkljZnEKL2dkRU00dEJRMFNYTTRWYXNRY093YW90cm5GWGdkQkZKRTUxaDhNV09GQ3hPL29qU0YweTZSWWlXb29rREpkOApUUDAwRnlNb2g4ak1UTlR2RmNSbTVPMXdrTFh6NXhjeFdGbGY4emNQeUl0K2RiaURkT3k0bTBTRnJBd1JPckpyCi0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K\", \"password\": \"system\" }");
+        std::stringstream in;
+        uint32_t length = input.size();
+        in.write((char *)&length, 4);
+        in << input;
+
+        // Act
+        WebExtension webExtension(in);
+        std::stringstream out;
+        webExtension.runFunction(out);
+
+        // Assert
+        uint32_t outLg;
+        out.read((char *)&outLg, 4);
+        nlohmann::json result;
+        out >> result;
+
+        REQUIRE(result["result"] == "OK");
+        REQUIRE(result["key_id"] == "HdIsVJqpbU");
+        REQUIRE(result["response"] == "import pfx successful");
+
+        // Cleanup
+        certStoreUtil.reopen();
+        certStoreUtil.deleteCertificates(L"John Doe Encryption");
+        certStoreUtil.close();
+    }
+}
+
+TEST_CASE( "WebExtensionTests from the field 2", "[firefox]" ) {
+    SECTION( "Export pfx file 1" ) {
+        // TODO add the user to it (export it): odd lenght for HEX serial number
+
+
+        std::string input("{ \"request\": \"export_pfx_key\", \"key_id\": \"tMCt83zrZJ\", \"issuer\": \"C=fi,O=Vaultit AB,OU=Security,OU=PKI,OU=Testing,CN=Root Test CA\", \"serial_number\": \"0xcf6aa362c478fee86c2fcdbc4eb0ad3e1934642\", \"password\": \"system\" }");
+        std::stringstream in;
+        uint32_t length = input.size();
+        in.write((char *)&length, 4);
+        in << input;
+
+        // Act
+        WebExtension webExtension(in);
+        std::stringstream out;
+        webExtension.runFunction(out);
+
+        // Assert
+        uint32_t outLg;
+        out.read((char *)&outLg, 4);
+        nlohmann::json result;
+        out >> result;
+
+        REQUIRE(result["result"] == "OK");
+    }
+}
+
+#endif

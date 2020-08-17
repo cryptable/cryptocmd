@@ -13,7 +13,7 @@ KeyStore::KeyStore(const wchar_t *keystoreName): cryptoProvider{NULL} {
     DWORD status = STATUS_SUCCESS;
     status = NCryptOpenStorageProvider(&cryptoProvider, keystoreName, 0);
     if (status != STATUS_SUCCESS) {
-        throw KSException(status);
+        throw KSException(__func__, __LINE__, status);
     }
 };
 
@@ -27,7 +27,7 @@ std::unique_ptr<KeyPair> KeyStore::generateKeyPair(const std::wstring &keyIdenti
                                       AT_SIGNATURE,
                                       0);
     if (status != STATUS_SUCCESS) {
-        throw KSException(status);
+        throw KSException(__func__, __LINE__, status);
     }
 
     DWORD exportPolicy = NCRYPT_ALLOW_EXPORT_FLAG;
@@ -37,7 +37,7 @@ std::unique_ptr<KeyPair> KeyStore::generateKeyPair(const std::wstring &keyIdenti
                                sizeof(DWORD),
                                NCRYPT_PERSIST_FLAG);
     if (status != STATUS_SUCCESS) {
-        throw KSException(status);
+        throw KSException(__func__, __LINE__, status);
     }
 
     DWORD keyUsage = NCRYPT_ALLOW_SIGNING_FLAG;
@@ -47,7 +47,7 @@ std::unique_ptr<KeyPair> KeyStore::generateKeyPair(const std::wstring &keyIdenti
                                sizeof(DWORD),
                                NCRYPT_PERSIST_FLAG);
     if (status != STATUS_SUCCESS) {
-        throw KSException(status);
+        throw KSException(__func__, __LINE__, status);
     }
 
     DWORD keyLength = bitLength;
@@ -57,12 +57,12 @@ std::unique_ptr<KeyPair> KeyStore::generateKeyPair(const std::wstring &keyIdenti
                                sizeof(DWORD),
                                NCRYPT_PERSIST_FLAG);
     if (status != STATUS_SUCCESS) {
-        throw KSException(status);
+        throw KSException(__func__, __LINE__, status);
     }
 
     status = NCryptFinalizeKey(rsaKeyHandle, NCRYPT_WRITE_KEY_TO_LEGACY_STORE_FLAG );
     if (status != STATUS_SUCCESS) {
-        throw KSException(status);
+        throw KSException(__func__, __LINE__, status);
     }
 
     return std::move(std::make_unique<KeyPair>(rsaKeyHandle, keyIdentifier));
@@ -74,7 +74,7 @@ std::unique_ptr<KeyPair> KeyStore::getKeyPair(const std::wstring &keyIdentifier)
 
     status = NCryptOpenKey(cryptoProvider, &rsaKeyHandle, keyIdentifier.c_str(), 0, 0);
     if (status != STATUS_SUCCESS) {
-        throw KSException(status);
+        throw KSException(__func__, __LINE__, status);
     }
 
     return std::make_unique<KeyPair>(rsaKeyHandle, keyIdentifier);
@@ -89,7 +89,7 @@ bool KeyStore::compareCNGKeyWithPublicKey(NCRYPT_KEY_HANDLE rsaKeyHandle, const 
                                   X509_ASN_ENCODING | PKCS_7_ASN_ENCODING,
                                   nullptr,
                                   &publicKeyLg)) {
-        throw KSException(GetLastError());
+        throw KSException(__func__, __LINE__, GetLastError());
     }
     publicKeyInfo = reinterpret_cast<CERT_PUBLIC_KEY_INFO *>(new unsigned char[publicKeyLg]);
     CryptExportPublicKeyInfo(rsaKeyHandle,
@@ -117,12 +117,12 @@ std::unique_ptr<KeyPair> KeyStore::getKeyPair(const CERT_PUBLIC_KEY_INFO &public
             break;
         }
         if (status != STATUS_SUCCESS) {
-            throw KSException(status);
+            throw KSException(__func__, __LINE__, status);
         }
 
         status = NCryptOpenKey(cryptoProvider, &rsaKeyHandle, nCryptKeyName->pszName, 0, 0);
         if (status != STATUS_SUCCESS) {
-            throw KSException(status);
+            throw KSException(__func__, __LINE__, status);
         }
 
         if (compareCNGKeyWithPublicKey(rsaKeyHandle, publicKeyInfo)) {

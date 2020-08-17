@@ -7,8 +7,10 @@ add_library(${LIBRARY_NAME} STATIC
         KSException.cpp KSException.h
         CertificateStore.cpp CertificateStore.h
         WebExtension.cpp WebExtension.h
+        LogEvent.cpp LogEvent.h event_codes.h
         Base64Utils.h
         common.h)
+
 target_include_directories(${LIBRARY_NAME} PUBLIC "${PROJECT_BINARY_DIR}")
 
 add_executable(${EXECUTABLE_NAME} main.cpp)

@@ -24,7 +24,7 @@ CertStoreUtil::CertStoreUtil() : hStoreHandle{nullptr},
             NULL,
             name.c_str())) == nullptr)
     {
-        throw KSException(GetLastError());
+        throw KSException(__func__, __LINE__, GetLastError());
     }
 }
 
@@ -34,14 +34,14 @@ CertStoreUtil::CertStoreUtil(const std::string &certStoreName, const std::wstrin
             NULL,
             name.c_str())) == nullptr)
     {
-        throw KSException(GetLastError());
+        throw KSException(__func__, __LINE__, GetLastError());
     }
 }
 
 void CertStoreUtil::close() {
     if (storeOpen) {
         if (!CertCloseStore(hStoreHandle, 0)) {
-            throw KSException(GetLastError());
+            throw KSException(__func__, __LINE__, GetLastError());
         }
         storeOpen = false;
     }
@@ -53,7 +53,7 @@ void CertStoreUtil::reopen() {
                 NULL,
                 name.c_str())) == nullptr)
         {
-            throw KSException(GetLastError());
+            throw KSException(__func__, __LINE__, GetLastError());
         }
         storeOpen = true;
     }
@@ -78,7 +78,7 @@ void CertStoreUtil::showCertificatesOfCertStore() {
                 nullptr,
                 0)))
         {
-            throw KSException(GetLastError());
+            throw KSException(__func__, __LINE__, GetLastError());
         }
 
         std::vector<TCHAR> subjectName(size);
@@ -89,7 +89,7 @@ void CertStoreUtil::showCertificatesOfCertStore() {
                 nullptr,
                 subjectName.data(),
                 size)) {
-            throw KSException(GetLastError());
+            throw KSException(__func__, __LINE__, GetLastError());
         }
         std::cout << "Subject -> " << subjectName.data() << std::endl;
         std::cout << "Serial : " << HexUtils::binToHex(pCertContext->pCertInfo->SerialNumber.pbData,
@@ -115,7 +115,7 @@ bool CertStoreUtil::hasPrivateKey(const std::wstring &subject) {
                                             subject.c_str(),
                                             nullptr);
     if (pCertContext == nullptr) {
-        throw KSException(GetLastError());
+        throw KSException(__func__, __LINE__, GetLastError());
     }
 
     if (!CryptAcquireCertificatePrivateKey(pCertContext,
@@ -124,7 +124,7 @@ bool CertStoreUtil::hasPrivateKey(const std::wstring &subject) {
                                            &keyHandle,
                                            &keySpecs,
                                            &mustFreeKeyHandle)) {
-        throw KSException(GetLastError());
+        throw KSException(__func__, __LINE__, GetLastError());
     }
 
     CNGHash hash;
@@ -174,7 +174,7 @@ void CertStoreUtil::deleteCertificates(const std::wstring &subject) {
         // First delete the linked private key
         deleteCNGKeyIfAvailable(pCertContext);
         if (!CertDeleteCertificateFromStore(pCertContext)) {
-            throw KSException(GetLastError());
+            throw KSException(__func__, __LINE__, GetLastError());
         }
         pCertContext = CertFindCertificateInStore(hStoreHandle,
                                                   X509_ASN_ENCODING,
@@ -200,7 +200,7 @@ std::vector<unsigned char> CertStoreUtil::getData(PCCERT_CONTEXT pCertContext, D
             NULL ,
             &dataLg))
     {
-        throw KSException(GetLastError());
+        throw KSException(__func__, __LINE__, GetLastError());
     }
 
     std::vector<unsigned char> data(dataLg);
@@ -231,7 +231,7 @@ void CertStoreUtil::showPropertiesOfCertificate(const std::wstring &subject) {
                                               subject.c_str(),
                                               nullptr);
     if (pCertContext == nullptr) {
-        throw KSException(GetLastError());
+        throw KSException(__func__, __LINE__, GetLastError());
     }
 
     DWORD propertyId = 0;

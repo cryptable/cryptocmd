@@ -50,7 +50,7 @@ TEST_CASE( "Failed GeneralNameTests", "[failed]" ) {
 
         // Act && Assert
         REQUIRE_THROWS_MATCHES(X509Name(dname), KSException,
-                               Message("The string contains an invalid X500 name attribute key, oid, value or delimiter.\r\n"));
+                               Message("X509Name(26) : error(2148081699) : The string contains an invalid X500 name attribute key, oid, value or delimiter.\r\n"));
 
     }
 }

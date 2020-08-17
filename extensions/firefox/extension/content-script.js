@@ -60,7 +60,7 @@ function importCertificateRequest(keyId, pemCertificate) {
 	sendMessage.then(handleResp, handleError);
 }
 
-function importPfxKeyResponse() {
+function importPfxKeyResponse(keyId) {
     return function(message) {
         if (message.response.key_id == keyId) {
             window.postMessage({
@@ -76,7 +76,7 @@ function importPfxKeyResponse() {
 function importPfxKeyRequest(keyId, p12, passwd) {
     var handleResp = importPfxKeyResponse(keyId)
 	var sendMessage = browser.runtime.sendMessage({
-		request:'import_encryption_key',
+		request:'import_pfx_key',
 		key_id: keyId,
 		pkcs12: p12,
         password: passwd
@@ -84,7 +84,7 @@ function importPfxKeyRequest(keyId, p12, passwd) {
 	sendMessage.then(handleResp, handleError);
 }
 
-function exportPfxKeyResponse() {
+function exportPfxKeyResponse(keyId) {
     return function(message) {
         if (message.response.key_id == keyId) {
             window.postMessage({
@@ -125,11 +125,11 @@ window.addEventListener("message", function(event) {
             break;
         }
         case 'import_pfx_key': {
-            importPKCS12Request(keyid, request.pkcs12, request.password);
+            importPfxKeyRequest(keyid, request.pkcs12, request.password);
             break;
         }
         case 'export_pfx_key': {
-            exportPKCS12Request(keyid, request.issuer, request.serial_number, request.password);
+            exportPfxKeyRequest(keyid, request.issuer, request.serial_number, request.password);
             break;
         }
   		break;
