@@ -262,6 +262,9 @@ TEST_CASE( "WebExtensionTests", "[success]" ) {
     }
 }
 
+/*
+ * User Interface Testing
+ */
 TEST_CASE( "WebExtensionTests with UI", "[ui]" ) {
 
     SECTION( "Create CSR request" ) {
@@ -548,7 +551,6 @@ TEST_CASE( "WebExtensionTests from the field 1", "[firefox]" ) {
 TEST_CASE( "WebExtensionTests from the field 2", "[firefox]" ) {
     SECTION( "Export pfx file 1" ) {
         // TODO add the user to it (export it): odd lenght for HEX serial number
-
 
         std::string input("{ \"request\": \"export_pfx_key\", \"key_id\": \"tMCt83zrZJ\", \"issuer\": \"C=fi,O=Vaultit AB,OU=Security,OU=PKI,OU=Testing,CN=Root Test CA\", \"serial_number\": \"0xcf6aa362c478fee86c2fcdbc4eb0ad3e1934642\", \"password\": \"system\" }");
         std::stringstream in;

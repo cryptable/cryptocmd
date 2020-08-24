@@ -33,6 +33,9 @@ TEST_CASE( "KeyPairTests", "[success]" ) {
     }
 }
 
+/*
+ * User Interface Testing
+ */
 TEST_CASE( "KeyPairTests with UI", "[ui]" ) {
 
     SECTION( "Create a KeyPair with enforced UI" ) {

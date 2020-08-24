@@ -16,9 +16,13 @@
 #include "utils/CertStoreUtil.h"
 #include "Base64Utils.h"
 
-#define KEY_MGMGNT 1
+#define KEY_MGMGNT 0
 
 #if KEY_MGMGNT
+/*
+ * Key management testing to remove keys.
+ * Be careful: Delete CNG keys is optimalized for each PC
+ */
 TEST_CASE( "CertificateStoreUtilTests", "[mgmnt]" ) {
     SECTION( "List Certificates" ) {
         CertStoreUtil certStoreUtil;
@@ -193,6 +197,9 @@ TEST_CASE( "CertificateStoreTests", "[success]" ) {
     }
 }
 
+/*
+ * User Interfase testing
+ */
 TEST_CASE( "Key enforcement test with imported key", "[ui]" ) {
 
     // Arrange
@@ -222,7 +229,7 @@ TEST_CASE( "Key enforcement test with imported key", "[ui]" ) {
     REQUIRE(certStoreUtil.hasPrivateKey(L"John Doe"));
 }
 
-TEST_CASE( "Key enforcement test with generated key" ) {
+TEST_CASE( "Key enforcement test with generated key", "[ui]" ) {
     // Arrange
     CertStoreUtil certStoreUtil;
     if (certStoreUtil.hasCertificates(L"John Doe")) {
