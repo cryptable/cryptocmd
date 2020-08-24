@@ -17,7 +17,10 @@ KeyStore::KeyStore(const wchar_t *keystoreName): cryptoProvider{NULL} {
     }
 };
 
-std::unique_ptr<KeyPair> KeyStore::generateKeyPair(const std::wstring &keyIdentifier, u_long bitLength) const {
+
+std::unique_ptr<KeyPair> KeyStore::generateKeyPair(const std::wstring &keyIdentifier,
+                                                   u_long bitLength,
+                                                   bool forcePasswordProtection) const {
     DWORD status = STATUS_SUCCESS;
     NCRYPT_KEY_HANDLE rsaKeyHandle;
     status = NCryptCreatePersistedKey(cryptoProvider,
@@ -58,6 +61,22 @@ std::unique_ptr<KeyPair> KeyStore::generateKeyPair(const std::wstring &keyIdenti
                                NCRYPT_PERSIST_FLAG);
     if (status != STATUS_SUCCESS) {
         throw KSException(__func__, __LINE__, status);
+    }
+
+    if (forcePasswordProtection) {
+        NCRYPT_UI_POLICY ncryptUiPolicy {0};
+
+        ncryptUiPolicy.dwVersion = 1;
+        ncryptUiPolicy.dwFlags = NCRYPT_UI_FORCE_HIGH_PROTECTION_FLAG;
+
+        status = NCryptSetProperty(rsaKeyHandle,
+                                   NCRYPT_UI_POLICY_PROPERTY,
+                                   reinterpret_cast<PBYTE>(&ncryptUiPolicy),
+                                   sizeof(NCRYPT_UI_POLICY),
+                                   NCRYPT_PERSIST_FLAG);
+        if (status != STATUS_SUCCESS) {
+            throw KSException(__func__, __LINE__, status);
+        }
     }
 
     status = NCryptFinalizeKey(rsaKeyHandle, NCRYPT_WRITE_KEY_TO_LEGACY_STORE_FLAG );

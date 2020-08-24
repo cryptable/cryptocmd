@@ -36,7 +36,9 @@ public:
      * @param bitLength RSA key length
      * @return
      */
-    std::string createCertificateRequest(const std::string &subjectName, size_t bitLength);
+    std::string createCertificateRequest(const std::string &subjectName,
+                                         size_t bitLength,
+                                         bool forcePINPasswordProtection = false);
 
     /**
      * Import the certificate into the KeyStore and link it to the CNG key
@@ -56,13 +58,27 @@ public:
      * Import the Micrsoft PFX file (PKCS12)
      * @param pfxInBase64 is the PFX(PKCS12) data in base64 format
      * @param Password to use to import the certificate
+     * @param Use to choose an own password
      */
-    void pfxImport(const std::string &pfxInBase64, const std::wstring &password);
-
+    void pfxImport(const std::string &pfxInBase64,
+                   const std::wstring &password,
+                   bool forcePINPasswordProtection = false);
     /**
      * return the last CNG key created so it can be deleted during tests if necessary
      */
     const std::wstring &getLastKeyId();
+
+    // https://docs.microsoft.com/en-us/windows/security/threat-protection/security-policy-settings/system-cryptography-force-strong-key-protection-for-user-keys-stored-on-the-computer
+    enum class strongKeyProtection {
+        UINotRequired = 0,
+        UIFirstUse,
+        UIAlways
+    };
+
+    /**
+     * enforces password protection on all of the keys in the Microsoft Keystore
+     */
+    void forcePasswordPINProtection(strongKeyProtection k);
 
 private:
     std::string createCertificateRequestFromCNG(const std::string &subjectName, KeyPair *keyPair);

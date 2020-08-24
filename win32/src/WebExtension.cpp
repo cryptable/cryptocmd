@@ -15,7 +15,7 @@
 
 using namespace std;
 
-WebExtension::WebExtension() : inDataLg{0} {
+WebExtension::WebExtension() : inDataLg{0}, passwordProtect{true} {
 }
 
 void WebExtension::runFunction(std::ostream &out) {
@@ -27,7 +27,8 @@ void WebExtension::runFunction(std::ostream &out) {
         if (function == "create_csr") {
             auto data = certificateStore.createCertificateRequest(
                     inData["subject_name"],
-                    inData["rsa_key_length"]);
+                    inData["rsa_key_length"],
+                    passwordProtect);
             std::vector<unsigned char> vecData(data.begin(), data.end());
             outData["response"] = Base64Utils::toBase64(vecData);
             outData["result"] = "OK";
@@ -40,7 +41,9 @@ void WebExtension::runFunction(std::ostream &out) {
         }
         else if (function == "import_pfx_key") {
             std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-            certificateStore.pfxImport( inData["pkcs12"], converter.from_bytes(inData["password"]));
+            certificateStore.pfxImport( inData["pkcs12"],
+                                        converter.from_bytes(inData["password"]),
+                                        passwordProtect);
             outData["result"] = "OK";
             outData["response"] = "import pfx successful";
         }
@@ -74,7 +77,11 @@ void WebExtension::runFunction(std::ostream &out) {
     out << tmpOut;
 }
 
-WebExtension::WebExtension(std::istream &in) : inDataLg{0} {
+void WebExtension::setPasswordProtect(bool onOff) {
+    passwordProtect = onOff;
+};
+
+WebExtension::WebExtension(std::istream &in) : inDataLg{0}, passwordProtect{true} {
     in.read((char *)&inDataLg, 4);
     in >> inData;
 }

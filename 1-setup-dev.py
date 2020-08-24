@@ -86,6 +86,7 @@ def install_openssl_win32():
     os.chdir("openssl")
     pwait = subprocess.run('git fetch --all --tags', shell=True)
     pwait = subprocess.run('git checkout OpenSSL_1_1_1-stable', shell=True)
+
     # DEBUG version
     # pwait = subprocess.Popen(['perl', 'Configure', 'no-ssl2', 'no-ssl3', 'no-asm', 'no-shared', '-d', 'disable-capieng',
     #     '--prefix=' + get_common_dir(), '--openssldir=' + get_common_dir(), 
@@ -110,6 +111,7 @@ def install_openssl_win32():
     # if (os.path.isfile(get_common_dir() + '/lib/libssld.lib')):
     #     os.remove(get_common_dir() + '/lib/libssld.lib')
     # os.rename(get_common_dir() + '/lib/libssl.lib', get_common_dir() + '/lib/libssld.lib')
+
     # Release
     pwait = subprocess.Popen(['perl', 'Configure', 'no-ssl2', 'no-ssl3', 'no-asm', 'no-shared', 'disable-capieng',
         '--prefix=' + get_common_dir(), '--openssldir=' + get_common_dir(), 
@@ -186,13 +188,15 @@ def install_nlohmann_json():
     os.chdir("..")
     return
 
+
 def run_scripts():
     if not os.path.isdir("3rd-party"):
         os.mkdir("3rd-party")
     os.chdir("3rd-party")
-#    install_catch2()
-#    install_openssl_win32()
-#    install_nlohmann_json()
+    install_catch2()
+    install_openssl_win32()
+    install_nlohmann_json()
+    install_jwtcpp()
     install_cryptablepki()
    
     os.chdir("..")

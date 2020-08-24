@@ -14,7 +14,7 @@
 
 TEST_CASE( "KeyPairTests", "[success]" ) {
 
-    SECTION( "Create a KeyPair" ) {
+    SECTION("Create a KeyPair") {
         // Arrange
         KeyStoreUtil keyStoreUtil(MS_KEY_STORAGE_PROVIDER);
         if (keyStoreUtil.isKeyInKeystore(L"My Key")) {
@@ -24,6 +24,27 @@ TEST_CASE( "KeyPairTests", "[success]" ) {
 
         // Act
         auto keyPair = keyStore.generateKeyPair(L"My Key", 2048);
+
+        // Assert
+        REQUIRE(keyPair.get() != NULL);
+
+        // Cleanup
+        keyStoreUtil.deleteKeyFromKeyStore(L"My Key");
+    }
+}
+
+TEST_CASE( "KeyPairTests with UI", "[ui]" ) {
+
+    SECTION( "Create a KeyPair with enforced UI" ) {
+        // Arrange
+        KeyStoreUtil keyStoreUtil(MS_KEY_STORAGE_PROVIDER);
+        if (keyStoreUtil.isKeyInKeystore(L"My Key")) {
+            keyStoreUtil.deleteKeyFromKeyStore(L"My Key");
+        }
+        KeyStore keyStore(MS_KEY_STORAGE_PROVIDER);
+
+        // Act
+        auto keyPair = keyStore.generateKeyPair(L"My Key", 2048, true);
 
         // Assert
         REQUIRE( keyPair.get() != NULL );

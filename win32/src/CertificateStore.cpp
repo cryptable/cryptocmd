@@ -25,8 +25,9 @@ CertificateStore::CertificateStore(const std::wstring &keyStoreProvider) : keySt
     }
 }
 
-// TODO: bit length into enumeration
-std::string CertificateStore::createCertificateRequest(const std::string &subjectName, size_t bitLength) {
+std::string CertificateStore::createCertificateRequest(const std::string &subjectName,
+                                                       size_t bitLength,
+                                                       bool forcePINPasswordProtection) {
     UUID uuid;
     RPC_STATUS status;
     RPC_WSTR   strUuid;
@@ -40,7 +41,7 @@ std::string CertificateStore::createCertificateRequest(const std::string &subjec
         KSException(__func__, __LINE__, (DWORD)status);
     }
     std::wstring stringUuid(reinterpret_cast<const wchar_t *const>(strUuid));
-    auto keyPair = keyStore.generateKeyPair(stringUuid, bitLength);
+    auto keyPair = keyStore.generateKeyPair(stringUuid, bitLength, forcePINPasswordProtection);
 
     lastKeyId = stringUuid;
 
@@ -142,7 +143,7 @@ std::string CertificateStore::createCertificateRequestFromCNG(const std::string 
                                        &certSignReqLg)) {
         throw KSException(__func__, __LINE__, GetLastError());
     }
-    auto certSignReq = std::unique_ptr<BYTE>(new BYTE[certSignReqLg]);
+    auto certSignReq = std::unique_ptr<BYTE[]>(new BYTE[certSignReqLg]);
     CryptSignAndEncodeCertificate(keyPair->getHandle(),
                                   0,
                                   X509_ASN_ENCODING | PKCS_7_ASN_ENCODING,
@@ -302,7 +303,9 @@ bool CertificateStore::isCACertificate(PCCERT_CONTEXT certificateCtx)
     return false;
 }
 
-void CertificateStore::pfxImport(const std::string &pfxInBase64, const std::wstring &password) {
+void CertificateStore::pfxImport(const std::string &pfxInBase64,
+                                 const std::wstring &password,
+                                 bool forcePINPasswordProtection) {
     DWORD pfxLg = 0;
     if (!CryptStringToBinaryA(pfxInBase64.c_str(),
                               pfxInBase64.size(),
@@ -325,9 +328,13 @@ void CertificateStore::pfxImport(const std::string &pfxInBase64, const std::wstr
         pfxLg,
         b64CertReq.get()
     };
+    DWORD dwFlags = CRYPT_EXPORTABLE | CRYPT_USER_KEYSET | PKCS12_ALWAYS_CNG_KSP;
+    if (forcePINPasswordProtection) {
+        dwFlags = dwFlags | CRYPT_USER_PROTECTED;
+    }
     HCERTSTORE pfxStore = PFXImportCertStore(&cryptDataBlob,
                                              password.c_str(),
-                                             CRYPT_EXPORTABLE | CRYPT_USER_KEYSET | PKCS12_PREFER_CNG_KSP);
+                                             dwFlags);
     if (pfxStore == 0) {
         throw KSException(__func__, __LINE__, GetLastError());
     }
@@ -349,4 +356,73 @@ void CertificateStore::pfxImport(const std::string &pfxInBase64, const std::wstr
 
 const std::wstring &CertificateStore::getLastKeyId() {
     return lastKeyId;
+}
+
+void CertificateStore::forcePasswordPINProtection(strongKeyProtection k) {
+    HKEY  hRegKeyHandle = NULL;
+    DWORD dwValue       = static_cast<DWORD>(k);
+    DWORD dwValueSize   = sizeof(dwValue);
+    DWORD dwType        = REG_DWORD;
+    int   iRet;
+
+    /* Try to open this key */
+    iRet = RegCreateKeyEx(HKEY_LOCAL_MACHINE,
+                          "SOFTWARE\\Policies\\Microsoft\\Cryptography",
+                          0,
+                          NULL,
+                          REG_OPTION_NON_VOLATILE,
+                          KEY_READ,
+                          NULL,
+                          &hRegKeyHandle,
+                          NULL);
+    if ( iRet == ERROR_SUCCESS )
+    {
+        iRet = RegQueryValueEx (hRegKeyHandle,
+                                "ForceKeyProtection",
+                                NULL,
+                                &dwType,
+                                (LPBYTE) &dwValue,
+                                &dwValueSize);
+        if ( ( iRet    == ERROR_SUCCESS ) &&
+             ( dwValue == 2             ) )
+        {
+            /* We are finished */
+            RegCloseKey(hRegKeyHandle);
+            return;
+        }
+    }
+
+    RegCloseKey(hRegKeyHandle);
+    hRegKeyHandle = NULL;
+
+    iRet = RegCreateKeyEx(HKEY_LOCAL_MACHINE,
+                          "SOFTWARE\\Policies\\Microsoft\\Cryptography",
+                          0,
+                          NULL,
+                          REG_OPTION_NON_VOLATILE,
+                          KEY_READ | KEY_WRITE,
+                          NULL,
+                          &hRegKeyHandle,
+                          NULL);
+    if ( iRet == ERROR_SUCCESS ) {
+        dwValue = 2;
+        iRet = RegSetValueEx (hRegKeyHandle,
+                              "ForceKeyProtection",
+                              0,
+                              REG_DWORD,
+                              (LPBYTE) &dwValue,
+                              sizeof(dwValue));
+        if ( iRet != ERROR_SUCCESS ) {
+            RegCloseKey(hRegKeyHandle);
+            throw KSException(__func__, __LINE__, GetLastError());
+        }
+    }
+    else
+    {
+        /* Failed creating registry key */
+        RegCloseKey(hRegKeyHandle);
+        throw KSException(__func__, __LINE__, GetLastError());
+    }
+
+    RegCloseKey(hRegKeyHandle);
 }

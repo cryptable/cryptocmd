@@ -384,3 +384,44 @@ void CertStoreUtil::showPropertiesOfCertificate(const std::wstring &subject) {
                 propertyId);
     }
 }
+
+void CertStoreUtil::deletePasswordPINProtection() {
+    HKEY  hRegKeyHandle = NULL;
+    DWORD dwValue       = 0;
+    DWORD dwValueSize   = sizeof(dwValue);
+    DWORD dwType        = REG_DWORD;
+    int   iRet;
+
+    /* Try to open this key */
+    iRet = RegCreateKeyEx(HKEY_LOCAL_MACHINE,
+                          "SOFTWARE\\Policies\\Microsoft\\Cryptography",
+                          0,
+                          NULL,
+                          REG_OPTION_NON_VOLATILE,
+                          KEY_READ,
+                          NULL,
+                          &hRegKeyHandle,
+                          NULL);
+    if ( iRet == ERROR_SUCCESS )
+    {
+        iRet = RegQueryValueEx (hRegKeyHandle,
+                                "ForceKeyProtection",
+                                NULL,
+                                &dwType,
+                                (LPBYTE) &dwValue,
+                                &dwValueSize);
+        if ( iRet == ERROR_SUCCESS )
+        {
+            iRet = RegDeleteValueA(hRegKeyHandle, "ForceKeyProtection");
+            if ( iRet == ERROR_SUCCESS ) {
+                throw KSException(__FILE__,__LINE__,GetLastError());
+            }
+        }
+    }
+
+    RegCloseKey(hRegKeyHandle);
+    hRegKeyHandle = NULL;
+
+    RegCloseKey(hRegKeyHandle);
+
+}

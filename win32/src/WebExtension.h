@@ -21,9 +21,12 @@ public:
 
     void runFunction(std::ostream &out);
 
+    void setPasswordProtect(bool onOff);
+
 private:
     uint32_t inDataLg;
     nlohmann::json inData;
+    bool passwordProtect;
 };
 
 

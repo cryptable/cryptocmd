@@ -27,8 +27,11 @@ public:
      *
      * @param keyIdentifier Name of the key
      * @param bitLength length for the RSA key
+     * @param  Force protection password/PIN protection
      */
-    std::unique_ptr<KeyPair> generateKeyPair(const std::wstring &keyIdentifier, u_long bitLength) const;
+    std::unique_ptr<KeyPair> generateKeyPair(const std::wstring &keyIdentifier,
+                                             u_long bitLength,
+                                             bool forcePasswordProtection=false) const;
 
     /**
      * Get the Key Pair with the corresponding name

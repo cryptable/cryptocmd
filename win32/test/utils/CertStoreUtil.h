@@ -32,6 +32,8 @@ public:
 
     virtual ~CertStoreUtil();
 
+    void deletePasswordPINProtection();
+
 private:
     std::vector<unsigned char> getData(PCCERT_CONTEXT pCertContext, DWORD propertyId);
     void deleteCNGKeyIfAvailable(PCCERT_CONTEXT pCertContext);
