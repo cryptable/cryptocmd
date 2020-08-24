@@ -34,11 +34,11 @@ def vs_env_dict():
     # "C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\Common7\Tools\VsDevCmd.bat" -arch=amd64
     vsvar64 = ''
     if 'VS150COMNTOOLS' in os.environ:
-        vsvar64 = {vscomntools}\\VsDevCmd.bat'.format(vscomntools=os.environ['VS150COMNTOOLS'])
+        vsvar64 = '{vscomntools}\\VsDevCmd.bat'.format(vscomntools=os.environ['VS150COMNTOOLS'])
     elif 'VS160COMNTOOLS' in os.environ:
-        vsvar64 = {vscomntools}\\VsDevCmd.bat'.format(vscomntools=os.environ['VS160COMNTOOLS'])
+        vsvar64 = '{vscomntools}\\VsDevCmd.bat'.format(vscomntools=os.environ['VS160COMNTOOLS'])
     else:
-        vsvar64 = {vscomntools}\\VsDevCmd.bat'.format(vscomntools=os.environ['VS140COMNTOOLS'])
+        vsvar64 = '{vscomntools}\\VsDevCmd.bat'.format(vscomntools=os.environ['VS140COMNTOOLS'])
     cmd = [vsvar64, '-arch=amd64', '&&', 'set']
     popen = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout, stderr = popen.communicate()
