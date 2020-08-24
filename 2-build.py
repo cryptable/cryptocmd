@@ -35,8 +35,8 @@ def build_extension():
     subprocess.run('web-ext lint', shell=True)
     jwt_issuer=os.environ['AMO_JWT_ISSUER']
     jwt_secret=os.environ['AMO_JWT_SECRET']
-    print('web-ext sign --api-key={iss} --api-secret={sec}'.format(iss=jwt_issuer,sec=jwt_secret))
-    subprocess.run('web-ext sign --api-key={iss} --api-secret={sec}'.format(iss=jwt_issuer,sec=jwt_secret), shell=True)
+    if "WEB_EXT_SIGN" in os.environ:
+        subprocess.run('web-ext sign --api-key={iss} --api-secret={sec}'.format(iss=jwt_issuer,sec=jwt_secret), shell=True)
     os.chdir('../../..')
     return
 
