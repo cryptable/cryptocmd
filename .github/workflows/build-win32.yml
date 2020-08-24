@@ -1,0 +1,21 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: setup development
+      run: py 1-setup-dev.py
+    - name: build project release
+      run: py 2-build.py
+    - name: cleanup development environment
+      run: py 9-clean-dev.py
