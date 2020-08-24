@@ -26,7 +26,6 @@ def install_catch2():
     subprocess.run('git checkout tags/v2.12.1 -b latest-Catch2', shell=True)
     subprocess.run('cmake -DCMAKE_INSTALL_PREFIX=' + get_common_dir() + ' -Bbuild -H. -DBUILD_TESTING=OFF', shell=True)
     subprocess.run('cmake --build build/ --target install', shell=True)
-
     os.chdir("..")
     return
 
@@ -119,7 +118,10 @@ def install_openssl_win32():
     # os.rename(get_common_dir() + '/lib/libssl.lib', get_common_dir() + '/lib/libssld.lib')
 
     # Release
-    pwait = subprocess.Popen(['perl', 'Configure', 'no-ssl2', 'no-ssl3', 'no-asm', 'no-shared', 'disable-capieng',
+    
+    print(openssl_build_env['PATH'])
+
+    pwait = subprocess.Popen(['perl.exe', 'Configure', 'no-ssl2', 'no-ssl3', 'no-asm', 'no-shared', 'disable-capieng',
         '--prefix=' + get_common_dir(), '--openssldir=' + get_common_dir(), 
         'VC-WIN64A'], env=openssl_build_env, shell=True)
     if (pwait.wait()):
