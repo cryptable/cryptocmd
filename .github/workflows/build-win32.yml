@@ -11,20 +11,18 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: setup Python virtual environment
-      run: |
-        py -m venv myvenv
-        myvenv\Scripts\activate.bat
+    - name: Set up Python v3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+    - name: Upgrade pip
+      run: py -m pip install --upgrade pip
     - name: setup development
-      run: |
-        myvenv\Scripts\activate.bat
-        py 1-setup-dev-conan.py
+      run: py 1-setup-dev-conan.py
     - name: build project release
       env:
         WEB_EXT_SIGN: 1
         AMO_JWT_ISSUER: ${{ secrets.AMO_JWT_ISSUER }}
         AMO_JWT_SECRET: ${{ secrets.AMO_JWT_SECRET }}
-      run: |
-        myvenv\Scripts\activate.bat
-        py 2-build-conan.py
+      run: py 2-build-conan.py
 
