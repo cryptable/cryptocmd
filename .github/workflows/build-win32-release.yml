@@ -1,29 +1,30 @@
-sname: Release build
+name: Barbarian build
 
 on:
   push:
-    branches: [ release ]
-    tags: [ v* ]
+    branches: [ v* ]
 
 jobs:
   build:
-
-    runs-on: windows-latest
+    name: "Build native messaging"
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Python v3.8
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.8
-    - name: Upgrade pip
-      run: py -m pip install --upgrade pip
-    - name: setup development
-      run: py 1-setup-dev-conan.py
-    - name: build project release
+    - name: Install web-ext Firefox
+      run: sudo npm --global install web-ext
+    - name: "web-ext lint"
+      run: |
+        cd extensions/firefox/extension
+        web-ext lint -v -s . 
+    - name: "web-ext build"
+      run: |
+        cd extensions/firefox/extension
+        web-ext build -v -s . --overwrite-dest
+    - name: "web-ext sign"
       env:
-        WEB_EXT_SIGN: 1
         AMO_JWT_ISSUER: ${{ secrets.AMO_JWT_ISSUER }}
         AMO_JWT_SECRET: ${{ secrets.AMO_JWT_SECRET }}
-      run: py 2-build-conan.py
-
+      run: |
+        cd extensions/firefox/extension
+        web-ext sign --api-key=$AMO_JWT_ISSUER --api-secret=$AMO_JWT_SECRET -v 

@@ -1,38 +1,24 @@
-name: C/C++ CI
+name: Barbarian build
 
 on:
   push:
     branches: [ develop ]
-    tags: [ alpha-v* ]
-
 
 jobs:
   build:
-
-    runs-on: windows-latest
+    name: "Build native messaging"
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
-    - name: setup development
-      run: py 1-setup-dev.py
-    - name: build project release
-      env:
-        AMO_JWT_ISSUER: ${{ secrets.AMO_JWT_ISSUER }}
-        AMO_JWT_SECRET: ${{ secrets.AMO_JWT_SECRET }}
-      run: py 2-build.py
-    - name: cleanup development environment
-      run: py 9-clean-dev.py
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-      with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
-        body: |
-          Changes in this Release
-          - First Change
-          - Second Change
-        draft: false
-        prerelease: false
+    - name: Install web-ext Firefox
+      run: sudo npm --global install web-ext
+    - name: "web-ext lint"
+      run: |
+        cd extensions/firefox/extension
+        web-ext lint -v -s . 
+    - name: "web-ext build"
+      run: |
+        cd extensions/firefox/extension
+        web-ext build -v -s . --overwrite-dest
+
