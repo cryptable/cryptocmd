@@ -14,7 +14,9 @@ jobs:
     - name: Install web-ext Firefox
       run: npm --global install web-ext
     - name: "web-ext lint"
-      run: web-ext lint -s extensions\firefox\extension
+      run: |
+        cd extensions\firefox\extension
+        web-ext lint
     - name: "web-ext build"
       uses: kewisch/action-web-ext@v1
       with:
