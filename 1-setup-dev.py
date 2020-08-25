@@ -26,19 +26,25 @@ def install_catch2():
     subprocess.run('git checkout tags/v2.12.1 -b latest-Catch2', shell=True)
     subprocess.run('cmake -DCMAKE_INSTALL_PREFIX=' + get_common_dir() + ' -Bbuild -H. -DBUILD_TESTING=OFF', shell=True)
     subprocess.run('cmake --build build/ --target install', shell=True)
+
     os.chdir("..")
     return
 
 def vs_env_dict():
     # "C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\Common7\Tools\VsDevCmd.bat" -arch=amd64
+    # ref: https://docs.microsoft.com/en-us/cpp/build/building-on-the-command-line?view=vs-2019#developer_command_file_locations
     vsvar64 = ''
     if 'VS150COMNTOOLS' in os.environ:
-        vsvar64 = '{vscomntools}\\VsDevCmd.bat'.format(vscomntools=os.environ['VS150COMNTOOLS'])
+        vsvarsall = '{vscomntools}\\VsDevCmd.bat'.format(vscomntools=os.environ['VS150COMNTOOLS'])
+        cmd = [vsvarsall, '-arch=amd64', '&&', 'set']
     elif 'VS160COMNTOOLS' in os.environ:
-        vsvar64 = '{vscomntools}\\VsDevCmd.bat'.format(vscomntools=os.environ['VS160COMNTOOLS'])
+        vsvarsall = '{vscomntools}\\VsDevCmd.bat'.format(vscomntools=os.environ['VS160COMNTOOLS'])
+        cmd = [vsvarsall, '-arch=amd64', '&&', 'set']
     else:
-        vsvar64 = '{vscomntools}\\vsvars32.bat'.format(vscomntools=os.environ['VS140COMNTOOLS'])
-    cmd = [vsvar64, '-arch=amd64', '&&', 'set']
+        # Fall back to Windows 2019 Github location
+        # C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise
+        vsvarsall = 'C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\VC\\Auxiliary\\Build\\vsvarsall.bat'.format(vscomntools=os.environ['VS140COMNTOOLS'])
+        cmd = [vsvarsall, 'x86_amd64', '&&', 'set']
     popen = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout, stderr = popen.communicate()
     if popen.wait() != 0:
@@ -62,6 +68,9 @@ def install_openssl_win32():
 
     openssl_build_env = os.environ.copy()
     # Visual Studio Setup
+    print('----- BEGIN Detected VS setup -----')
+    print(vs_env_dict())
+    print('----- END Detected VS setup -----')   
     openssl_build_env.update(vs_env_dict())
 
     # Strawberry perl
