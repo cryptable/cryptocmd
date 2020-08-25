@@ -16,7 +16,7 @@ jobs:
     - name: "web-ext lint"
       run: |
         cd extensions\firefox\extension
-        web-ext lint
+        web-ext lint -v -s . 
     - name: "web-ext build"
       uses: kewisch/action-web-ext@v1
       with:
