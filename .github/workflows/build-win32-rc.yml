@@ -1,4 +1,4 @@
-name: Barbarian build
+name: Release Candidate build
 
 on:
   push:
