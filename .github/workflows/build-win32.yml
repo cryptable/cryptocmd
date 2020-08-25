@@ -11,14 +11,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: Install web-ext Firefox
+      run: npm --global install webext
     - name: "web-ext lint"
-      uses: kewisch/action-web-ext@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        cmd: lint
-        source: extensions/firefox/extension
-        verbose: true
+      run: web-ext lint -s extensions\firefox\extension
     - name: "web-ext build"
       uses: kewisch/action-web-ext@v1
       with:
