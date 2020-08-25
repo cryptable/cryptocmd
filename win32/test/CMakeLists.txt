@@ -1,16 +1,5 @@
 include_directories (${TEST_SOURCE_DIR}/src) 
 
-SET(OPENSSL_ROOT_DIR ${COMMON_DIR})
-find_package(OpenSSL)
-if(OPENSSL_FOUND)
-    MESSAGE("Openssl Version: ${OPENSSL_VERSION}")
-    MESSAGE("Openssl Include: ${OPENSSL_INCLUDE_DIR}")
-    MESSAGE("Openssl Crypto library: ${OPENSSL_CRYPTO_LIBRARY}")
-    MESSAGE("Openssl SSL library: ${OPENSSL_SSL_LIBRARY}")
-    MESSAGE("Openssl Crypto libraries: ${OPENSSL_SSL_LIBRARIES}")
-    MESSAGE("Openssl APPLINK SOURCES: ${OPENSSL_APPLINK_SOURCE}")
-endif(OPENSSL_FOUND)
-
 MESSAGE("Build type: ${CMAKE_BUILD_TYPE}")
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -42,7 +31,8 @@ target_link_libraries(tests ${LIBRARY_NAME}
     Ws2_32.lib 
     ${OPENSSL_CRYPTO_LIBRARY} 
     ${OPENSSL_SSL_LIBRARY} 
-    ${CRYPTABLEPKI})
+    ${CRYPTABLEPKI}
+    ${CONAN_LIBS})
 
 enable_testing()
 add_test(testing tests) 

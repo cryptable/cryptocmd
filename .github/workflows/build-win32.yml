@@ -3,8 +3,6 @@ name: C/C++ CI
 on:
   push:
     branches: [ master ]
-  pull_request:
-    branches: [ master ]
 
 jobs:
   build:
@@ -14,11 +12,11 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: setup development
-      run: py 1-setup-dev.py
+      run: py 1-setup-dev-light.py
     - name: build project release
       env:
+        WEB_EXT_SIGN: 1
         AMO_JWT_ISSUER: ${{ secrets.AMO_JWT_ISSUER }}
         AMO_JWT_SECRET: ${{ secrets.AMO_JWT_SECRET }}
-      run: py 2-build.py
-    - name: cleanup development environment
-      run: py 9-clean-dev.py
+      run: py 2-build-light.py
+
