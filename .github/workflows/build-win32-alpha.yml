@@ -10,10 +10,16 @@ jobs:
     runs-on: windows-2016
     steps:
     - uses: actions/checkout@v2
+    - name: Set up Python v3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+    - name: Upgrade pip
+      run: py -m pip install --upgrade pip
     - name: setup development
-      run: py 1-setup-dev.py
+      run: py 1-setup-dev-conan.py
     - name: build the project
-      run: py 2-build.py
+      run: py 2-build-conan.py
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
@@ -21,13 +27,13 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
       with:
         tag_name: ${{ github.ref }}
-        release_name: DEV Release ${{ github.ref }}
+        release_name: Alpha Release ${{ github.ref }}
         body: |
           Changes in this Release
           - First Change
           - Second Change
-        draft: false
-        prerelease: false
+        draft: true
+        prerelease: true
     - name: Upload Release Asset
       id: upload-release-asset 
       uses: actions/upload-release-asset@v1
@@ -36,7 +42,7 @@ jobs:
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
         asset_path: win32\installation\ksmngmnt.msi
-        asset_name: ksmngmnt.msi
+        asset_name: ksmgmnt.msi
         asset_content_type: application/zip 
 
   build:
