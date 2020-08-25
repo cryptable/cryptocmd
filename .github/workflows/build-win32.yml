@@ -10,6 +10,12 @@ jobs:
     runs-on: windows-2016
     steps:
     - uses: actions/checkout@v2
+    - name: Set up Python v3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+    - name: Upgrade pip
+      run: py -m pip install --upgrade pip
     - name: setup development
       run: py 1-setup-dev-conan.py
     - name: build the project
