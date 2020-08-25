@@ -3,7 +3,6 @@ name: C/C++ CI
 on:
   push:
     branches: [ release-candidate ]
-    tags: [ rc?-v* ]
 
 jobs:
   build:
