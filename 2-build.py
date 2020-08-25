@@ -22,8 +22,8 @@ def build_installer():
     os.chdir('installation')
     if os.path.isfile('ksmgmnt.msi'):
             os.remove('ksmgmnt.msi')
-    subprocess.run('candle .\\ksmgmnt.wxs', shell=True, check=True, check=True)
-    subprocess.run('light.exe -ext WixUIExtension .\\ksmgmnt.wixobj', shell=True, check=True)
+    subprocess.run('"C:\\Program Files (x86)\\WiX Toolset v3.11\\bin\\candle" .\\ksmgmnt.wxs', shell=True, check=True, check=True)
+    subprocess.run('"C:\\Program Files (x86)\\WiX Toolset v3.11\\bin\\light.exe" -ext WixUIExtension .\\ksmgmnt.wixobj', shell=True, check=True)
     os.chdir('..')
     return
 
