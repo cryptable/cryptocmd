@@ -22,22 +22,9 @@ def build_installer():
     os.chdir('installation')
     if os.path.isfile('ksmgmnt.msi'):
             os.remove('ksmgmnt.msi')
-    subprocess.run('"C:\\Program Files (x86)\\WiX Toolset v3.11\\bin\\candle" .\\ksmgmnt.wxs', shell=True, check=True, check=True)
+    subprocess.run('"C:\\Program Files (x86)\\WiX Toolset v3.11\\bin\\candle" .\\ksmgmnt.wxs', shell=True, check=True)
     subprocess.run('"C:\\Program Files (x86)\\WiX Toolset v3.11\\bin\\light.exe" -ext WixUIExtension .\\ksmgmnt.wixobj', shell=True, check=True)
     os.chdir('..')
-    return
-
-def build_extension():
-    os.chdir('extensions/firefox/extension')
-    subprocess.run('npm install --global web-ext', shell=True, check=True)
-    subprocess.run('web-ext --version', shell=True, check=True)
-    subprocess.run('web-ext build', shell=True, check=True)
-    subprocess.run('web-ext lint', shell=True, check=True)
-    jwt_issuer=os.environ['AMO_JWT_ISSUER']
-    jwt_secret=os.environ['AMO_JWT_SECRET']
-    if "WEB_EXT_SIGN" in os.environ:
-        subprocess.run('web-ext sign --api-key={iss} --api-secret={sec}'.format(iss=jwt_issuer,sec=jwt_secret), shell=True, check=True)
-    os.chdir('../../..')
     return
 
 def run_scripts():
@@ -46,7 +33,6 @@ def run_scripts():
         os.remove('.\\installation\\ksmgmnt.exe')
     copyfile('.\\win32\\build\\src\\Release\\ksmgmnt.exe', '.\\installation\\ksmgmnt.exe')
     build_installer()
-    build_extension()
     return
 
 if __name__ == "__main__":

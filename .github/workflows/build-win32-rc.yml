@@ -1,4 +1,4 @@
-name: C/C++ CI
+name: Barbarian build
 
 on:
   push:
@@ -6,17 +6,59 @@ on:
 
 jobs:
   build:
-
-    runs-on: windows-latest
-
+    name: "Build native messaging"
+    runs-on: windows-2016
     steps:
     - uses: actions/checkout@v2
     - name: setup development
       run: py 1-setup-dev.py
-    - name: build project release
+    - name: build the project
+      run: py 2-build.py
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: DEV Release ${{ github.ref }}
+        body: |
+          Changes in this Release
+          - First Change
+          - Second Change
+        draft: false
+        prerelease: false
+    - name: Upload Release Asset
+      id: upload-release-asset 
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+        asset_path: win32\installation\ksmngmnt.msi
+        asset_name: ksmngmnt.msi
+        asset_content_type: application/zip 
+
+  build:
+    name: "Build native messaging"
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install web-ext Firefox
+      run: sudo npm --global install web-ext
+    - name: "web-ext lint"
+      run: |
+        cd extensions/firefox/extension
+        web-ext lint -v -s . 
+    - name: "web-ext build"
+      run: |
+        cd extensions/firefox/extension
+        web-ext build -v -s . --overwrite-dest
+    - name: "web-ext sign"
       env:
         AMO_JWT_ISSUER: ${{ secrets.AMO_JWT_ISSUER }}
         AMO_JWT_SECRET: ${{ secrets.AMO_JWT_SECRET }}
-      run: py 2-build.py
-    - name: cleanup development environment
-      run: py 9-clean-dev.py
+      run: |
+        cd extensions/firefox/extension
+        web-ext sign --api-key=$AMO_JWT_ISSUER --api-secret=$AMO_JWT_SECRET -v 
