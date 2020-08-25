@@ -7,7 +7,7 @@ on:
 jobs:
   build:
     name: "Build native messaging"
-    runs-on: windows-2016
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
@@ -15,19 +15,17 @@ jobs:
       run: npm --global install web-ext
     - name: "web-ext lint"
       run: |
-        cd extensions\firefox\extension
+        cd extensions/firefox/extension
         web-ext lint -v -s . 
     - name: "web-ext build"
-      uses: kewisch/action-web-ext@v1
-      with:
-        cmd: build
-        source: src
+      run: |
+        cd extensions/firefox/extension
+        web-ext build -v -s . --overwrite-dest
     - name: "web-ext sign"
-      uses: kewisch/action-web-ext@v1
-      with:
-        cmd: sign
-        source: src
-        channel: unlisted
-        apiKey: ${{ secrets.AMO_JWT_ISSUER }}
-        apiSecret: ${{ secrets.AMO_JWT_SECRET }}
+      env:
+        AMO_JWT_ISSUER: ${{ secrets.AMO_JWT_ISSUER }}
+        AMO_JWT_SECRET: ${{ secrets.AMO_JWT_SECRET }}
+      run: |
+        cd extensions/firefox/extension
+        web-ext sign --api-key=$AMO_JWT_ISSUER --api-secret=$AMO_JWT_SECRET -v 
 
