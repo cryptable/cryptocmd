@@ -68,9 +68,6 @@ def install_openssl_win32():
 
     openssl_build_env = os.environ.copy()
     # Visual Studio Setup
-    print('----- BEGIN Detected VS setup -----')
-    print(vs_env_dict())
-    print('----- END Detected VS setup -----')   
     openssl_build_env.update(vs_env_dict())
 
     # Strawberry perl
@@ -127,9 +124,6 @@ def install_openssl_win32():
     # os.rename(get_common_dir() + '/lib/libssl.lib', get_common_dir() + '/lib/libssld.lib')
 
     # Release
-    
-    print(openssl_build_env['PATH'])
-
     pwait = subprocess.Popen(['perl.exe', 'Configure', 'no-ssl2', 'no-ssl3', 'no-asm', 'no-shared', 'disable-capieng',
         '--prefix=' + get_common_dir(), '--openssldir=' + get_common_dir(), 
         'VC-WIN64A'], env=openssl_build_env, shell=True)
@@ -213,7 +207,6 @@ def run_scripts():
     install_catch2()
     install_openssl_win32()
     install_nlohmann_json()
-    install_jwtcpp()
     install_cryptablepki()
    
     os.chdir("..")
