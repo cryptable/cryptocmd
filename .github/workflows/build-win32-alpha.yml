@@ -5,7 +5,7 @@ on:
     tags: [ alpha-v* ]
 
 jobs:
-  build:
+  build-native-exe:
     name: "Build native messaging"
     runs-on: windows-2016
     steps:
@@ -45,10 +45,10 @@ jobs:
         asset_name: ksmgmnt.msi
         asset_content_type: application/zip 
 
-  build:
+  build-ff-ext:
     name: "Build native messaging"
+    needs: build-native-exe
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
     - name: Install web-ext Firefox
