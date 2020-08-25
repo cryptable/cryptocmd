@@ -42,7 +42,6 @@ def build_extension():
     return
 
 def run_scripts():
-    build_extension()
     build_ksmgmnt()
     if os.path.isfile('.\\installation\\ksmgmnt.exe'):
         os.remove('.\\installation\\ksmgmnt.exe')

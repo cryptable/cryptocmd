@@ -6,23 +6,30 @@ on:
 
 jobs:
   build:
-
+    name: "Build native messaging"
     runs-on: windows-2016
 
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Python v3.8
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.8
-    - name: Upgrade pip
-      run: py -m pip install --upgrade pip
-    - name: setup development
-      run: py 1-setup-dev-conan.py
-    - name: build project release
+    - name: "web-ext lint"
+      uses: kewisch/action-web-ext@v1
       env:
-        WEB_EXT_SIGN: 1
-        AMO_JWT_ISSUER: ${{ secrets.AMO_JWT_ISSUER }}
-        AMO_JWT_SECRET: ${{ secrets.AMO_JWT_SECRET }}
-      run: py 2-build-conan.py
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        cmd: lint
+        source: extensions/firefox/extension
+        verbose: true
+    - name: "web-ext build"
+      uses: kewisch/action-web-ext@v1
+      with:
+        cmd: build
+        source: src
+    - name: "web-ext sign"
+      uses: kewisch/action-web-ext@v1
+      with:
+        cmd: sign
+        source: src
+        channel: unlisted
+        apiKey: ${{ secrets.AMO_JWT_ISSUER }}
+        apiSecret: ${{ secrets.AMO_JWT_SECRET }}
 
