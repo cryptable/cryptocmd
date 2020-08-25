@@ -32,8 +32,8 @@ def build_extension():
     os.chdir('extensions/firefox/extension')
     subprocess.run('npm install --global web-ext', shell=True, check=True)
     subprocess.run('web-ext --version', shell=True, check=True)
-    subprocess.run('web-ext lint', shell=True, check=True)
-    subprocess.run('web-ext build --overwrite-dest', shell=True, check=True)
+    subprocess.run('web-ext lint -v -s .', shell=True, check=True)
+    subprocess.run('web-ext build --overwrite-dest -v -s .', shell=True, check=True)
     if "WEB_EXT_SIGN" in os.environ:
         jwt_issuer=os.environ['AMO_JWT_ISSUER']
         jwt_secret=os.environ['AMO_JWT_SECRET']
