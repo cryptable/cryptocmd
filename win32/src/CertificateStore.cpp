@@ -7,6 +7,8 @@
 #include <rpc.h>
 #include <functional>
 #include <vector>
+#include <memory>
+#include <stdexcept>
 #include "CertificateStore.h"
 #include "KSException.h"
 #include "X509Name.h"

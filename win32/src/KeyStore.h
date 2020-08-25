@@ -6,6 +6,7 @@
 #define KEYSTORE_HPP
 #include "common.h"
 #include <string>
+#include <memory>
 #include "KeyPair.h"
 
 /**

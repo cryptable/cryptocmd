@@ -12,9 +12,9 @@ def build_ksmgmnt():
     if not os.path.isdir("win32/build"):
         os.mkdir("win32/build")
     os.chdir("win32/build")
-    subprocess.run('cmake .. -DCMAKE_BUILD_TYPE=Release -DCOMMON_DIR="' + get_common_dir() + '" -A x64', shell=True)
-    subprocess.run('cmake --build . --config Release', shell=True)
-    subprocess.run('.\\test\\Release\\tests.exe exclude:[ui]', shell=True)
+    subprocess.run('cmake .. -DCMAKE_BUILD_TYPE=Release -DCOMMON_DIR="' + get_common_dir() + '" -A x64', shell=True, check=True)
+    subprocess.run('cmake --build . --config Release', shell=True, check=True)
+    subprocess.run('.\\test\\Release\\tests.exe exclude:[ui]', shell=True, check=True)
     os.chdir("../..")
     return
 
@@ -22,21 +22,21 @@ def build_installer():
     os.chdir('installation')
     if os.path.isfile('ksmgmnt.msi'):
             os.remove('ksmgmnt.msi')
-    subprocess.run('candle .\\ksmgmnt.wxs', shell=True)
-    subprocess.run('light.exe -ext WixUIExtension .\\ksmgmnt.wixobj', shell=True)
+    subprocess.run('candle .\\ksmgmnt.wxs', shell=True, check=True, check=True)
+    subprocess.run('light.exe -ext WixUIExtension .\\ksmgmnt.wixobj', shell=True, check=True)
     os.chdir('..')
     return
 
 def build_extension():
     os.chdir('extensions/firefox/extension')
-    subprocess.run('npm install --global web-ext', shell=True)
-    subprocess.run('web-ext --version', shell=True)
-    subprocess.run('web-ext build', shell=True)
-    subprocess.run('web-ext lint', shell=True)
+    subprocess.run('npm install --global web-ext', shell=True, check=True)
+    subprocess.run('web-ext --version', shell=True, check=True)
+    subprocess.run('web-ext build', shell=True, check=True)
+    subprocess.run('web-ext lint', shell=True, check=True)
     jwt_issuer=os.environ['AMO_JWT_ISSUER']
     jwt_secret=os.environ['AMO_JWT_SECRET']
     if "WEB_EXT_SIGN" in os.environ:
-        subprocess.run('web-ext sign --api-key={iss} --api-secret={sec}'.format(iss=jwt_issuer,sec=jwt_secret), shell=True)
+        subprocess.run('web-ext sign --api-key={iss} --api-secret={sec}'.format(iss=jwt_issuer,sec=jwt_secret), shell=True, check=True)
     os.chdir('../../..')
     return
 
