@@ -8,6 +8,7 @@
 #include "CNGSign.h"
 #include <ntstatus.h>
 #include <KSException.h>
+#include <stdexcept>
 
 CNGSign::CNGSign(NCRYPT_KEY_HANDLE k) : key{k} {
     DWORD status = 0;

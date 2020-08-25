@@ -7,6 +7,7 @@
 #include "CNGHash.h"
 #include <ntstatus.h>
 #include <KSException.h>
+#include <stdexcept>
 
 CNGHash::CNGHash() : hashAlgo{0}, hash{0} {
     DWORD status=0;
