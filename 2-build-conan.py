@@ -42,12 +42,12 @@ def build_extension():
     return
 
 def run_scripts():
+    build_extension()
     build_ksmgmnt()
     if os.path.isfile('.\\installation\\ksmgmnt.exe'):
         os.remove('.\\installation\\ksmgmnt.exe')
     copyfile('.\\win32\\build\\bin\\ksmgmnt.exe', '.\\installation\\ksmgmnt.exe')
     build_installer()
-    build_extension()
     return
 
 if __name__ == "__main__":
