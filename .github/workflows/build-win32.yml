@@ -12,7 +12,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Install web-ext Firefox
-      run: npm --global install webext
+      run: npm --global install web-ext
     - name: "web-ext lint"
       run: web-ext lint -s extensions\firefox\extension
     - name: "web-ext build"
