@@ -1,9 +1,9 @@
-name: Release build
+sname: Release build
 
 on:
   push:
-    branches: [ master ]
-    tags: [ release-v* ]
+    branches: [ release ]
+    tags: [ v* ]
 
 jobs:
   build:
