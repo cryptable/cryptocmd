@@ -31,12 +31,27 @@ def build_installer():
     os.chdir('..')
     return
 
+def build_extension():
+    os.chdir('extensions/firefox/extension')
+    subprocess.run('npm install --global web-ext', shell=True, check=True)
+    subprocess.run('web-ext --version', shell=True, check=True)
+    subprocess.run(['web-ext', 'lint'], shell=True, check=True)
+    subprocess.run(['web-ext', 'build', '--overwrite-dest'], shell=True, check=True)
+    if "WEB_EXT_SIGN" in os.environ:
+        jwt_issuer=os.environ['AMO_JWT_ISSUER']
+        jwt_secret=os.environ['AMO_JWT_SECRET']
+        subprocess.run('web-ext sign --api-key={iss} --api-secret={sec}'.format(iss=jwt_issuer,sec=jwt_secret), shell=True, check=True)
+    os.chdir('../../..')
+    return
+
 def run_scripts():
     build_ksmgmnt()
     if os.path.isfile('.\\installation\\ksmgmnt.exe'):
         os.remove('.\\installation\\ksmgmnt.exe')
     copyfile('.\\win32\\build\\bin\\ksmgmnt.exe', '.\\installation\\ksmgmnt.exe')
     build_installer()
+# TODO: Support local build
+#    build_extension()
     return
 
 if __name__ == "__main__":
