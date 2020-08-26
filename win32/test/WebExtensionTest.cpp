@@ -27,7 +27,7 @@ TEST_CASE( "WebExtensionTests", "[success]" ) {
         nlohmann::json create_csr = R"(
             {
                 "request":"create_csr",
-                "key_id":"XH45E45MLk0",
+                "request_id":"XH45E45MLk0",
                 "subject_name":"cn=John Doe,o=Company,c=US",
                 "rsa_key_length":2048
             }
@@ -51,7 +51,7 @@ TEST_CASE( "WebExtensionTests", "[success]" ) {
         out >> result;
 
         REQUIRE(result["result"] == "OK");
-        REQUIRE(result["key_id"] == create_csr["key_id"]);
+        REQUIRE(result["request_id"] == create_csr["request_id"]);
         auto pemCert = Base64Utils::fromBase64(result["response"]);
         OpenSSLCertificateRequest openSslCertificateRequest(std::string(pemCert.data(), pemCert.size()));
         REQUIRE(openSslCertificateRequest.verify());
@@ -75,7 +75,7 @@ TEST_CASE( "WebExtensionTests", "[success]" ) {
         auto b64Cert = Base64Utils::toBase64(std::vector<unsigned char>(cert.begin(), cert.end()));
         nlohmann::json import_cert;
         import_cert["request"]="import_certificate";
-        import_cert["key_id"]="GHTEO93df6";
+        import_cert["request_id"]="GHTEO93df6";
         import_cert["certificate"]=b64Cert;
         auto input = import_cert.dump();
         std::stringstream in;
@@ -96,7 +96,7 @@ TEST_CASE( "WebExtensionTests", "[success]" ) {
         out >> result;
 
         REQUIRE(result["result"] == "OK");
-        REQUIRE(result["key_id"] == import_cert["key_id"]);
+        REQUIRE(result["request_id"] == import_cert["request_id"]);
         REQUIRE(result["response"] == "import certificate successful");
 
         // Cleanup
@@ -123,7 +123,7 @@ TEST_CASE( "WebExtensionTests", "[success]" ) {
         auto b64pkcs12 = Base64Utils::toBase64(pkcs12);
         nlohmann::json import_pfx_key;
         import_pfx_key["request"]="import_pfx_key";
-        import_pfx_key["key_id"]="OPhJT83fgT";
+        import_pfx_key["request_id"]="OPhJT83fgT";
         import_pfx_key["pkcs12"]=b64pkcs12;
         import_pfx_key["password"]="system";
         auto input = import_pfx_key.dump();
@@ -145,7 +145,7 @@ TEST_CASE( "WebExtensionTests", "[success]" ) {
         out >> result;
 
         REQUIRE(result["result"] == "OK");
-        REQUIRE(result["key_id"] == import_pfx_key["key_id"]);
+        REQUIRE(result["request_id"] == import_pfx_key["request_id"]);
         REQUIRE(result["response"] == "import pfx successful");
 
         // Cleanup
@@ -169,7 +169,7 @@ TEST_CASE( "WebExtensionTests", "[success]" ) {
         certificateStore.importCertificate(cert->getPEM());
         nlohmann::json export_pfx_key;
         export_pfx_key["request"]="export_pfx_key";
-        export_pfx_key["key_id"]="OPhKl83fgT";
+        export_pfx_key["request_id"]="OPhKl83fgT";
         export_pfx_key["issuer"]="cn=RootCA,o=Company,c=US";
         export_pfx_key["serial_number"]="03";
         export_pfx_key["password"]="system";
@@ -192,7 +192,7 @@ TEST_CASE( "WebExtensionTests", "[success]" ) {
         out >> result;
 
         REQUIRE(result["result"] == "OK");
-        REQUIRE(result["key_id"] == export_pfx_key["key_id"]);
+        REQUIRE(result["request_id"] == export_pfx_key["request_id"]);
         auto pkcs12 = Base64Utils::fromBase64(result["response"]);
         OpenSSLPKCS12 openSslpkcs12(pkcs12.data(), pkcs12.size(), "system");
         REQUIRE(openSslpkcs12.getCertificate().getCommonName() == "John Doe");
@@ -225,7 +225,7 @@ TEST_CASE( "WebExtensionTests", "[success]" ) {
         certificateStore.pfxImport(b64pkcs12, L"system");
         nlohmann::json export_pfx_key;
         export_pfx_key["request"]="export_pfx_key";
-        export_pfx_key["key_id"]="OPhKl83fgT";
+        export_pfx_key["request_id"]="OPhKl83fgT";
         export_pfx_key["issuer"]="cn=RootCA,o=Company,c=US";
         export_pfx_key["serial_number"]="03";
         export_pfx_key["password"]="system";
@@ -248,7 +248,7 @@ TEST_CASE( "WebExtensionTests", "[success]" ) {
         out >> result;
 
         REQUIRE(result["result"] == "OK");
-        REQUIRE(result["key_id"] == export_pfx_key["key_id"]);
+        REQUIRE(result["request_id"] == export_pfx_key["request_id"]);
         auto pkcs12out = Base64Utils::fromBase64(result["response"]);
         OpenSSLPKCS12 openSslpkcs12out(pkcs12out.data(), pkcs12out.size(), "system");
         REQUIRE(openSslpkcs12out.getCertificate().getCommonName() == "John Doe");
@@ -276,7 +276,7 @@ TEST_CASE( "WebExtensionTests with UI", "[ui]" ) {
         nlohmann::json create_csr = R"(
             {
                 "request":"create_csr",
-                "key_id":"XH45E45MLk0",
+                "request_id":"XH45E45MLk0",
                 "subject_name":"cn=John Doe,o=Company,c=US",
                 "rsa_key_length":2048
             }
@@ -299,7 +299,7 @@ TEST_CASE( "WebExtensionTests with UI", "[ui]" ) {
         out >> result;
 
         REQUIRE(result["result"] == "OK");
-        REQUIRE(result["key_id"] == create_csr["key_id"]);
+        REQUIRE(result["request_id"] == create_csr["request_id"]);
         auto pemCert = Base64Utils::fromBase64(result["response"]);
         OpenSSLCertificateRequest openSslCertificateRequest(std::string(pemCert.data(), pemCert.size()));
         REQUIRE(openSslCertificateRequest.verify());
@@ -323,7 +323,7 @@ TEST_CASE( "WebExtensionTests with UI", "[ui]" ) {
         auto b64Cert = Base64Utils::toBase64(std::vector<unsigned char>(cert.begin(), cert.end()));
         nlohmann::json import_cert;
         import_cert["request"]="import_certificate";
-        import_cert["key_id"]="GHTEO93df6";
+        import_cert["request_id"]="GHTEO93df6";
         import_cert["certificate"]=b64Cert;
         auto input = import_cert.dump();
         std::stringstream in;
@@ -343,7 +343,7 @@ TEST_CASE( "WebExtensionTests with UI", "[ui]" ) {
         out >> result;
 
         REQUIRE(result["result"] == "OK");
-        REQUIRE(result["key_id"] == import_cert["key_id"]);
+        REQUIRE(result["request_id"] == import_cert["request_id"]);
         REQUIRE(result["response"] == "import certificate successful");
 
         // Cleanup
@@ -370,7 +370,7 @@ TEST_CASE( "WebExtensionTests with UI", "[ui]" ) {
         auto b64pkcs12 = Base64Utils::toBase64(pkcs12);
         nlohmann::json import_pfx_key;
         import_pfx_key["request"]="import_pfx_key";
-        import_pfx_key["key_id"]="OPhJT83fgT";
+        import_pfx_key["request_id"]="OPhJT83fgT";
         import_pfx_key["pkcs12"]=b64pkcs12;
         import_pfx_key["password"]="system";
         auto input = import_pfx_key.dump();
@@ -391,7 +391,7 @@ TEST_CASE( "WebExtensionTests with UI", "[ui]" ) {
         out >> result;
 
         REQUIRE(result["result"] == "OK");
-        REQUIRE(result["key_id"] == import_pfx_key["key_id"]);
+        REQUIRE(result["request_id"] == import_pfx_key["request_id"]);
         REQUIRE(result["response"] == "import pfx successful");
 
         // Cleanup
@@ -417,7 +417,7 @@ TEST_CASE( "WebExtensionTests with UI", "[ui]" ) {
         }
         nlohmann::json export_pfx_key;
         export_pfx_key["request"]="export_pfx_key";
-        export_pfx_key["key_id"]="OPhKl83fgT";
+        export_pfx_key["request_id"]="OPhKl83fgT";
         export_pfx_key["issuer"]="cn=RootCA,o=Company,c=US";
         export_pfx_key["serial_number"]="03";
         export_pfx_key["password"]="system";
@@ -439,7 +439,7 @@ TEST_CASE( "WebExtensionTests with UI", "[ui]" ) {
         out >> result;
 
         REQUIRE(result["result"] == "OK");
-        REQUIRE(result["key_id"] == export_pfx_key["key_id"]);
+        REQUIRE(result["request_id"] == export_pfx_key["request_id"]);
         auto pkcs12 = Base64Utils::fromBase64(result["response"]);
         OpenSSLPKCS12 openSslpkcs12(pkcs12.data(), pkcs12.size(), "system");
         REQUIRE(openSslpkcs12.getCertificate().getCommonName() == "John Doe");
@@ -474,7 +474,7 @@ TEST_CASE( "WebExtensionTests with UI", "[ui]" ) {
         }
         nlohmann::json export_pfx_key;
         export_pfx_key["request"]="export_pfx_key";
-        export_pfx_key["key_id"]="OPhKl83fgT";
+        export_pfx_key["request_id"]="OPhKl83fgT";
         export_pfx_key["issuer"]="cn=RootCA,o=Company,c=US";
         export_pfx_key["serial_number"]="03";
         export_pfx_key["password"]="system";
@@ -496,7 +496,7 @@ TEST_CASE( "WebExtensionTests with UI", "[ui]" ) {
         out >> result;
 
         REQUIRE(result["result"] == "OK");
-        REQUIRE(result["key_id"] == export_pfx_key["key_id"]);
+        REQUIRE(result["request_id"] == export_pfx_key["request_id"]);
         auto pkcs12out = Base64Utils::fromBase64(result["response"]);
         OpenSSLPKCS12 openSslpkcs12out(pkcs12out.data(), pkcs12out.size(), "system");
         REQUIRE(openSslpkcs12out.getCertificate().getCommonName() == "John Doe");

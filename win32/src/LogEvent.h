@@ -18,25 +18,25 @@ public:
 
     void operator=(LogEvent const&)  = delete;
 
-    void setLevel(int eventCode, std::string &level);
+    void setLevel(int eventCode, const std::string &level);
 
-    void trace(int eventCode, std::string &log);
+    void trace(int eventCode, const std::string &log);
 
-    void debug(int eventCode, std::string &log);
+    void debug(int eventCode, const std::string &log);
 
-    void info(int eventCode, std::string &log);
+    void info(int eventCode, const std::string &log);
 
-    void warning(int eventCode, std::string &log);
+    void warning(int eventCode, const std::string &log);
 
-    void error(int eventCode, std::string &log);
+    void error(int eventCode, const std::string &log);
 
-    void fatal(int eventCode, std::string &log);
+    void fatal(int eventCode, const std::string &log);
 
     void setAudit(bool enable);
 
-    void auditFailure(int eventCode, std::string &log);
+    void auditFailure(int eventCode, const std::string &log);
 
-    void auditSuccess(int eventCode, std::string &log);
+    void auditSuccess(int eventCode, const std::string &log);
 
     ~LogEvent();
 
@@ -49,9 +49,9 @@ private:
 
     bool auditEnabled;
 
-    void log(int level, std::string &log, int eventCode);
+    void log(int level, const std::string &log, int eventCode);
 
-    void audit(int eventType, int eventCode, std::string &log);
+    void audit(int eventType, int eventCode, const std::string &log);
 
     static LogEvent logEvent;
 };

@@ -24,31 +24,31 @@ LogEvent LogEvent::logEvent;
 LogEvent::LogEvent(): logLevel{LOG_ERROR}, auditEnabled(true) {
 }
 
-void LogEvent::trace(int eventCode, std::string &l) {
+void LogEvent::trace(int eventCode, const std::string &l) {
     log(LOG_TRACE, l, eventCode);
 }
 
-void LogEvent::debug(int eventCode, std::string &l) {
+void LogEvent::debug(int eventCode, const std::string &l) {
     log(LOG_DEBUG, l, eventCode);
 }
 
-void LogEvent::info(int eventCode, std::string &l) {
+void LogEvent::info(int eventCode, const std::string &l) {
     log(LOG_INFO, l, eventCode);
 }
 
-void LogEvent::warning(int eventCode, std::string &l) {
+void LogEvent::warning(int eventCode, const std::string &l) {
     log(LOG_WARNING, l, eventCode);
 }
 
-void LogEvent::error(int eventCode, std::string &l) {
+void LogEvent::error(int eventCode, const std::string &l) {
     log(LOG_ERROR, l, eventCode);
 }
 
-void LogEvent::fatal(int eventCode, std::string &l) {
+void LogEvent::fatal(int eventCode, const std::string &l) {
     log(LOG_FATAL, l, eventCode);
 }
 
-void LogEvent::log(int level, std::string &log, int eventCode) {
+void LogEvent::log(int level, const std::string &log, int eventCode) {
     if (level < logLevel)
         return;
 
@@ -108,15 +108,15 @@ void LogEvent::log(int level, std::string &log, int eventCode) {
     DeregisterEventSource(eventSource);
 }
 
-void LogEvent::auditFailure(int eventCode, std::string &log) {
+void LogEvent::auditFailure(int eventCode, const std::string &log) {
     audit(EVENTLOG_AUDIT_FAILURE, eventCode, log);
 }
 
-void LogEvent::auditSuccess(int eventCode, std::string &log) {
+void LogEvent::auditSuccess(int eventCode, const std::string &log) {
     audit(EVENTLOG_AUDIT_SUCCESS, eventCode, log);
 }
 
-void LogEvent::audit(int eventType, int eventCode, std::string &log) {
+void LogEvent::audit(int eventType, int eventCode, const std::string &log) {
 
     if (auditEnabled) {
         LPCTSTR message = log.c_str();

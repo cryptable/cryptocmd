@@ -34,7 +34,7 @@
         <!--Components-->
         <DirectoryRef Id="InstallFolder">
             <Component Id="CMP_ksmgmnt" Guid="6c83422a-a154-4053-aeb0-972dc6b5eeff" Win64="yes">
-                <File Id="FILE_MyProgramDir_ksmgmntEXE" Source="ksmgmnt.exe" KeyPath="yes" />
+                <File Id="FILE_MyProgramDir_ksmgmntEXE" Source="ksmgmnt.exe" KeyPath="yes" />              
             </Component>
             <Component Id="CMP_org_cryptable_pki_keymgmnt_json" Guid="dd379c5a-53b6-4ea3-baa2-01be0eea0ccf" Win64="yes">
                 <File Id="FILE_MyProgramDir_org_cryptable_pki_keymgmntJSON" Source="org.cryptable.pki.keymgmnt.json" KeyPath="yes" />
@@ -86,14 +86,14 @@
         </Feature>        
 
         <WixVariable Id="WixUILicenseRtf" Value="cryptableLicense.rtf" />
-        <UI>
+        <!-- <UI>
             <UIRef Id="WixUI_Minimal" />
-        </UI>
+        </UI> -->
 
-        <CustomAction Id="configEXE_CA" FileKey="FILE_MyProgramDir_ksmgmntEXE" ExeCommand='--config' Return="asyncNoWait"/>
+        <CustomAction Id="configEXE_CA" FileKey="FILE_MyProgramDir_ksmgmntEXE" ExeCommand='--config' Execute="deferred" Impersonate="no" Return="asyncNoWait"/>
 
         <InstallExecuteSequence>
-            <Custom Action="configEXE_CA" After="InstallFinalize" />
+            <Custom Action="configEXE_CA" Before="InstallFinalize" />
         </InstallExecuteSequence>
 
     </Product>

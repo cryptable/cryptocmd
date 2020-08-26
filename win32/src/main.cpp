@@ -10,6 +10,7 @@
 #include <sstream>
 #include "WebExtension.h"
 #include "KSException.h"
+#include "LogEvent.h"
 
 void write_config() {
     CHAR path[MAX_PATH];
@@ -32,6 +33,7 @@ void write_config() {
     config["allowed_extensions"] = extArray;
 
     std::string jsonConfig(config.dump());
+
     DWORD dataWritten;
     HANDLE fileHandle =CreateFile(configFilename.c_str(),
                                   GENERIC_WRITE,
@@ -54,8 +56,15 @@ int main(int argc, char* argv[]) {
 
     if (argc > 1) {
         if (strncmp(argv[1], "--config", strlen("--config")) == 0) {
-            write_config();
-            return 0;
+            try {
+                write_config();
+                return 0;
+            }
+            catch (KSException &e) {
+                LogEvent::GetInstance().error(e.code(), e.what());
+                return e.code();
+            }
+            return 1;
         }
     }
 
