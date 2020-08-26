@@ -21,7 +21,7 @@ WebExtension::WebExtension() : inDataLg{0}, passwordProtect{true} {
 void WebExtension::runFunction(std::ostream &out) {
     string function = inData["request"];
     nlohmann::json outData;
-    outData["key_id"] = inData["key_id"];
+    outData["request_id"] = inData["request_id"];
     try {
         CertificateStore certificateStore;
         if (function == "create_csr") {

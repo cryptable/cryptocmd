@@ -126,27 +126,27 @@ def install_openssl_win32():
     # Release
     pwait = subprocess.Popen(['perl.exe', 'Configure', 'no-ssl2', 'no-ssl3', 'no-asm', 'no-shared', 'disable-capieng',
         '--prefix=' + get_common_dir(), '--openssldir=' + get_common_dir(), 
-        'VC-WIN64A'], env=openssl_build_env, shell=True, check=True)
+        'VC-WIN64A'], env=openssl_build_env, shell=True)
     if (pwait.wait()):
         sys.exit(pwait.returncode)
-    pwait = subprocess.Popen(['nmake', 'clean'], env=openssl_build_env, shell=True, check=True)
+    pwait = subprocess.Popen(['nmake', 'clean'], env=openssl_build_env, shell=True)
     if (pwait.wait()):
         sys.exit(pwait.returncode)
-    pwait = subprocess.Popen(['nmake'], env=openssl_build_env, shell=True, check=True)
+    pwait = subprocess.Popen(['nmake'], env=openssl_build_env, shell=True)
     if (pwait.wait()):
         sys.exit(pwait.returncode)
-    pwait = subprocess.Popen(['nmake', 'test'], env=openssl_build_env, shell=True, check=True)
+    pwait = subprocess.Popen(['nmake', 'test'], env=openssl_build_env, shell=True)
     if (pwait.wait()):
         print('------------------ WARNING: Investigate TEST errors: see failed-tests.log ----------------')
         log = open('failed-tests.log', 'w')
         openssl_build_env['V']='1'
         openssl_build_env['TESTS']='test_verify'
-        pwait = subprocess.Popen(['nmake', 'test'], env=openssl_build_env, stdout=log, shell=True, check=True)
+        pwait = subprocess.Popen(['nmake', 'test'], env=openssl_build_env, stdout=log, shell=True)
         pwait.wait()
         log.flush()
         log.close()
         print('------------------ WARNING: Investigate TEST errors ----------------')
-    pwait = subprocess.Popen(['nmake', 'install'], env=openssl_build_env, shell=True, check=True)
+    pwait = subprocess.Popen(['nmake', 'install'], env=openssl_build_env, shell=True)
     if (pwait.wait()):
         sys.exit(pwait.returncode)
     os.chdir("..")

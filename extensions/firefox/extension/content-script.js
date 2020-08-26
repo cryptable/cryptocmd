@@ -13,9 +13,9 @@ function handleError(error) {
 	console.log(error);
 }
 
-function createCSRResponse(keyId) {
+function createCSRResponse(requestId) {
 	return function(message) {
-        if (message.response.key_id == keyId) {
+        if (message.response.request_id == requestId) {
             window.postMessage({
                 direction: "from-content-script",
                 message: {
@@ -26,10 +26,10 @@ function createCSRResponse(keyId) {
 	}
 }
 
-function createCSRRequest(keyId, dName, rsaBitLength) {
-	var handleResp = createCSRResponse(keyId)
+function createCSRRequest(requestId, dName, rsaBitLength) {
+	var handleResp = createCSRResponse(requestId)
 	var sendMessage = browser.runtime.sendMessage({
-        key_id: keyId,
+        request_id: requestId,
 		request:'create_csr',
 		subject_name: dName,
         rsa_key_length: rsaBitLength
@@ -37,9 +37,9 @@ function createCSRRequest(keyId, dName, rsaBitLength) {
 	sendMessage.then(handleResp, handleError);
 }
 
-function importCertificateResponse(keyId) {
+function importCertificateResponse(requestId) {
     return function(message) {
-        if (message.response.key_id == keyId) {
+        if (message.response.request_id == requestId) {
             window.postMessage({
                 direction: "from-content-script",
                 message: {
@@ -50,19 +50,19 @@ function importCertificateResponse(keyId) {
     }
 }
 
-function importCertificateRequest(keyId, pemCertificate) {
-    var handleResp = importCertificateResponse(keyId)
+function importCertificateRequest(requestId, pemCertificate) {
+    var handleResp = importCertificateResponse(requestId)
 	var sendMessage = browser.runtime.sendMessage({
 		request:'import_certificate',
-		key_id: keyId,
+		request_id: requestId,
 		certificate: pemCertificate
 	});
 	sendMessage.then(handleResp, handleError);
 }
 
-function importPfxKeyResponse(keyId) {
+function importPfxKeyResponse(requestId) {
     return function(message) {
-        if (message.response.key_id == keyId) {
+        if (message.response.request_id == requestId) {
             window.postMessage({
                 direction: "from-content-script",
                 message: {
@@ -73,20 +73,20 @@ function importPfxKeyResponse(keyId) {
     }
 }
 
-function importPfxKeyRequest(keyId, p12, passwd) {
-    var handleResp = importPfxKeyResponse(keyId)
+function importPfxKeyRequest(requestId, p12, passwd) {
+    var handleResp = importPfxKeyResponse(requestId)
 	var sendMessage = browser.runtime.sendMessage({
 		request:'import_pfx_key',
-		key_id: keyId,
+		request_id: requestId,
 		pkcs12: p12,
         password: passwd
 	});
 	sendMessage.then(handleResp, handleError);
 }
 
-function exportPfxKeyResponse(keyId) {
+function exportPfxKeyResponse(requestId) {
     return function(message) {
-        if (message.response.key_id == keyId) {
+        if (message.response.request_id == requestId) {
             window.postMessage({
                 direction: "from-content-script",
                 message: {
@@ -97,11 +97,11 @@ function exportPfxKeyResponse(keyId) {
     }
 }
 
-function exportPfxKeyRequest(keyId, issuerName, serialNr, passWord) {
-    var handleResp = importPfxKeyResponse(keyId)
+function exportPfxKeyRequest(requestId, issuerName, serialNr, passWord) {
+    var handleResp = importPfxKeyResponse(requestId)
     var sendMessage = browser.runtime.sendMessage({
         request:'export_pfx_key',
-        key_id: keyId,
+        request_id: requestId,
         issuer: issuerName,
         serial_number: serialNr,
         password: passWord
@@ -114,22 +114,22 @@ window.addEventListener("message", function(event) {
       event.data &&
       event.data.direction == "from-page-script") {
   	request = event.data.message
-    keyid = generateId(10);
+    requestId = generateId(10);
   	switch (request.request) {
   		case 'create_csr': {
-            createCSRRequest(keyid, request.subject_name, request.rsa_key_length);
+            createCSRRequest(requestId, request.subject_name, request.rsa_key_length);
             break;            
         }
   		case 'import_certificate': {
-            importCertificateRequest(keyid, request.certificate);
+            importCertificateRequest(requestId, request.certificate);
             break;
         }
         case 'import_pfx_key': {
-            importPfxKeyRequest(keyid, request.pkcs12, request.password);
+            importPfxKeyRequest(requestId, request.pkcs12, request.password);
             break;
         }
         case 'export_pfx_key': {
-            exportPfxKeyRequest(keyid, request.issuer, request.serial_number, request.password);
+            exportPfxKeyRequest(requestId, request.issuer, request.serial_number, request.password);
             break;
         }
   		break;
