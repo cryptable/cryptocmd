@@ -168,6 +168,152 @@ def scenario8_garbage():
     }
     response = nok_test(data, "Bad Request")
 
+def scenario9_garbage():
+    print('scenario9_garbage test')
+    data = {
+        'request': 'import_certificate',
+        'request_id': '0x030409',
+        'certificate': 'sqdfsqdfqs9090dsqjdnk++dsqdqs8',
+    }
+    response = nok_test(data, "Bad Request")
+
+def scenario10_garbage():
+    print('scenario10_garbage test')
+    data = {
+        'request': 'import_certificate',
+        'request_id': '0x030409',
+        'certificate': 273659,
+    }
+    response = nok_test(data, "Bad Request")
+
+def scenario11_garbage():
+    print('scenario11_garbage test')
+    pkcs12 = gen_pkcs12('John Doe Encryption', 'Company', 'US', 'system88')
+    data = {
+        'request': 'import_pfx_key',
+        'request_id': '0x030407',
+        'pkcs12':pkcs12,
+        'password':'system22',
+    }
+    response = nok_test(data, "Bad Request")
+
+def scenario12_garbage():
+    print('scenario12_garbage test')
+    data = {
+        'request': 'import_pfx_key',
+        'request_id': '0x030407',
+        'pkcs12': 'dsq,dsq,d:sq,d:,qs:d,qs:,ds:q,d',
+        'password':'system22',
+    }
+    response = nok_test(data, "Bad Request")
+
+def scenario13_garbage():
+    print('scenario13_garbage test')
+    data = {
+        'request': 'import_pfx_key',
+        'request_id': '0x030407',
+        'pkcs12': 67980890867655455,
+        'password':'system22',
+    }
+    response = nok_test(data, "Bad Request")
+
+def scenario14_garbage():
+    print('scenario14_garbage test')
+    data = {
+        'request': 'export_pfx_key',
+        'request_id': '0x030407',
+        'issuer': 'cn=RootCA',
+        'serial_number': 786980,
+        'password':'system22',
+    }
+    response = nok_test(data, "Bad Request")
+
+def scenario15_garbage():
+    print('scenario15_garbage test')
+    data = {
+        'request': 'export_pfx_key',
+        'request_id': '0x030407',
+        'issuer': 'cn=RootCA',
+        'serial_number': 'sdsqdqdsqdsqdsq',
+        'password':'system22',
+    }
+    response = nok_test(data, "Bad Request")
+
+def scenario16_garbage():
+    print('scenario16_garbage test')
+    data = {
+        'request': 'export_pfx_key',
+        'request_id': '0x030407',
+        'serial_number': '0x87B601',
+        'password':'system22',
+    }
+    response = nok_test(data, "Bad Request")
+
+def scenario17_garbage():
+    print('scenario17_garbage test')
+    data = {
+        'request': 'export_pfx_key',
+        'request_id': '0x030407',
+        'issuer': 'cn=RootCA',
+        'password':'system22',
+    }
+    response = nok_test(data, "Bad Request")
+
+def scenario18_garbage():
+    print('scenario18_garbage test')
+    data = {
+        'request': 'export_pfx_key',
+        'request_id': '0x030407',
+        'issuer': 'cn=RootCA',
+        'serial_number': '0x87B601',
+    }
+    response = nok_test(data, "Bad Request")
+
+def scenario19_garbage():
+    print('scenario19_garbage test')
+    data = {
+        'request': 'create_csr',
+        'request_id': '0x030405',
+        'subject_name': 'cn=John Doe,o=Company,c=US',
+    }
+    response = nok_test(data, "Bad Request")
+
+def scenario20_garbage():
+    print('scenario20_garbage test')
+    data = {
+        'request': 'create_csr',
+        'request_id': '0x030405',
+        'rsa_key_length': 2048
+    }
+    response = nok_test(data, "Bad Request")
+
+def scenario21_garbage():
+    print('scenario21_garbage test')
+    data = {
+        'request': 'import_certificate',
+        'request_id': '0x030406',
+    }
+    response = nok_test(data, "Bad Request")
+
+def scenario22_garbage():
+    print('scenario22_garbage test')
+    pkcs12 = gen_pkcs12('John Doe Encryption', 'Company', 'US', 'system88')
+    data = {
+        'request': 'import_pfx_key',
+        'request_id': '0x030407',
+        'pkcs12':pkcs12,
+    }
+    response = nok_test(data, "Bad Request")
+
+def scenario23_garbage():
+    print('scenario23_garbage test')
+    data = {
+        'request': 'import_pfx_key',
+        'request_id': '0x030407',
+        'password':'system22',
+    }
+    response = nok_test(data, "Bad Request")
+
 def main():
     # scenario1_create_csr_certificate()
     # scenario2_import_pfx()
@@ -176,8 +322,22 @@ def main():
     scenario5_garbage()
     scenario6_garbage()
     scenario7_garbage()
-    scenario8_garbage()
-    # scenario9_garbage()
+    # scenario8_garbage()
+    scenario9_garbage()
+    scenario10_garbage()
+    scenario11_garbage()
+    scenario12_garbage()
+    scenario13_garbage()
+    scenario14_garbage()
+    scenario15_garbage()
+    scenario16_garbage()
+    scenario17_garbage()
+    scenario18_garbage()
+    scenario19_garbage()
+    scenario20_garbage()
+    scenario21_garbage()
+    scenario22_garbage()
+    scenario23_garbage()
 
 if __name__ == '__main__':
     main()
