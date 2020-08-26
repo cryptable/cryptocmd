@@ -47,7 +47,7 @@
                 <RegistryValue Id="myRegistryValueForHKLM" 
                                Action="write" 
                                Root="HKLM" 
-                               Key="Software\Mozilla\NativeMessagingHosts\org.cryptable.pki.keymgmnt" 
+                               Key="SOFTWARE\Mozilla\NativeMessagingHosts\org.cryptable.pki.keymgmnt" 
                                Value="[#FILE_MyProgramDir_org_cryptable_pki_keymgmntJSON]" 
                                Type="string" />
             </Component>            

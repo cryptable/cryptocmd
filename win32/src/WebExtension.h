@@ -15,6 +15,9 @@
 class WebExtension {
 
 public:
+
+    static void process_request(std::istream &in, std::ostream &out);
+
     WebExtension();
 
     WebExtension(std::istream &in);

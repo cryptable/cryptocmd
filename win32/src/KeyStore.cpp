@@ -160,6 +160,24 @@ std::unique_ptr<KeyPair> KeyStore::getKeyPair(const CERT_PUBLIC_KEY_INFO &public
     return nullptr;
 }
 
+void KeyStore::deleteKeyPair(const std::wstring &keyIdentifier) {
+    DWORD status = STATUS_SUCCESS;
+    NCRYPT_KEY_HANDLE keyHandle;
+
+    status = NCryptOpenKey(cryptoProvider, &keyHandle, keyIdentifier.c_str(), 0, 0);
+    if (status != STATUS_SUCCESS) {
+        throw KSException(__func__, __LINE__, status);
+    }
+
+    status = NCryptDeleteKey(keyHandle, 0);
+    if (status != STATUS_SUCCESS) {
+        NCryptFreeObject(keyHandle);
+        throw KSException(__func__, __LINE__, status);
+    }
+
+    NCryptFreeObject(keyHandle);
+}
+
 KeyStore::~KeyStore() {
     NCryptFreeObject(cryptoProvider);
 };

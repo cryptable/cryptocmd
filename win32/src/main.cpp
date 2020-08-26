@@ -68,9 +68,7 @@ int main(int argc, char* argv[]) {
         }
     }
 
-    WebExtension webExtension(std::cin);
-
-    webExtension.runFunction(std::cout);
+    WebExtension::process_request(std::cin, std::cout);
 
     return 0;
 }

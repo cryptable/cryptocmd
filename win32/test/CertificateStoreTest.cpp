@@ -16,7 +16,7 @@
 #include "utils/CertStoreUtil.h"
 #include "Base64Utils.h"
 
-#define KEY_MGMGNT 0
+#define KEY_MGMGNT 1
 
 #if KEY_MGMGNT
 /*

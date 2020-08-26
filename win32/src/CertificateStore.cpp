@@ -119,57 +119,66 @@ void CertificateStore::importCertificate(const std::string &pemCertificate) {
 
 std::string CertificateStore::createCertificateRequestFromCNG(const std::string &subjectName, KeyPair *keyPair) {
     // reference: https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-making-a-certificate-request
-    X509Name subject(subjectName);
 
-    CERT_REQUEST_INFO  CertReqInfo;
-    CertReqInfo.dwVersion = CERT_REQUEST_V1;
-    CertReqInfo.Subject = subject.getEncodedBlob();
-    CertReqInfo.SubjectPublicKeyInfo = *(keyPair->getPublicKeyInfo());
-    CertReqInfo.cAttribute = 0;
-    CertReqInfo.rgAttribute = nullptr;
+    try {
+        X509Name subject(subjectName);
 
-    DWORD certSignReqLg = 0;
-    CRYPT_OBJID_BLOB  Parameters;
-    CRYPT_ALGORITHM_IDENTIFIER  SigAlgo;
-    memset(&Parameters, 0, sizeof(Parameters));
-    SigAlgo.pszObjId = szOID_RSA_SHA256RSA;
-    SigAlgo.Parameters = Parameters;
-    if (!CryptSignAndEncodeCertificate(keyPair->getHandle(),
-                                       0,
-                                       X509_ASN_ENCODING | PKCS_7_ASN_ENCODING,
-                                       X509_CERT_REQUEST_TO_BE_SIGNED,
-                                       &CertReqInfo,
-                                       &SigAlgo,
-                                       nullptr,
-                                       nullptr,
-                                       &certSignReqLg)) {
-        throw KSException(__func__, __LINE__, GetLastError());
-    }
-    auto certSignReq = std::unique_ptr<BYTE[]>(new BYTE[certSignReqLg]);
-    CryptSignAndEncodeCertificate(keyPair->getHandle(),
-                                  0,
-                                  X509_ASN_ENCODING | PKCS_7_ASN_ENCODING,
-                                  X509_CERT_REQUEST_TO_BE_SIGNED,
-                                  &CertReqInfo,
-                                  &SigAlgo,
+        CERT_REQUEST_INFO  CertReqInfo;
+        CertReqInfo.dwVersion = CERT_REQUEST_V1;
+        CertReqInfo.Subject = subject.getEncodedBlob();
+        CertReqInfo.SubjectPublicKeyInfo = *(keyPair->getPublicKeyInfo());
+        CertReqInfo.cAttribute = 0;
+        CertReqInfo.rgAttribute = nullptr;
+
+        DWORD certSignReqLg = 0;
+        CRYPT_OBJID_BLOB  Parameters;
+        CRYPT_ALGORITHM_IDENTIFIER  SigAlgo;
+        memset(&Parameters, 0, sizeof(Parameters));
+        SigAlgo.pszObjId = szOID_RSA_SHA256RSA;
+        SigAlgo.Parameters = Parameters;
+        if (!CryptSignAndEncodeCertificate(keyPair->getHandle(),
+                                           0,
+                                           X509_ASN_ENCODING | PKCS_7_ASN_ENCODING,
+                                           X509_CERT_REQUEST_TO_BE_SIGNED,
+                                           &CertReqInfo,
+                                           &SigAlgo,
+                                           nullptr,
+                                           nullptr,
+                                           &certSignReqLg)) {
+            throw KSException(__func__, __LINE__, GetLastError());
+        }
+        auto certSignReq = std::unique_ptr<BYTE[]>(new BYTE[certSignReqLg]);
+        if (!CryptSignAndEncodeCertificate(keyPair->getHandle(),
+                                           0,
+                                           X509_ASN_ENCODING | PKCS_7_ASN_ENCODING,
+                                           X509_CERT_REQUEST_TO_BE_SIGNED,
+                                           &CertReqInfo,
+                                           &SigAlgo,
+                                           nullptr,
+                                           certSignReq.get(),
+                                           &certSignReqLg)) {
+            throw KSException(__func__, __LINE__, GetLastError());
+        }
+        DWORD b64CertReqLg = 0;
+        if (!CryptBinaryToStringA(certSignReq.get(),
+                                  certSignReqLg,
+                                  CRYPT_STRING_BASE64REQUESTHEADER,
                                   nullptr,
-                                  certSignReq.get(),
-                                  &certSignReqLg);
-    DWORD b64CertReqLg = 0;
-    if (!CryptBinaryToStringA(certSignReq.get(),
-                              certSignReqLg,
-                              CRYPT_STRING_BASE64REQUESTHEADER,
-                              nullptr,
-                              &b64CertReqLg)) {
-        throw KSException(__func__, __LINE__, GetLastError());
+                                  &b64CertReqLg)) {
+            throw KSException(__func__, __LINE__, GetLastError());
+        }
+        auto b64CertReq = std::unique_ptr<char[]>(new char[b64CertReqLg]);
+        CryptBinaryToStringA(certSignReq.get(),
+                             certSignReqLg,
+                             CRYPT_STRING_BASE64REQUESTHEADER,
+                             b64CertReq.get(),
+                             &b64CertReqLg);
+        return std::string(b64CertReq.get(), b64CertReqLg);
     }
-    auto b64CertReq = std::unique_ptr<char[]>(new char[b64CertReqLg]);
-    CryptBinaryToStringA(certSignReq.get(),
-                         certSignReqLg,
-                         CRYPT_STRING_BASE64REQUESTHEADER,
-                         b64CertReq.get(),
-                         &b64CertReqLg);
-    return std::string(b64CertReq.get(), b64CertReqLg);
+    catch (KSException &e) {
+        keyStore.deleteKeyPair(keyPair->getName());
+        throw e;
+    }
 }
 
 std::string CertificateStore::pfxExport(const std::string &issuer,

@@ -32,6 +32,10 @@ KSException::KSException(const char *fName, int lineNumber, DWORD cd) noexcept :
     }
 }
 
+KSException::KSException(const char *fName, int lineNumber, const std::string &error) noexcept : errorNumber{ 0x90010001 } {
+    result = std::string(fName) + "(" + std::to_string(lineNumber) + ") : " + error;
+}
+
 KSException::KSException(const KSException& from) noexcept : std::exception(from), errorNumber{from.errorNumber} {
     result = from.result;
     errorNumber = from.errorNumber;

@@ -510,6 +510,90 @@ TEST_CASE( "WebExtensionTests with UI", "[ui]" ) {
     }
 }
 
+TEST_CASE( "WebExtensionTests from the field 1", "[fuzzing]" ) {
+    SECTION( "Non json data" ) {
+
+        // Arrange
+        std::string input("dfhsdkjlfhsjdkqlhfjklsqhfjksldqhfkljqsdhfjkldsqfhjqklsdfh");
+        std::stringstream in;
+        uint32_t length = input.size();
+        in.write((char *)&length, 4);
+        in << input;
+
+        // Act
+        std::stringstream out;
+        WebExtension::process_request(in, out);
+
+        // Assert
+        uint32_t outLg;
+        out.read((char *)&outLg, 4);
+        nlohmann::json result;
+        out >> result;
+
+        REQUIRE(result["result"] == "NOK");
+        REQUIRE(result["response"] == "Bad Request");
+    }
+}
+
+TEST_CASE( "WebExtensionTests from the field 2", "[fuzzing]" ) {
+    SECTION( "Partial json data" ) {
+
+        // Arrange
+        std::string input("{\"request\":\"import_pfx_key\"}");
+        std::stringstream in;
+        uint32_t length = input.size();
+        in.write((char *)&length, 4);
+        in << input;
+
+        // Act
+        std::stringstream out;
+        WebExtension::process_request(in, out);
+
+        // Assert
+        uint32_t outLg;
+        out.read((char *)&outLg, 4);
+        nlohmann::json result;
+        out >> result;
+
+        REQUIRE(result["result"] == "NOK");
+        REQUIRE(result["response"] == "Bad Request");
+    }
+}
+
+TEST_CASE( "WebExtensionTests from the field 3", "[fuzzing]" ) {
+    SECTION("Create CSR illegal subject name") {
+// Arrange
+        nlohmann::json create_csr = R"(
+            {
+                "request":"create_csr",
+                "request_id":"XH45E45MLk0",
+                "subject_name":"dsqdsqsqds,o=Company,c=US",
+                "rsa_key_length":2048
+            }
+        )"_json;
+        auto input = create_csr.dump();
+        std::stringstream in;
+        uint32_t length = input.size();
+        in.write((char *) &length, 4);
+        in << input;
+
+// Act
+        WebExtension webExtension(in);
+        webExtension.setPasswordProtect(false);
+        std::stringstream out;
+        webExtension.runFunction(out);
+
+// Assert
+        uint32_t outLg;
+        out.read((char *) &outLg, 4);
+        nlohmann::json result;
+        out >> result;
+
+        REQUIRE(result["result"] == "NOK");
+        REQUIRE(result["request_id"] == create_csr["request_id"]);
+        REQUIRE(result["response"] == "Bad Request");
+    }
+}
 #if 0
 TEST_CASE( "WebExtensionTests from the field 1", "[firefox]" ) {
     SECTION( "Import pfx file 1" ) {

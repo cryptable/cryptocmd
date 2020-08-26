@@ -49,6 +49,12 @@ public:
     std::unique_ptr<KeyPair> getKeyPair(const CERT_PUBLIC_KEY_INFO &publicKeyInfo) const;
 
     /**
+     * Delete the Key Pair with the corresponding name
+     * @param keyIdentifier
+     */
+    void deleteKeyPair(const std::wstring &keyIdentifier);
+
+    /**
      * @brief      Destroys the Keystore object and all it references.
      */
     ~KeyStore();

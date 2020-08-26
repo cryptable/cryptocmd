@@ -13,6 +13,8 @@ class KSException : public std::exception {
 public:
 	explicit KSException(const char *funcName, int lineNumber, DWORD cd) noexcept;
 
+    explicit KSException(const char *funcName, int lineNumber, const std::string &error) noexcept;
+
     KSException(const KSException& from) noexcept;
 
     DWORD code() const noexcept;
