@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.4.1rc2] - 2020-08-28
+
+Upgrade version to resign the extension
+
 ## [0.4.1rc1] - 2020-08-27
 
 Re-sign the extension
