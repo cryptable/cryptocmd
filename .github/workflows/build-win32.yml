@@ -37,4 +37,4 @@ jobs:
     - name: "web-ext build"
       run: |
         cd extensions/firefox/extension
-        web-ext build -v -s . --overwrite-dest
+        web-ext build -v -s . --overwrite-dest -n firefox-addon.zip

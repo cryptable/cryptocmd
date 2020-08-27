@@ -71,7 +71,6 @@ def versionize_github_workflow(version, full_version, changelog):
                 step['with']['release_name'] = full_version
                 step['with']['body'] = changelog
             if ('id' in step) and step['id'] == 'upload-release-asset':
-                step['with']['asset_path'] = 'extensions/firefox/extension/web-ext-artifacts/windows_crypto_key_generation-' + str(version) + ff_ext
                 step['with']['asset_name'] = 'windows_crypto_key_generation-' + str(version) + ff_ext
         fn_out = mkstemp()
         fout = open(fn_out[0], "w+")

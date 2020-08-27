@@ -40,7 +40,7 @@ def build_extension():
     if "WEB_EXT_SIGN" in os.environ:
         jwt_issuer=os.environ['AMO_JWT_ISSUER']
         jwt_secret=os.environ['AMO_JWT_SECRET']
-        subprocess.run('web-ext sign --api-key={iss} --api-secret={sec}'.format(iss=jwt_issuer,sec=jwt_secret), shell=True, check=True)
+        subprocess.run('web-ext sign --api-key={iss} --api-secret={sec} -n firefox-addon.xpi'.format(iss=jwt_issuer,sec=jwt_secret), shell=True, check=True)
     os.chdir('../../..')
     return
 
