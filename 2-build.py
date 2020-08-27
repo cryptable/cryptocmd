@@ -14,7 +14,7 @@ def build_ksmgmnt():
     os.chdir("win32/build")
     subprocess.run('cmake .. -DCMAKE_BUILD_TYPE=Release -DCOMMON_DIR="' + get_common_dir() + '" -A x64', shell=True, check=True)
     subprocess.run('cmake --build . --config Release', shell=True, check=True)
-    subprocess.run('.\\bin\\tests.exe exclude:[ui]', shell=True, check=True)
+    subprocess.run('.\\test\\Release\\tests.exe exclude:[ui]', shell=True, check=True)
     os.chdir("../..")
     return
 
@@ -48,7 +48,7 @@ def run_scripts():
     build_ksmgmnt()
     if os.path.isfile('.\\installation\\ksmgmnt.exe'):
         os.remove('.\\installation\\ksmgmnt.exe')
-    copyfile('.\\win32\\build\\bin\\ksmgmnt.exe', '.\\installation\\ksmgmnt.exe')
+    copyfile('.\\win32\\build\\src\\Release\\ksmgmnt.exe', '.\\installation\\ksmgmnt.exe')
     build_installer()
 # TODO: Support local build
 #    build_extension()
