@@ -43,7 +43,7 @@ def vs_env_dict():
     else:
         # Fall back to Windows 2019 Github location
         # C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise
-        vsvarsall = 'C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\VC\\Auxiliary\\Build\\vcvarsall.bat'.format(vscomntools=os.environ['VS140COMNTOOLS'])
+        vsvarsall = 'C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Enterprise\\VC\\Auxiliary\\Build\\vcvarsall.bat'.format(vscomntools=os.environ['VS140COMNTOOLS'])
         cmd = [vsvarsall, 'x86_amd64', '&&', 'set']
     popen = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout, stderr = popen.communicate()
