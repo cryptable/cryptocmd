@@ -2,7 +2,7 @@ import json
 import struct
 from ca import certify_p10, generate_p12
 from binascii import b2a_base64, a2b_base64
-from subprocess import Popen, PIPE, TimeoutExpired
+from subprocess import run, Popen, PIPE, TimeoutExpired
 
 def certify_csr(csr):
     result = certify_p10(a2b_base64(csr))
@@ -21,9 +21,7 @@ def encode_message_json(message_content):
     return (encoded_length, encoded_content)
 
 def decode_message(data):
-    print (len(data))
     decode_length = struct.unpack('=I',data[:4])
-    print (decode_length)
     return json.loads(data[4:].decode('utf-8'))
 
 def call_native_messaging(exec, msg_tuple):
@@ -32,20 +30,16 @@ def call_native_messaging(exec, msg_tuple):
         proc.stdin.write(msg_tuple[0])
         proc.stdin.write(msg_tuple[1])
         outs, errs = proc.communicate(timeout=60)
-        print (errs)
         return decode_message(outs)
     except TimeoutExpired:
         proc.kill()
         outs, errs = proc.communicate()
-        print (outs)
-        print (errs)
-        print("Timeout of application")
         raise 
 
 def ok_test(data):
     response = call_native_messaging(r"C:\Program Files\Cryptable\Key Management Web Extension\ksmgmnt.exe", encode_message_json(data))
     if (response["result"] != "OK"):
-        print(response["response"])
+        print("result is NOK:" + response["response"])
         raise
     if (response["request_id"] != data['request_id']):
         print("request_id is not equal")
@@ -91,9 +85,7 @@ def scenario1_create_csr_certificate():
         'rsa_key_length': 2048
     }
     response = ok_test(data)
-    print(response)
     certificate = certify_csr(response);
-    print(certificate)
     cert_data = {
         'request': 'import_certificate',
         'request_id': '0x030406',
@@ -103,6 +95,7 @@ def scenario1_create_csr_certificate():
     if (response != "import certificate successful"):
         print("Incorrect success message")
         raise 
+    print("Remove certificate (John Doe) from cert manager")
 
 def scenario2_import_pfx():
     print('Success scenario 2 import pfx file')
@@ -114,10 +107,10 @@ def scenario2_import_pfx():
         'password':'system88',
     }
     response = ok_test(data)
-    print(response)
     if (response != "import pfx successful"):
         print("Incorrect success message")
         raise 
+    print("Remove certificate (John Doe Encryption) from cert manager")
 
 def scenario3_garbage():
     print('scenario3_garbage test')
@@ -314,15 +307,22 @@ def scenario23_garbage():
     }
     response = nok_test(data, "Bad Request")
 
+def installation():
+    run('installation\\ksmgmnt.msi', shell=True, check=True)
+
+def uninstallation():
+    run('msiexec /x installation\\ksmgmnt.msi', shell=True, check=True)
+
 def main():
-    # scenario1_create_csr_certificate()
-    # scenario2_import_pfx()
+    installation()
+    scenario1_create_csr_certificate()
+    scenario2_import_pfx()
     scenario3_garbage()
     scenario4_garbage()
     scenario5_garbage()
     scenario6_garbage()
     scenario7_garbage()
-    # scenario8_garbage()
+    scenario8_garbage()
     scenario9_garbage()
     scenario10_garbage()
     scenario11_garbage()
@@ -338,6 +338,7 @@ def main():
     scenario21_garbage()
     scenario22_garbage()
     scenario23_garbage()
+    uninstallation()
 
 if __name__ == '__main__':
     main()

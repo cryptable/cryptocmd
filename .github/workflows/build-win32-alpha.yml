@@ -2,11 +2,11 @@ name: Alpha build
 
 on:
   push:
-    tags: [ alpha-v* ]
+    tags: [alpha-v*]
 
 jobs:
   build-native-exe:
-    name: "Build native messaging"
+    name: Build native messaging
     runs-on: windows-2016
     steps:
     - uses: actions/checkout@v2
@@ -27,13 +27,13 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
       with:
         tag_name: ${{ github.ref }}
-        release_name: Alpha Release ${{ github.ref }}
-        body: |
-          Native messaging agent release
+        release_name: Beta(0) - v0.4.1
+        body: |-
+          Beta test version implementation for all files
         draft: true
         prerelease: true
     - name: Upload Release Asset
-      id: upload-release-asset 
+      id: upload-release-asset
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -44,18 +44,18 @@ jobs:
         asset_content_type: application/zip
 
   build-ff-ext:
-    name: "Build native messaging"
+    name: Build native messaging
     needs: build-native-exe
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Install web-ext Firefox
       run: sudo npm --global install web-ext
-    - name: "web-ext lint"
+    - name: web-ext lint
       run: |
         cd extensions/firefox/extension
         web-ext lint -v -s . 
-    - name: "web-ext build"
+    - name: web-ext build
       run: |
         cd extensions/firefox/extension
         web-ext build -v -s . --overwrite-dest
@@ -66,20 +66,20 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
       with:
         tag_name: ${{ github.ref }}
-        release_name: Alpha Release ${{ github.ref }}
-        body: |
-          Extension release
+        release_name: Beta(0) - v0.4.1
+        body: |-
+          Beta test version implementation for all files
         draft: true
         prerelease: true
     - name: Upload Release Asset
-      id: upload-release-asset 
+      id: upload-release-asset
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-        asset_path: extensions/firefox/extension/web-ext-artifacts/windows_crypto_key_generation-0.4.0alpha.zip
-        asset_name: windows_crypto_key_generation-0.4.0alpha.zip
-        asset_content_type: application/zip 
+        asset_path: extensions/firefox/extension/web-ext-artifacts/windows_crypto_key_generation-0.4.1b0.zip
+        asset_name: windows_crypto_key_generation-0.4.1b0.zip
+        asset_content_type: application/zip
 
 

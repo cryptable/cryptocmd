@@ -1,23 +1,10 @@
-<?xml version="1.0" encoding="windows-1252"?>
+<?xml version='1.0' encoding='windows-1252'?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-    <Product Name="Key Management Web Extension" 
-        Manufacturer="Cryptable"
-        Id="cc8b936c-8dfe-4ee0-ae9d-a5f7df9f0bad" 
-        UpgradeCode="2d93783f-3a86-45ac-b6a3-f164003c1555"
-        Language="1033" 
-        Codepage="1252" 
-        Version="1.0.0">
-        <Package Id="*"
-            InstallerVersion="300"
-            Compressed="yes" 
-            InstallScope="perMachine"
-            Keywords="Installer,Web,Extension"
-            Description="Key Management Web Extension"
-            Comments="Web Extension which allows basic Windows Cryptographic Key Management"
-            Platform="x64"/>
+    <Product Name="Key Management Web Extension" Manufacturer="Cryptable" Id="cc8b936c-8dfe-4ee0-ae9d-a5f7df9f0bad" UpgradeCode="2d93783f-3a86-45ac-b6a3-f164003c1555" Language="1033" Codepage="1252" Version="0.4.1">
+        <Package Id="*" InstallerVersion="300" Compressed="yes" InstallScope="perMachine" Keywords="Installer,Web,Extension" Description="Key Management Web Extension" Comments="Web Extension which allows basic Windows Cryptographic Key Management" Platform="x64" />
         <MediaTemplate EmbedCab="yes" />
 
-        <!--Directory structure-->
+        
         <Directory Id="TARGETDIR" Name="SourceDir">
             <Directory Id="ProgramFiles64Folder">
                 <Directory Id="ManufacturerFolder" Name="!(bind.property.Manufacturer)">
@@ -31,66 +18,42 @@
             </Directory>
         </Directory>
 
-        <!--Components-->
+        
         <DirectoryRef Id="InstallFolder">
             <Component Id="CMP_ksmgmnt" Guid="6c83422a-a154-4053-aeb0-972dc6b5eeff" Win64="yes">
                 <File Id="FILE_MyProgramDir_ksmgmntEXE" Source="ksmgmnt.exe" KeyPath="yes" />              
             </Component>
             <Component Id="CMP_org_cryptable_pki_keymgmnt_json" Guid="dd379c5a-53b6-4ea3-baa2-01be0eea0ccf" Win64="yes">
                 <File Id="FILE_MyProgramDir_org_cryptable_pki_keymgmntJSON" Source="org.cryptable.pki.keymgmnt.json" KeyPath="yes" />
-                <!-- <RegistryValue Id="myRegistryValueForHKCU" 
-                                Action="write" 
-                                Root="HKCU" 
-                                Key="Software\Mozilla\NativeMessagingHosts\org.cryptable.pki.keymgmnt"
-                                Value="[#FILE_MyProgramDir_org_cryptable_pki_keymgmntJSON]" 
-                                Type="string" /> -->
-                <RegistryValue Id="myRegistryValueForHKLM" 
-                               Action="write" 
-                               Root="HKLM" 
-                               Key="SOFTWARE\Mozilla\NativeMessagingHosts\org.cryptable.pki.keymgmnt" 
-                               Value="[#FILE_MyProgramDir_org_cryptable_pki_keymgmntJSON]" 
-                               Type="string" />
+                
+                <RegistryValue Id="myRegistryValueForHKLM" Action="write" Root="HKLM" Key="SOFTWARE\Mozilla\NativeMessagingHosts\org.cryptable.pki.keymgmnt" Value="[#FILE_MyProgramDir_org_cryptable_pki_keymgmntJSON]" Type="string" />
             </Component>            
         </DirectoryRef>
 
-        <!--Start Menu Shortcuts-->
+        
         <DirectoryRef Id="MenuFolder">
-            <Component Id="CMP_UninstallShortcut"
-                     Guid="93b4acf0-1aaa-461e-99e3-380423a408ad" Win64="yes">
+            <Component Id="CMP_UninstallShortcut" Guid="93b4acf0-1aaa-461e-99e3-380423a408ad" Win64="yes">
 
-                <Shortcut Id="UninstallShortcut"
-                          Name="Uninstall Key Management Web Extension"
-                          Description="Uninstall Key Management Web Extension"
-                          Target="[System64Folder]msiexec.exe"
-                          Arguments="/x [ProductCode]" />
+                <Shortcut Id="UninstallShortcut" Name="Uninstall Key Management Web Extension" Description="Uninstall Key Management Web Extension" Target="[System64Folder]msiexec.exe" Arguments="/x [ProductCode]" />
 
-                <RemoveFolder Id="RemoveManufacturerMenuFolder" Directory="ManufacturerMenuFolder" On="uninstall"/>
+                <RemoveFolder Id="RemoveManufacturerMenuFolder" Directory="ManufacturerMenuFolder" On="uninstall" />
                 <RemoveFolder Id="RemoveMenuFolder" On="uninstall" />
 
-                <RegistryValue Root="HKCU" 
-                               Key="Software\Cryptable\Key Management Web Extension"
-                               Name="installed"
-                               Type="integer"
-                               Value="1"
-                               KeyPath="yes" />
+                <RegistryValue Root="HKCU" Key="Software\Cryptable\Key Management Web Extension" Name="installed" Type="integer" Value="1" KeyPath="yes" />
             </Component>
         </DirectoryRef>
 
-        <!--Features-->
-        <Feature Id="ProductFeature"
-                 Title="Main Product"
-                 Level="1">
+        
+        <Feature Id="ProductFeature" Title="Main Product" Level="1">
           <ComponentRef Id="CMP_ksmgmnt" />
           <ComponentRef Id="CMP_org_cryptable_pki_keymgmnt_json" />
           <ComponentRef Id="CMP_UninstallShortcut" />
         </Feature>        
 
         <WixVariable Id="WixUILicenseRtf" Value="cryptableLicense.rtf" />
-        <!-- <UI>
-            <UIRef Id="WixUI_Minimal" />
-        </UI> -->
+        
 
-        <CustomAction Id="configEXE_CA" FileKey="FILE_MyProgramDir_ksmgmntEXE" ExeCommand='--config' Execute="deferred" Impersonate="no" Return="asyncNoWait"/>
+        <CustomAction Id="configEXE_CA" FileKey="FILE_MyProgramDir_ksmgmntEXE" ExeCommand="--config" Execute="deferred" Impersonate="no" Return="asyncNoWait" />
 
         <InstallExecuteSequence>
             <Custom Action="configEXE_CA" Before="InstallFinalize" />

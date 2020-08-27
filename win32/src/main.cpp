@@ -11,6 +11,7 @@
 #include "WebExtension.h"
 #include "KSException.h"
 #include "LogEvent.h"
+#include "version.h"
 
 void write_config() {
     CHAR path[MAX_PATH];
@@ -65,6 +66,10 @@ int main(int argc, char* argv[]) {
                 return e.code();
             }
             return 1;
+        }
+        if (strncmp(argv[1], "--version", strlen("--version")) == 0) {
+            std::cout << "Version: " << VERSION << std::endl;
+            return 0;
         }
     }
 

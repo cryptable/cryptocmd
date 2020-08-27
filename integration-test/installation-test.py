@@ -1,10 +1,8 @@
 import subprocess
 from winreg import ConnectRegistry, OpenKey, QueryValue, EnumValue, HKEY_LOCAL_MACHINE, KEY_WOW64_64KEY, KEY_READ 
 from os import path
-import winapps
 
 # You need to run in Python virtual environment
-# install winapps
 
 
 def verify_registry():
