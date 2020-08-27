@@ -20,8 +20,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
       with:
-        tag_name: ${{ github.ref }}
-        release_name: Release Candidate(0) - v0.4.1
+        tag_name: ${{ github.ref }}-native
+        release_name: Release Candidate(1) - v0.4.1
         body: |-
           Merge from alpha release
         draft: false
@@ -38,7 +38,7 @@ jobs:
         asset_content_type: application/zip
 
   build-ff-ext:
-    name: Build native messaging
+    name: Build Firefox Extension
     needs: build-native-exe
     runs-on: ubuntu-latest
     steps:
@@ -66,8 +66,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
       with:
-        tag_name: ${{ github.ref }}
-        release_name: Release Candidate(0) - v0.4.1
+        tag_name: ${{ github.ref }}-ff-ext
+        release_name: Release Candidate(1) - v0.4.1
         body: |-
           Merge from alpha release
         draft: false
