@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.4.1rc1] - 2020-08-27
+
+Re-sign the extension
+
 ## [0.4.1rc0] - 2020-08-27
 
 Merge from alpha release

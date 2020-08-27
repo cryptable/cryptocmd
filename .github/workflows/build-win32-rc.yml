@@ -23,7 +23,7 @@ jobs:
         tag_name: ${{ github.ref }}-native
         release_name: Release Candidate(1) - v0.4.1
         body: |-
-          Merge from alpha release
+          Re-sign the extension
         draft: false
         prerelease: true
     - name: Upload Release Asset
@@ -69,7 +69,7 @@ jobs:
         tag_name: ${{ github.ref }}-ff-ext
         release_name: Release Candidate(1) - v0.4.1
         body: |-
-          Merge from alpha release
+          Re-sign the extension
         draft: false
         prerelease: true
     - name: Upload Release Asset
@@ -79,6 +79,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-        asset_path: extensions/firefox/extension/web-ext-artifacts/windows_crypto_key_generation-0.4.1rc0.xpi
-        asset_name: windows_crypto_key_generation-0.4.1rc0.xpi
+        asset_path: extensions/firefox/extension/web-ext-artifacts/windows_crypto_key_generation-0.4.1rc1.xpi
+        asset_name: windows_crypto_key_generation-0.4.1rc1.xpi
         asset_content_type: application/zip

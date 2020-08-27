@@ -8,7 +8,6 @@ from ruamel.yaml import YAML
 
 from packaging.version import Version
 from tempfile import mkstemp
-from yaml.representer import SafeRepresenter
 
 def versionize_web_extensions(version):
     # This will versionize the web extension (firefox)
