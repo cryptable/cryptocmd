@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.4.1rc3] - 2020-08-28
+
+Added the pattern the firefox signing operation appends to the filename
+
 ## [0.4.1rc2] - 2020-08-28
 
 Upgrade version to resign the extension

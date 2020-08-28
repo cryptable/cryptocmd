@@ -52,7 +52,7 @@ jobs:
     - name: web-ext build
       run: |
         cd extensions/firefox/extension
-        web-ext build -v -s . --overwrite-dest -n firefox-addon.zip
+        web-ext build -v -s . --overwrite-dest
     - name: web-ext sign
       env:
         AMO_JWT_ISSUER: ${{ secrets.AMO_JWT_ISSUER }}
