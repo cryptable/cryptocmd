@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.4.2rc0] - 2020-08-28
+
+Merge from alpha
+
 ## [0.4.2a2] - 2020-08-28
 
 Migrate to 1 release URL try 3
