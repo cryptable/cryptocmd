@@ -67,7 +67,6 @@ jobs:
       run: |
         cd extensions/firefox/extension
         web-ext build -v -s . --overwrite-dest
-    - name: read variable
     - name: get upload_url
       id: get_upload_url
       uses: noobly314/share-data@v1
