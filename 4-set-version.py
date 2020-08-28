@@ -44,7 +44,7 @@ def versionize_code(version):
 
 def versionize_github_workflow(version, full_version, changelog):
     filename = ".github/workflows/build-win32-release.yml"
-    ff_ext = '-fx+an.xpi'
+    ff_ext = '-an+fx.xpi'
     if (version.is_prerelease):
         if version.pre[0] == "a":
             filename = ".github/workflows/build-win32-alpha.yml"

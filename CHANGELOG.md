@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.4.2rc1] - 2020-08-28
+
+Fix bug in workflow script
+
 ## [0.4.2rc0] - 2020-08-28
 
 Merge from alpha
