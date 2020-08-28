@@ -36,6 +36,14 @@ jobs:
         asset_path: installation\ksmgmnt.msi
         asset_name: ksmgmnt.msi
         asset_content_type: application/zip
+    - name: set upload_url
+      id: set_upload_url
+      uses: noobly314/share-data@v1
+      with:
+        share-id: release_url
+        mode: set
+        key: url
+        value: ${{ steps.create_release.outputs.upload_url }}
 
   build-ff-ext:
     name: Build Firefox Extension
@@ -60,18 +68,6 @@ jobs:
       run: |
         cd extensions/firefox/extension
         web-ext sign --api-key=$AMO_JWT_ISSUER --api-secret=$AMO_JWT_SECRET -v -n firefox-addon.xpi
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-      with:
-        tag_name: ${{ github.ref }}-ff-ext
-        release_name: v0.4.1
-        body: |-
-          Release test version implementation for all files
-        draft: false
-        prerelease: false
     - name: Upload Release Asset
       id: upload-release-asset
       uses: actions/upload-release-asset@v1

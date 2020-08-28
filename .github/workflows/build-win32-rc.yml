@@ -20,7 +20,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
       with:
-        tag_name: ${{ github.ref }}-native
+        tag_name: ${{ github.ref }}
         release_name: Release Candidate(3) - v0.4.1
         body: |-
           Added the pattern the firefox signing operation appends to the filename
@@ -36,6 +36,14 @@ jobs:
         asset_path: installation\ksmgmnt.msi
         asset_name: ksmgmnt.msi
         asset_content_type: application/zip
+    - name: set upload_url
+      id: set_upload_url
+      uses: noobly314/share-data@v1
+      with:
+        share-id: release_url
+        mode: set
+        key: url
+        value: ${{ steps.create_release.outputs.upload_url }}
 
   build-ff-ext:
     name: Build Firefox Extension
@@ -60,25 +68,20 @@ jobs:
       run: |
         cd extensions/firefox/extension
         web-ext sign --api-key=$AMO_JWT_ISSUER --api-secret=$AMO_JWT_SECRET -v -n firefox-addon.xpi 
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+    - name: get upload_url
+      id: get_upload_url
+      uses: noobly314/share-data@v1
       with:
-        tag_name: ${{ github.ref }}-ff-ext
-        release_name: Release Candidate(3) - v0.4.1
-        body: |-
-          Added the pattern the firefox signing operation appends to the filename
-        draft: false
-        prerelease: true
+        share-id: release_url
+        mode: get
+        key: url
     - name: Upload Release Asset
       id: upload-release-asset
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+        upload_url: ${{ steps.get_upload_url.outputs.data }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
         asset_path: extensions/firefox/extension/web-ext-artifacts/windows_crypto_key_generation-0.4.1rc3-fx+an.xpi
         asset_name: windows_crypto_key_generation-0.4.1rc3-fx+an.xpi
         asset_content_type: application/zip
