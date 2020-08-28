@@ -49,7 +49,7 @@ jobs:
         share-id: release_url
         mode: set
         key: url
-        value: steps.create_release.outputs.upload_url
+        value: ${{ steps.create_release.outputs.upload_url }}
 
   build-ff-ext:
     name: Build Firefox Extension
