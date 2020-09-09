@@ -8,7 +8,7 @@ browser.runtime.onMessage.addListener(
 			sendNative.then(function(resp) {
 				sendResponse({response: resp})
 			},
-			function(error) {
+			function(err) {
 				sendResponse({error: err})
 			});
 		}
