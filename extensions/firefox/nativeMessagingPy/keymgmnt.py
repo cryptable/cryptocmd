@@ -148,11 +148,11 @@ if __name__ == "__main__":
         send_message(encode_message(response))
     elif (request['request'] == 'import_certificate'):
         import_certificate(base64.b64decode(request['certificate']))
-        response = {'result':'OK', 'request_id':request['request_id'], 'response': 'Certificate Imported'}
+        response = {'result':'OK', 'request_id':request['request_id'], 'response': 'import certificate successful'}
         send_message(encode_message(response))
     elif (request['request'] == 'import_pfx_key'):
         import_pfx_key(base64.b64decode(request['pkcs12']), request['password'])
-        response = {'result':'OK', 'request_id':request['request_id'], 'response': 'PFX Imported'}
+        response = {'result':'OK', 'request_id':request['request_id'], 'response': 'import pfx successful'}
         send_message(encode_message(response))
     elif (request['request'] == 'export_pfx_key'):
         export_pfx_key(request['issuer'], request['serial_number'], request['password'])
