@@ -9,6 +9,7 @@ function createCSRResponse(requestId) {
                 direction: "from-content-script",
                 message: {
                     request_id: requestId,
+                    request: 'create_csr',
                     response: message.response.response 
                 }
             }, "*")            
@@ -34,6 +35,7 @@ function importCertificateResponse(requestId) {
                 direction: "from-content-script",
                 message: {
                     request_id: requestId,
+                    request: 'import_certificate',
                     response: message.response.response 
                 }
             }, "*")            
@@ -58,6 +60,7 @@ function importPfxKeyResponse(requestId) {
                 direction: "from-content-script",
                 message: {
                     request_id: requestId,
+                    request: 'import_pfx_key',
                     response: message.response.response 
                 }
             }, "*")            
@@ -83,6 +86,7 @@ function exportPfxKeyResponse(requestId) {
                 direction: "from-content-script",
                 message: {
                     request_id: requestId,
+                    request: 'export_pfx_key',
                     response: message.response.response 
                 }
             }, "*")            
