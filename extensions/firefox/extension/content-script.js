@@ -1,14 +1,3 @@
-
-function generateId(length) {
-   var result           = '';
-   var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-   var charactersLength = characters.length;
-   for ( var i = 0; i < length; i++ ) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-   }
-   return result;
-}
-
 function handleError(error) {
 	console.log(error);
 }
@@ -19,6 +8,7 @@ function createCSRResponse(requestId) {
             window.postMessage({
                 direction: "from-content-script",
                 message: {
+                    request_id: requestId,
                     response: message.response.response 
                 }
             }, "*")            
@@ -43,6 +33,7 @@ function importCertificateResponse(requestId) {
             window.postMessage({
                 direction: "from-content-script",
                 message: {
+                    request_id: requestId,
                     response: message.response.response 
                 }
             }, "*")            
@@ -66,6 +57,7 @@ function importPfxKeyResponse(requestId) {
             window.postMessage({
                 direction: "from-content-script",
                 message: {
+                    request_id: requestId,
                     response: message.response.response 
                 }
             }, "*")            
@@ -90,6 +82,7 @@ function exportPfxKeyResponse(requestId) {
             window.postMessage({
                 direction: "from-content-script",
                 message: {
+                    request_id: requestId,
                     response: message.response.response 
                 }
             }, "*")            
@@ -114,7 +107,7 @@ window.addEventListener("message", function(event) {
       event.data &&
       event.data.direction == "from-page-script") {
   	request = event.data.message
-    requestId = generateId(10);
+    requestId = request.request_id;
   	switch (request.request) {
   		case 'create_csr': {
             createCSRRequest(requestId, request.subject_name, request.rsa_key_length);
