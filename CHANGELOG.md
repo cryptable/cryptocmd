@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.4.5rc1] - 2020-09-13
+
+Fixed error messages for Firefox extension
+
 ## [0.4.5a0] - 2020-09-11
 
 Added method name in return of firefox extension

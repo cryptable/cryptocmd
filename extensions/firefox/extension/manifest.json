@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "Windows Crypto Key Generation",
-    "version": "0.4.5a0",
+    "version": "0.4.5rc1",
     "description": "Windows Crypto Key Generation extension to generate keys from the browser.",
     "icons": {
         "48": "icons/smartcard.svg",
