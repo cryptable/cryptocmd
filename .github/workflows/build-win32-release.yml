@@ -2,7 +2,7 @@ name: Release build
 
 on:
   push:
-    branches: [v*]
+    tags: [v*]
 
 jobs:
   build-native-exe:
