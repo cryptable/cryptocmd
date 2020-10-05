@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.4.5] - 2020-10-05
+
+Limit Firefox extension to webpki.eeas.europa.eu
+
 ## [0.4.5rc1] - 2020-09-13
 
 Fixed error messages for Firefox extension

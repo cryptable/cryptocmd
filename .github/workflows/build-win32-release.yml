@@ -21,9 +21,9 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
       with:
         tag_name: ${{ github.ref }}-native
-        release_name: v0.4.1
+        release_name: v0.4.5
         body: |-
-          Release test version implementation for all files
+          Limit Firefox extension to webpki.eeas.europa.eu
         draft: false
         prerelease: false
     - name: Upload Release Asset
@@ -75,6 +75,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-        asset_path: extensions/firefox/extension/web-ext-artifacts/windows_crypto_key_generation-0.4.2rc0-an+fx.xpi
-        asset_name: windows_crypto_key_generation-0.4.1.xpi
+        asset_path: extensions/firefox/extension/web-ext-artifacts/windows_crypto_key_generation-0.4.5-an+fx.xpi
+        asset_name: windows_crypto_key_generation-0.4.5-an+fx.xpi
         asset_content_type: application/zip
