@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.4.6] - 2020-10-06
+
+Fixed workflow for release
+
 ## [0.4.5] - 2020-10-05
 
 Limit Firefox extension to webpki.eeas.europa.eu
