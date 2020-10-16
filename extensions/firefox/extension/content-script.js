@@ -95,7 +95,7 @@ function exportPfxKeyResponse(requestId) {
 }
 
 function exportPfxKeyRequest(requestId, issuerName, serialNr, passWord) {
-    var handleResp = importPfxKeyResponse(requestId)
+    var handleResp = exportPfxKeyResponse(requestId)
     var sendMessage = browser.runtime.sendMessage({
         request:'export_pfx_key',
         request_id: requestId,
