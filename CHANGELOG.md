@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.4.8] - 2020-10-17
+
+Fixed Firefox extension export_pfx_key
+
 ## [0.4.7] - 2020-10-08
 
 Build new release accessible by EEAS
