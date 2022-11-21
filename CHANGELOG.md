@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.5.0] - 2022-11-21
+
+Added extended error message as base64 after 'Bad Request: '
+
 ## [0.4.8] - 2020-10-17
 
 Fixed Firefox extension export_pfx_key

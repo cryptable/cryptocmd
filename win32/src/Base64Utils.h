@@ -12,8 +12,28 @@
 #include <rpc.h>
 #include <KSException.h>
 
+#define MAX_STRING 2048
+
 class Base64Utils {
 public:
+    static std::string toBase64(const char *data) {
+        DWORD b64DataLg = 0;
+        if (!CryptBinaryToString(reinterpret_cast<const BYTE *>(data),
+                                 strnlen_s(data, MAX_STRING),
+                                 CRYPT_STRING_BASE64 | CRYPT_STRING_NOCRLF,
+                                 NULL,
+                                 &b64DataLg)) {
+            throw KSException(__func__, __LINE__, GetLastError());
+        }
+        std::unique_ptr<char[]> b64Data(new char[b64DataLg]);
+        CryptBinaryToString(reinterpret_cast<const BYTE *>(data),
+                            strnlen_s(data, MAX_STRING),
+                            CRYPT_STRING_BASE64 | CRYPT_STRING_NOCRLF,
+                            b64Data.get(),
+                            &b64DataLg);
+        return std::string(b64Data.get(), b64DataLg);
+    }
+
     static std::string toBase64(const std::vector<unsigned char> &data) {
         DWORD b64DataLg = 0;
         if (!CryptBinaryToString(reinterpret_cast<const BYTE *>(data.data()),

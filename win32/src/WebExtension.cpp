@@ -73,18 +73,18 @@ void WebExtension::runFunction(std::ostream &out) {
         }
         else {
             outData["result"] = "NOK";
-            outData["response"] = "Bad Request";
+            outData["response"] = "Bad Request: " + Base64Utils::toBase64("Invalid function called");
             LogEvent::GetInstance().error(0, "Invalid function called");
         }
     }
     catch (KSException e) {
         outData["result"] = "NOK";
-        outData["response"] = "Bad Request";
+        outData["response"] = "Bad Request: " + Base64Utils::toBase64(e.what());
         LogEvent::GetInstance().error(0, e.what());
     }
     catch (exception e) {
         outData["result"] = "NOK";
-        outData["response"] = "Bad Request";
+        outData["response"] = "Bad Request: " + Base64Utils::toBase64(e.what());
         LogEvent::GetInstance().error(0, e.what());
     }
     std::string tmpOut = outData.dump();
@@ -115,7 +115,7 @@ void WebExtension::process_request(std::istream &in, std::ostream &out) {
     catch (std::exception &e) {
         nlohmann::json outData;
         outData["result"] = "NOK";
-        outData["response"] = "Bad Request";
+        outData["response"] = "Bad Request: " + Base64Utils::toBase64(e.what());
         LogEvent::GetInstance().error(0, e.what());
         std::string tmpOut = outData.dump();
         uint32_t tmpOutLg = tmpOut.size();

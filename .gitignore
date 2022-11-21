@@ -1,5 +1,6 @@
 .DS_Store
-/target
-/common
-/3rd-party
-/venv
+target
+common
+3rd-party
+venv
+.idea

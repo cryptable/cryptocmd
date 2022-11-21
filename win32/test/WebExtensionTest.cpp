@@ -531,7 +531,7 @@ TEST_CASE( "WebExtensionTests from the field 1", "[fuzzing]" ) {
         out >> result;
 
         REQUIRE(result["result"] == "NOK");
-        REQUIRE(result["response"] == "Bad Request");
+        REQUIRE(result["response"] == "Bad Request: W2pzb24uZXhjZXB0aW9uLnBhcnNlX2Vycm9yLjEwMV0gcGFyc2UgZXJyb3IgYXQgbGluZSAxLCBjb2x1bW4gMTogc3ludGF4IGVycm9yIHdoaWxlIHBhcnNpbmcgdmFsdWUgLSBpbnZhbGlkIGxpdGVyYWw7IGxhc3QgcmVhZDogJ2Qn");
     }
 }
 
@@ -556,7 +556,7 @@ TEST_CASE( "WebExtensionTests from the field 2", "[fuzzing]" ) {
         out >> result;
 
         REQUIRE(result["result"] == "NOK");
-        REQUIRE(result["response"] == "Bad Request");
+        REQUIRE(result["response"] == "Bad Request: cnVuRnVuY3Rpb24oMjcpIDogTWlzc2luZyBQYXJhbWV0ZXJz");
     }
 }
 
@@ -591,7 +591,7 @@ TEST_CASE( "WebExtensionTests from the field 3", "[fuzzing]" ) {
 
         REQUIRE(result["result"] == "NOK");
         REQUIRE(result["request_id"] == create_csr["request_id"]);
-        REQUIRE(result["response"] == "Bad Request");
+        REQUIRE(result["response"] == "Bad Request: WDUwOU5hbWUoMjYpIDogZXJyb3IoMjE0ODA4MTY5OSkgOiBUaGUgc3RyaW5nIGNvbnRhaW5zIGFuIGludmFsaWQgWDUwMCBuYW1lIGF0dHJpYnV0ZSBrZXksIG9pZCwgdmFsdWUgb3IgZGVsaW1pdGVyLg0K");
     }
 }
 #if 0
