@@ -9,7 +9,7 @@ jobs:
     name: Build native messaging
     runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Set up Python v3.9
       uses: actions/setup-python@v2
       with:
@@ -56,7 +56,7 @@ jobs:
     needs: build-native-exe
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Install web-ext Firefox
       run: sudo npm --global install web-ext
     - name: web-ext lint
