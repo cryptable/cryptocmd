@@ -9,9 +9,9 @@ jobs:
     name: Build native messaging
     runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
-        ref: 'develop'
+        ref: develop
     - name: Set up Python v3.9
       uses: actions/setup-python@v2
       with:
