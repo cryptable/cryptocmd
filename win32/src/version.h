@@ -8,7 +8,7 @@
 #ifndef KSMGMNT_VERSION_H
 #define KSMGMNT_VERSION_H
 
-#define VERSION "0.5.1a3"
+#define VERSION "0.5.1rc1"
 
 #endif //KSMGMNT_VERSION_H
 /**********************************************************************************/

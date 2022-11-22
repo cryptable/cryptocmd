@@ -85,18 +85,21 @@ Version handling
 - The tags vX.Y.ZaN will use the .github/workflows/build-win32-alpha.yml build workflow for Alpha(N) releases.
 ```
 python 4-set-version.py -c "Descriptive message" X.Y.ZaN
+git commit -m "Descriptive message" .
 git tag alpha-vX.Y.ZaN
 git push origin alpha-vX.Y.ZaN
 ```
 - The tags vX.Y.ZrcN will use the .github/workflows/build-win32-rc.yml build workflow for Release Candidate(N) releases.
 ```
 python 4-set-version.py -c "Descriptive message" X.Y.ZrcN
+git commit -m "Descriptive message" .
 git tag rc-vX.Y.ZrcN
 git push origin rc-vX.Y.ZrcN
 ```
 - The tags vX.Y.Z will use the .github/workflows/build-win32-release.yml build workflow for end releases.
 ```
 python 4-set-version.py -c "Descriptive message" X.Y.Z
+git commit -m "Descriptive message" .
 git tag vX.Y.Z
 git push origin vX.Y.Z
 ```

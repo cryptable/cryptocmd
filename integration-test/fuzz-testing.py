@@ -53,8 +53,9 @@ def nok_test(data, reason):
         raise
     if (response["request_id"] != data['request_id']):
         print("request_id is not equal")
-        raise 
-    if (response['response'] != reason):
+        raise
+    print(response['response'])
+    if (not response['response'].startswith(reason)):
         print("Response was unexpected, so not normal (investigation necessary)")
         raise
 
@@ -63,7 +64,8 @@ def nok_test_raw(data, reason):
     if (response['result'] != "NOK"):
         print("Successful call not expected:" + response['response'])
         raise
-    if (response['response'] != reason):
+    print(response['response'])
+    if (not response['response'].startswith(reason)):
         print("Response was unexpected, so not normal (investigation necessary)")
         raise
 
@@ -72,7 +74,8 @@ def illegal_data_test(data_tuple, reason):
     if (response['result'] != "NOK"):
         print("Successful call not expected:" + response['response'])
         raise
-    if (response['response'] != reason):
+    print(response['response'])
+    if (not response['response'].startswith(reason)):
         print("Response was unexpected, so not normal (investigation necessary)")
         raise
 
