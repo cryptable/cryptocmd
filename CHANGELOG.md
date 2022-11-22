@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.5.1rc4] - 2022-11-22
+
+Firefox web-ext sign changed the output filename
+
 ## [0.5.1rc3] - 2022-11-22
 
 Firefox web-ext sign update
