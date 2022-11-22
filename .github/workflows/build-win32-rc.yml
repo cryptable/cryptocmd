@@ -21,9 +21,9 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
       with:
         tag_name: ${{ github.ref }}
-        release_name: Release Candidate(2) - v0.5.1
+        release_name: Release Candidate(3) - v0.5.1
         body: |-
-          Visual Studio path update
+          Firefox web-ext sign update
         draft: false
         prerelease: true
     - name: Upload Release Asset
@@ -67,7 +67,7 @@ jobs:
         AMO_JWT_SECRET: ${{ secrets.AMO_JWT_SECRET }}
       run: |
         cd extensions/firefox/extension
-        web-ext sign --api-key=$AMO_JWT_ISSUER --api-secret=$AMO_JWT_SECRET -v -n firefox-addon.xpi 
+        web-ext sign --api-key=$AMO_JWT_ISSUER --api-secret=$AMO_JWT_SECRET -v
     - name: get upload_url
       id: get_upload_url
       uses: noobly314/share-data@v1
@@ -82,6 +82,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.get_upload_url.outputs.data }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-        asset_path: extensions/firefox/extension/web-ext-artifacts/windows_crypto_key_generation-0.5.1rc2-an+fx.xpi
-        asset_name: windows_crypto_key_generation-0.5.1rc2-an+fx.xpi
+        asset_path: extensions/firefox/extension/web-ext-artifacts/windows_crypto_key_generation-0.5.1rc3-an+fx.xpi
+        asset_name: windows_crypto_key_generation-0.5.1rc3-an+fx.xpi
         asset_content_type: application/zip

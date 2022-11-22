@@ -67,7 +67,7 @@ jobs:
         AMO_JWT_SECRET: ${{ secrets.AMO_JWT_SECRET }}
       run: |
         cd extensions/firefox/extension
-        web-ext sign --api-key=$AMO_JWT_ISSUER --api-secret=$AMO_JWT_SECRET -v -n firefox-addon.xpi 
+        web-ext sign --api-key=$AMO_JWT_ISSUER --api-secret=$AMO_JWT_SECRET -v
     - name: get upload_url
       id: get_upload_url
       uses: noobly314/share-data@v1
