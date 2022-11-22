@@ -87,6 +87,7 @@ Version handling
 ```
 python 4-set-version.py -c "Descriptive message" X.Y.ZaN
 git tag vX.Y.ZaN
+git push origin vX.Y.ZaN
 ```
 - The tags vX.Y.ZrcN will use the .github/workflows/build-win32-rc.yml build workflow for Release Candidate(N) releases.
 - The tags vX.Y.Z will use the .github/workflows/build-win32-release.yml build workflow for end releases.
