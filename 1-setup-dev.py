@@ -232,8 +232,8 @@ def run_scripts():
         os.mkdir("3rd-party")
     os.chdir("3rd-party")
     install_catch2()
-#    install_openssl_win32()
-#    install_nlohmann_json()
+    install_openssl_win32()
+    install_nlohmann_json()
     install_cryptablepki()
    
     os.chdir("..")

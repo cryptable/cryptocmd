@@ -1,7 +1,7 @@
 [requires]
-openssl/1.1.1g
+openssl/1.1.1s
 nlohmann_json/3.9.1
-catch2/2.13.0
+catch2/2.13.9
 
 [generators]
 cmake
