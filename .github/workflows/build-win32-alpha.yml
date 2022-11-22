@@ -10,6 +10,8 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
+      with:
+        ref: 'develop'
     - name: Set up Python v3.9
       uses: actions/setup-python@v2
       with:
