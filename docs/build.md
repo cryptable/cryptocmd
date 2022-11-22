@@ -77,3 +77,11 @@ Support for OS:
 
 Git tags auto pushing:
 - git config --global push.followTags true
+
+Version handling
+----------------
+
+- The "develop"-branch will use the .github/workflows/build-win32.yml build workflow. This will automatically create a development msi.
+- The tags vX.Y.ZaN will use the .github/workflows/build-win32-alpha.yml build workflow for Alpha(N) releases.
+- The tags vX.Y.ZrcN will use the .github/workflows/build-win32-rc.yml build workflow for Release Candidate(N) releases.
+- The tags vX.Y.Z will use the .github/workflows/build-win32-release.yml build workflow for end releases.

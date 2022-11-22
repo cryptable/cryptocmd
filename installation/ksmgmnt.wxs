@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='windows-1252'?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-    <Product Codepage="1252" Id="cc8b936c-8dfe-4ee0-ae9d-a5f7df9f0bad" Language="1033" Manufacturer="Cryptable" Name="Key Management Web Extension" UpgradeCode="2d93783f-3a86-45ac-b6a3-f164003c1555" Version="0.5.0">
+    <Product Codepage="1252" Id="cc8b936c-8dfe-4ee0-ae9d-a5f7df9f0bad" Language="1033" Manufacturer="Cryptable" Name="Key Management Web Extension" UpgradeCode="2d93783f-3a86-45ac-b6a3-f164003c1555" Version="0.5.1">
         <Package Comments="Web Extension which allows basic Windows Cryptographic Key Management" Compressed="yes" Description="Key Management Web Extension" Id="*" InstallScope="perMachine" InstallerVersion="300" Keywords="Installer,Web,Extension" Platform="x64" />
         <MediaTemplate EmbedCab="yes" />
 

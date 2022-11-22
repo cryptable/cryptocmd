@@ -7,7 +7,7 @@ on:
 jobs:
   build-native-exe:
     name: Build native messaging
-    runs-on: windows-2016
+    runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
     - name: setup development
@@ -21,7 +21,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
       with:
         tag_name: ${{ github.ref }}
-        release_name: Release Candidate(1) - v0.4.5
+        release_name: Release Candidate(0) - v0.5.0
         body: |-
           Fixed error messages for Firefox extension
         draft: false
