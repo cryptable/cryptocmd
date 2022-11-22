@@ -15,7 +15,7 @@ def append_gitignore(file_to_ignore):
         gitignore.write(file_to_ignore + '\n')
 
 def install_conan():
-    subprocess.run('py -m pip install conan', shell=True, check=True)
+    subprocess.run('pip install conan', shell=True, check=True)
 
 # TODO: evaluate git sub modules
 def install_cryptablepki():
