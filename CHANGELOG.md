@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.5.1a3] - 2022-11-22
+
+Update documentation for building
+
 ## [0.5.1a1] - 2022-11-22
 
 Added extended error message as base64 after 'Bad Request: '

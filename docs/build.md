@@ -100,3 +100,5 @@ python 4-set-version.py -c "Descriptive message" X.Y.Z
 git tag vX.Y.Z
 git push origin vX.Y.Z
 ```
+
+Then git commit and tag the tree.
