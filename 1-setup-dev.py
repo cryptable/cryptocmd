@@ -26,7 +26,7 @@ OPENSSL_VERSION="3.0.7"
 # C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Enterprise\\VC\\Auxiliary\\Build\\vcvarsall.bat
 # Microsoft Visual Studio 2019 BuildTools Community edition
 # C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\BuildTools\\VC\\Auxiliary\\Build\\vcvarsall.bat
-VCVARSALL = "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\BuildTools\\VC\\Auxiliary\\Build\\vcvarsall.bat"
+VCVARSALL = "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\VC\\Auxiliary\\Build\\vcvarsall.bat"
 
 STRAWBERRY_PERL_URL=f"http://strawberryperl.com/download/{ STRAWBERRY_PERL_VERSION }/strawberry-perl-{ STRAWBERRY_PERL_VERSION }-64bit.zip"
 
